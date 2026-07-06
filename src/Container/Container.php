@@ -15,6 +15,16 @@ use Fieldsbox\Field\Field;
  */
 abstract class Container
 {
+    /**
+     * Every container instance created this request - not redeclared in
+     * PostMetaContainer/ThemeOptionsContainer, so this storage is shared
+     * across both. Fieldsbox::enqueue_assets() walks this to work out
+     * which of its assets the current screen actually needs.
+     *
+     * @var Container[]
+     */
+    protected static array $registry = [];
+
     /** Unique per-instance id, used for meta box id / menu slug / option name / DOM ids. */
     protected string $id;
 
@@ -48,7 +58,17 @@ abstract class Container
         $container = new static($title);
         $container->boot();
 
+        self::$registry[] = $container;
+
         return $container;
+    }
+
+    /**
+     * @return Container[]
+     */
+    public static function get_registry(): array
+    {
+        return self::$registry;
     }
 
     /**
@@ -113,6 +133,41 @@ abstract class Container
      * there isn't one yet (the field will then fall back to its default).
      */
     abstract public function get_value(string $field_name): mixed;
+
+    /**
+     * Whether this container would actually render on the screen currently
+     * being prepared - used by Fieldsbox::enqueue_assets() to decide
+     * whether this container's field types should count towards this
+     * request's asset needs. Implemented per container type:
+     * PostMetaContainer checks the edited post's type, ThemeOptionsContainer
+     * checks its own settings page.
+     *
+     * @param string|false|null $hook_suffix The $hook_suffix admin_enqueue_scripts was called with.
+     */
+    abstract public function matches_screen(string|false|null $hook_suffix): bool;
+
+    /**
+     * Whether any field in this container - including sub-fields nested
+     * inside a group/repeater - is of the given type (e.g. 'map', 'image').
+     */
+    public function uses_field_type(string $type): bool
+    {
+        return self::fields_use_type($this->get_all_fields(), $type);
+    }
+
+    /**
+     * @param Field[] $fields
+     */
+    private static function fields_use_type(array $fields, string $type): bool
+    {
+        foreach ($fields as $field) {
+            if ($field->get_type() === $type || self::fields_use_type($field->get_sub_fields(), $type)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Render a set of fields, resolving each one's current value via

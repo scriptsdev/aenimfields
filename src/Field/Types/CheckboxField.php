@@ -15,8 +15,9 @@ class CheckboxField extends Field
     protected function render_input(mixed $value): string
     {
         return sprintf(
-            '<input type="checkbox" id="fieldsbox-%1$s" name="%1$s" value="1"%2$s%3$s>',
-            esc_attr($this->name),
+            '<input type="checkbox" id="%1$s" name="%2$s" value="1"%3$s%4$s>',
+            esc_attr($this->get_html_id()),
+            esc_attr($this->get_html_name()),
             checked((string) $value, '1', false),
             $this->render_attributes()
         );

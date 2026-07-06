@@ -27,6 +27,13 @@ class ThemeOptionsContainer extends Container
 
     protected int $position = 100;
 
+    /**
+     * The hook suffix WordPress assigns this settings page, captured from
+     * add_menu_page()/add_submenu_page()'s return value so matches_screen()
+     * can recognize it later.
+     */
+    protected string|false|null $hook_suffix = null;
+
     /** Cached option values, lazily loaded by load_values(). */
     protected array $values = [];
     protected bool $values_loaded = false;
@@ -77,9 +84,9 @@ class ThemeOptionsContainer extends Container
     public function register_page(): void
     {
         if ($this->parent_slug) {
-            add_submenu_page($this->parent_slug, $this->title, $this->menu_title, $this->capability, $this->menu_slug, [$this, 'render_page']);
+            $this->hook_suffix = add_submenu_page($this->parent_slug, $this->title, $this->menu_title, $this->capability, $this->menu_slug, [$this, 'render_page']);
         } else {
-            add_menu_page($this->title, $this->menu_title, $this->capability, $this->menu_slug, [$this, 'render_page'], $this->icon, $this->position);
+            $this->hook_suffix = add_menu_page($this->title, $this->menu_title, $this->capability, $this->menu_slug, [$this, 'render_page'], $this->icon, $this->position);
         }
     }
 
@@ -151,5 +158,15 @@ class ThemeOptionsContainer extends Container
         $this->load_values();
 
         return $this->values[$field_name] ?? null;
+    }
+
+    /**
+     * This settings page only ever renders on its own admin page - admin_menu
+     * (where $hook_suffix is captured) always fires before admin_enqueue_scripts,
+     * so it's already set by the time this runs.
+     */
+    public function matches_screen(string|false|null $hook_suffix): bool
+    {
+        return $hook_suffix !== null && $hook_suffix !== false && $hook_suffix === $this->hook_suffix;
     }
 }

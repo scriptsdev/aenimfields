@@ -24,6 +24,28 @@
     color: #d63638;
 }
 
+/* ---- Separator (visual divider, no input) ---- */
+
+.fieldsbox-field-separator {
+    margin: 24px 0 16px;
+    padding-top: 16px;
+    border-top: 1px solid #dcdcde;
+}
+
+.fieldsbox-field-separator:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+.fieldsbox-separator-heading {
+    margin: 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #1d2327;
+}
+
 /* ---- Inputs ---- */
 
 .fieldsbox-input input[type="text"],
@@ -35,6 +57,12 @@
 
 .fieldsbox-input textarea {
     min-height: 100px;
+}
+
+/* Narrower than the general text-input rule above - a date/time value never needs 400px. */
+.fieldsbox-input input.fieldsbox-flatpickr {
+    width: auto;
+    max-width: 160px;
 }
 
 /* Radio/checkbox options sit inline next to each other rather than stacking. */
@@ -86,4 +114,152 @@
 
 .fieldsbox-tab-panel.is-active {
     display: block;
+}
+
+/* ---- Toggle switch (checkbox styled as an on/off slider) ---- */
+
+.fieldsbox-toggle {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+}
+
+.fieldsbox-toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+
+.fieldsbox-toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #ccc;
+    border-radius: 999px;
+    transition: background-color 0.15s ease;
+}
+
+.fieldsbox-toggle-slider::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.15s ease;
+}
+
+.fieldsbox-toggle input:checked + .fieldsbox-toggle-slider {
+    background: #2271b1;
+}
+
+.fieldsbox-toggle input:checked + .fieldsbox-toggle-slider::before {
+    transform: translateX(18px);
+}
+
+/* ---- Code field ---- */
+
+.fieldsbox-code {
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-size: 13px;
+    min-height: 160px;
+}
+
+/* ---- Media fields (image/file/gallery) ---- */
+
+.fieldsbox-media-preview img {
+    display: block;
+    max-width: 150px;
+    max-height: 150px;
+    height: auto;
+    margin-bottom: 8px;
+    border: 1px solid #dcdcde;
+}
+
+.fieldsbox-media-preview {
+    margin-bottom: 8px;
+}
+
+.fieldsbox-gallery-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.fieldsbox-gallery-item {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.fieldsbox-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 1px solid #dcdcde;
+}
+
+.fieldsbox-gallery-remove {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid #dcdcde;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* ---- Map field ---- */
+
+.fieldsbox-map-address {
+    margin-bottom: 8px;
+}
+
+.fieldsbox-map-locate {
+    display: block;
+    margin: 8px 0;
+}
+
+.fieldsbox-map-canvas {
+    height: 300px;
+    max-width: 600px;
+}
+
+/* ---- Group & repeater fields ---- */
+
+.fieldsbox-group {
+    border-left: 3px solid #dcdcde;
+    padding-left: 16px;
+}
+
+.fieldsbox-repeater-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border: 1px solid #dcdcde;
+    background: #f6f7f7;
+}
+
+.fieldsbox-repeater-row-fields {
+    flex: 1;
+}
+
+.fieldsbox-repeater-row-fields .fieldsbox-field:last-child {
+    margin-bottom: 0;
+}
+
+.fieldsbox-repeater-add {
+    margin-top: 8px;
 }

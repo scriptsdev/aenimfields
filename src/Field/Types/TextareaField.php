@@ -12,8 +12,9 @@ class TextareaField extends Field
     protected function render_input(mixed $value): string
     {
         return sprintf(
-            '<textarea id="fieldsbox-%1$s" name="%1$s"%2$s%3$s>%4$s</textarea>',
-            esc_attr($this->name),
+            '<textarea id="%1$s" name="%2$s"%3$s%4$s>%5$s</textarea>',
+            esc_attr($this->get_html_id()),
+            esc_attr($this->get_html_name()),
             $this->required ? ' required' : '',
             $this->render_attributes(),
             esc_textarea((string) $value)

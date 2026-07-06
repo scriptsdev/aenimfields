@@ -3,11 +3,29 @@
 namespace Fieldsbox\Field;
 
 use Fieldsbox\Field\Types\CheckboxField;
+use Fieldsbox\Field\Types\CodeField;
+use Fieldsbox\Field\Types\ColorField;
+use Fieldsbox\Field\Types\DateField;
+use Fieldsbox\Field\Types\DateTimeField;
+use Fieldsbox\Field\Types\EmailField;
+use Fieldsbox\Field\Types\FileField;
+use Fieldsbox\Field\Types\GalleryField;
+use Fieldsbox\Field\Types\GroupField;
+use Fieldsbox\Field\Types\HiddenField;
+use Fieldsbox\Field\Types\ImageField;
+use Fieldsbox\Field\Types\MapField;
 use Fieldsbox\Field\Types\MultiSelectField;
+use Fieldsbox\Field\Types\NumberField;
 use Fieldsbox\Field\Types\RadioField;
+use Fieldsbox\Field\Types\RepeaterField;
 use Fieldsbox\Field\Types\SelectField;
+use Fieldsbox\Field\Types\SeparatorField;
 use Fieldsbox\Field\Types\TextareaField;
 use Fieldsbox\Field\Types\TextField;
+use Fieldsbox\Field\Types\TimeField;
+use Fieldsbox\Field\Types\ToggleField;
+use Fieldsbox\Field\Types\UrlField;
+use Fieldsbox\Field\Types\WysiwygField;
 use InvalidArgumentException;
 
 /**
@@ -38,7 +56,28 @@ abstract class Field
         'select' => SelectField::class,
         'dropdown' => SelectField::class,
         'multiselect' => MultiSelectField::class,
+        'email' => EmailField::class,
+        'url' => UrlField::class,
+        'hidden' => HiddenField::class,
+        'number' => NumberField::class,
+        'toggle' => ToggleField::class,
+        'color' => ColorField::class,
+        'code' => CodeField::class,
+        'wysiwyg' => WysiwygField::class,
+        'image' => ImageField::class,
+        'file' => FileField::class,
+        'gallery' => GalleryField::class,
+        'map' => MapField::class,
+        'group' => GroupField::class,
+        'repeater' => RepeaterField::class,
+        'date' => DateField::class,
+        'datetime' => DateTimeField::class,
+        'time' => TimeField::class,
+        'separator' => SeparatorField::class,
     ];
+
+    /** Guarantees every rendered field gets a unique id, even repeated instances (see get_html_id()). */
+    protected static int $id_sequence = 0;
 
     protected string $type;
     protected string $name;
@@ -57,11 +96,31 @@ abstract class Field
 
     protected bool $required = false;
 
-    /** @var array<int, array{field: string, value: mixed, operator?: string}>|null */
+    /**
+     * Rule field names may carry one or more leading "parent." segments to
+     * reach past the immediate group/repeater row scope - see
+     * set_conditional_logic().
+     *
+     * @var array<int, array{field: string, value?: mixed, compare?: string}>|null
+     */
     protected ?array $conditional_logic = null;
 
     /** 'AND' (every rule must match) or 'OR' (any rule matches) - evaluated client-side. */
     protected string $conditional_relation = 'AND';
+
+    /**
+     * Overrides the HTML "name" (and therefore "id") this field renders
+     * with, without changing its logical get_name(). Used by GroupField and
+     * RepeaterField to nest a shared field blueprint under a parent name,
+     * e.g. "team_members[3][role]" instead of just "role".
+     */
+    protected ?string $html_name = null;
+
+    /** Lazily computed, invalidated whenever set_html_name() changes context. */
+    protected ?string $cached_html_id = null;
+
+    /** Explicit id override set via set_id(), takes priority over the auto-generated one. */
+    protected ?string $custom_id = null;
 
     /**
      * Constructor is not called directly - use the static make() factory so
@@ -124,9 +183,26 @@ abstract class Field
         return $this;
     }
 
+    /**
+     * Add a CSS class to the field's wrapper <div> (not the <input> itself -
+     * use set_attribute('class', ...) for that). Can be called more than
+     * once to add several classes.
+     */
     public function add_class(string $class): static
     {
         $this->classes[] = $class;
+        return $this;
+    }
+
+    /**
+     * Override the auto-generated "id" this field renders with (and the
+     * matching <label for>), e.g. for a JS selector or anchor link that
+     * needs a predictable id. Without this, an id like "fieldsbox-name-3"
+     * is generated automatically - see get_html_id().
+     */
+    public function set_id(string $id): static
+    {
+        $this->custom_id = $id;
         return $this;
     }
 
@@ -142,17 +218,44 @@ abstract class Field
 
     /**
      * Show/hide this field in the browser based on the value of other
-     * fields in the same container. Evaluated entirely client-side by
-     * assets/js/fieldsbox.js - this only stores the rule set as a
-     * data-conditional JSON attribute on the field wrapper.
+     * fields. Evaluated entirely client-side by assets/js/fieldsbox.js -
+     * this only stores the rule set as a data-conditional JSON attribute on
+     * the field wrapper. Mirrors Carbon Fields' conditional logic shape:
      *
-     * @param array<int, array{field: string, value: mixed, operator?: string}> $rules
-     * @param string $relation 'AND' or 'OR'
+     *   Field::make('text', 'crb_facebook', 'Facebook URL')
+     *       ->set_conditional_logic([
+     *           'relation' => 'AND', // optional, defaults to 'AND'; or 'OR'
+     *           [
+     *               'field' => 'crb_show_socials',
+     *               'value' => 'yes',  // optional, defaults to ''
+     *               'compare' => '=',  // optional, defaults to '='
+     *           ],
+     *       ]);
+     *
+     * Each rule:
+     *   - field: the field name this rule depends on. A rule is scoped to
+     *     the current field's siblings by default - the top-level
+     *     container, or (for a field nested in a group/repeater) the same
+     *     row. To reach a field in an enclosing scope, prefix it with
+     *     "parent." per level up, e.g. "parent.parent.crb_in_production"
+     *     from two levels inside nested groups/repeaters.
+     *   - value: a string, or an array when compare is IN/NOT IN/INCLUDES/EXCLUDES.
+     *     Defaults to ''.
+     *   - compare: one of =, <, >, <=, >=, IN, NOT IN, INCLUDES, EXCLUDES.
+     *     Defaults to '='. IN/NOT IN compare a single-value field against a
+     *     list of acceptable values; INCLUDES/EXCLUDES compare a
+     *     multi-value field (e.g. multiselect) against a list of values.
+     *
+     * @param array<int|string, mixed> $conditions Optionally keyed 'relation', plus 0-indexed rule arrays.
      */
-    public function set_conditional_logic(array $rules, string $relation = 'AND'): static
+    public function set_conditional_logic(array $conditions): static
     {
-        $this->conditional_logic = $rules;
-        $this->conditional_relation = $relation;
+        $relation = $conditions['relation'] ?? 'AND';
+        unset($conditions['relation']);
+
+        $this->conditional_relation = strtoupper((string) $relation) === 'OR' ? 'OR' : 'AND';
+        $this->conditional_logic = array_values($conditions);
+
         return $this;
     }
 
@@ -164,6 +267,34 @@ abstract class Field
     public function get_type(): string
     {
         return $this->type;
+    }
+
+    /**
+     * Nested fields this field wraps (GroupField/RepeaterField only; every
+     * other field type has none). Used by Container::uses_field_type() to
+     * detect e.g. a map field nested inside a repeater, so the map's
+     * assets still get enqueued for that screen.
+     *
+     * @return Field[]
+     */
+    public function get_sub_fields(): array
+    {
+        return [];
+    }
+
+    /**
+     * Used by GroupField/RepeaterField to render a shared sub-field
+     * blueprint under a namespaced HTML name (e.g. "members[3][email]")
+     * while get_name() keeps returning the sub-field's own short name
+     * ("email") for value lookups.
+     */
+    public function set_html_name(string $html_name): static
+    {
+        $this->html_name = $html_name;
+        // A new context means a new element - the previously cached id no
+        // longer belongs to this render.
+        $this->cached_html_id = null;
+        return $this;
     }
 
     /**
@@ -212,7 +343,7 @@ abstract class Field
         ob_start();
         ?>
         <div class="<?php echo esc_attr(implode(' ', $wrapper_classes)); ?>"<?php echo $data_conditional; ?> data-field-name="<?php echo esc_attr($this->name); ?>">
-            <label class="fieldsbox-label" for="fieldsbox-<?php echo esc_attr($this->name); ?>">
+            <label class="fieldsbox-label" for="<?php echo esc_attr($this->get_html_id()); ?>">
                 <?php echo esc_html($this->label); ?>
                 <?php if ($this->required): ?><span class="fieldsbox-required">*</span><?php endif; ?>
             </label>
@@ -241,5 +372,40 @@ abstract class Field
         }
 
         return $html;
+    }
+
+    /**
+     * The HTML "name" attribute concrete field types should render with:
+     * the namespaced override set by GroupField/RepeaterField if present,
+     * otherwise just the field's own name.
+     */
+    protected function get_html_name(): string
+    {
+        return $this->html_name ?? $this->name;
+    }
+
+    /**
+     * A unique "id" for this render, reused for both the <label for> and
+     * the control's own id attribute. Returns the explicit set_id() value
+     * if one was given; otherwise lazily generates one, cached per render
+     * so the label/input pair always match, and recomputed whenever
+     * set_html_name() puts the field in a new context (e.g. a different
+     * repeater row reusing the same blueprint instance).
+     *
+     * Note: set_id() on a field reused across repeater rows (i.e. inside
+     * set_fields() on a RepeaterField) would produce duplicate ids, one per
+     * row - only use it on fields that render once.
+     */
+    protected function get_html_id(): string
+    {
+        if ($this->custom_id !== null) {
+            return $this->custom_id;
+        }
+
+        if ($this->cached_html_id === null) {
+            $this->cached_html_id = 'fieldsbox-' . sanitize_key($this->get_html_name()) . '-' . (++self::$id_sequence);
+        }
+
+        return $this->cached_html_id;
     }
 }

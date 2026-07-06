@@ -19,8 +19,9 @@ class MultiSelectField extends Field
         $values = array_map('strval', is_array($value) ? $value : (array) $value);
 
         $html = sprintf(
-            '<select id="fieldsbox-%1$s" name="%1$s[]" multiple%2$s>',
-            esc_attr($this->name),
+            '<select id="%1$s" name="%2$s[]" multiple%3$s>',
+            esc_attr($this->get_html_id()),
+            esc_attr($this->get_html_name()),
             $this->render_attributes()
         );
 

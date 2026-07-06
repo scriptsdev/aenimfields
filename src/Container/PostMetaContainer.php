@@ -131,4 +131,19 @@ class PostMetaContainer extends Container
 
         return get_post_meta($this->current_post->ID, $field_name, true);
     }
+
+    /**
+     * Meta boxes only ever render on the post editor screens, and only for
+     * the post types this container was registered for.
+     */
+    public function matches_screen(string|false|null $hook_suffix): bool
+    {
+        if (! in_array($hook_suffix, ['post.php', 'post-new.php'], true)) {
+            return false;
+        }
+
+        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+
+        return $screen && in_array($screen->post_type, $this->post_types, true);
+    }
 }

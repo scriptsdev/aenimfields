@@ -13,8 +13,9 @@ class SelectField extends Field
     protected function render_input(mixed $value): string
     {
         $html = sprintf(
-            '<select id="fieldsbox-%1$s" name="%1$s"%2$s%3$s>',
-            esc_attr($this->name),
+            '<select id="%1$s" name="%2$s"%3$s%4$s>',
+            esc_attr($this->get_html_id()),
+            esc_attr($this->get_html_name()),
             $this->required ? ' required' : '',
             $this->render_attributes()
         );
