@@ -2,6 +2,7 @@
 # OS / System Files
 # =========================
 .DS_Store
+**/.DS_Store
 Thumbs.db
 
 # =========================
@@ -21,7 +22,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # =========================
-# Node / Frontend (if used)
+# Node / Frontend
 # =========================
 node_modules/
 dist/
@@ -37,14 +38,11 @@ build/
 # =========================
 # Temporary / Runtime Files
 # =========================
-*.zip
-*.tar.gz
 *.tmp
 *.temp
 
 # Plugin temp processing directory
 placegen-temp/
-wp-content/uploads/placegen-temp/
 
 # =========================
 # Cache / Coverage
@@ -57,10 +55,9 @@ coverage/
 # PHPUnit / Testing
 # =========================
 phpunit.xml
-phpunit.xml.dist
 
 # =========================
-# WordPress (if inside full install)
+# WordPress Core (only if this repo contains a full WP install)
 # =========================
 wp-admin/
 wp-includes/
