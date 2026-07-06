@@ -1,0 +1,72 @@
+# =========================
+# OS / System Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# =========================
+# Logs
+# =========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Node / Frontend (if used)
+# =========================
+node_modules/
+dist/
+build/
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# Temporary / Runtime Files
+# =========================
+*.zip
+*.tar.gz
+*.tmp
+*.temp
+
+# Plugin temp processing directory
+placegen-temp/
+wp-content/uploads/placegen-temp/
+
+# =========================
+# Cache / Coverage
+# =========================
+.cache/
+coverage/
+.phpunit.result.cache
+
+# =========================
+# PHPUnit / Testing
+# =========================
+phpunit.xml
+phpunit.xml.dist
+
+# =========================
+# WordPress (if inside full install)
+# =========================
+wp-admin/
+wp-includes/
+
+# =========================
+# Misc
+# =========================
+*.bak
+*.swp
