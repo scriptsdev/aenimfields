@@ -122,6 +122,9 @@ abstract class Field
     /** Explicit id override set via set_id(), takes priority over the auto-generated one. */
     protected ?string $custom_id = null;
 
+    /** Storage-key override set via set_meta_key(); see get_meta_key(). */
+    protected ?string $meta_key = null;
+
     /**
      * Constructor is not called directly - use the static make() factory so
      * the correct field-type subclass gets instantiated.
@@ -267,6 +270,33 @@ abstract class Field
     public function get_type(): string
     {
         return $this->type;
+    }
+
+    /**
+     * Override the key this field's value is stored under (post meta key,
+     * or the array key within a theme options page) without changing its
+     * logical get_name() - which stays whatever the rendered form field's
+     * name/id and conditional-logic lookups use.
+     *
+     * Typically used for WordPress's "protected meta" convention: prefix
+     * the key with an underscore, e.g. ->set_meta_key('_event_date'), so
+     * it's hidden from the default Custom Fields meta box and REST API
+     * output while everything else about the field (form name, sanitize,
+     * JS conditional logic) still refers to it as "event_date".
+     */
+    public function set_meta_key(string $meta_key): static
+    {
+        $this->meta_key = $meta_key;
+        return $this;
+    }
+
+    /**
+     * The key to store/read this field's value under. Defaults to
+     * get_name() unless overridden via set_meta_key().
+     */
+    public function get_meta_key(): string
+    {
+        return $this->meta_key ?? $this->name;
     }
 
     /**

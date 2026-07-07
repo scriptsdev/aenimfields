@@ -2,6 +2,7 @@
 
 namespace Fieldsbox\Container;
 
+use Fieldsbox\Field\Field;
 use WP_Post;
 
 /**
@@ -111,11 +112,16 @@ class PostMetaContainer extends Container
             $raw = $_POST[$name] ?? ($field->get_type() === 'multiselect' ? [] : '');
             $value = $field->sanitize(wp_unslash($raw));
 
+            // Storage key can differ from the submitted form field name -
+            // see Field::set_meta_key() (e.g. an underscore-prefixed,
+            // "protected" post meta key).
+            $meta_key = $field->get_meta_key();
+
             // Store an absent value as "no meta row" instead of an empty one.
             if ($value === '' || $value === []) {
-                delete_post_meta($post_id, $name);
+                delete_post_meta($post_id, $meta_key);
             } else {
-                update_post_meta($post_id, $name, $value);
+                update_post_meta($post_id, $meta_key, $value);
             }
         }
     }
@@ -123,13 +129,13 @@ class PostMetaContainer extends Container
     /**
      * Read a field's current value from post meta for the post being edited.
      */
-    public function get_value(string $field_name): mixed
+    public function get_value(Field $field): mixed
     {
         if (! $this->current_post) {
             return null;
         }
 
-        return get_post_meta($this->current_post->ID, $field_name, true);
+        return get_post_meta($this->current_post->ID, $field->get_meta_key(), true);
     }
 
     /**

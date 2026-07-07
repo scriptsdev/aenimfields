@@ -2,6 +2,8 @@
 
 namespace Fieldsbox\Container;
 
+use Fieldsbox\Field\Field;
+
 /**
  * Fields shown on a dedicated wp-admin settings page, persisted as a single
  * serialized option.
@@ -131,7 +133,9 @@ class ThemeOptionsContainer extends Container
             $name = $field->get_name();
             // Multiselect fields submit nothing when empty, so default to [] rather than ''.
             $raw = $_POST[$name] ?? ($field->get_type() === 'multiselect' ? [] : '');
-            $values[$name] = $field->sanitize(wp_unslash($raw));
+            // Storage key can differ from the submitted form field name -
+            // see Field::set_meta_key().
+            $values[$field->get_meta_key()] = $field->sanitize(wp_unslash($raw));
         }
 
         update_option($this->menu_slug . '_options', $values);
@@ -153,11 +157,11 @@ class ThemeOptionsContainer extends Container
         }
     }
 
-    public function get_value(string $field_name): mixed
+    public function get_value(Field $field): mixed
     {
         $this->load_values();
 
-        return $this->values[$field_name] ?? null;
+        return $this->values[$field->get_meta_key()] ?? null;
     }
 
     /**

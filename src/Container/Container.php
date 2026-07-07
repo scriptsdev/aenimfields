@@ -131,8 +131,10 @@ abstract class Container
     /**
      * Read back the currently stored value for a single field, or null if
      * there isn't one yet (the field will then fall back to its default).
+     * Takes the Field itself (not just its name) so implementations can
+     * honor a per-field set_meta_key() storage-key override.
      */
-    abstract public function get_value(string $field_name): mixed;
+    abstract public function get_value(Field $field): mixed;
 
     /**
      * Whether this container would actually render on the screen currently
@@ -180,7 +182,7 @@ abstract class Container
         $html = '';
 
         foreach ($fields as $field) {
-            $html .= $field->render($this->get_value($field->get_name()));
+            $html .= $field->render($this->get_value($field));
         }
 
         return $html;

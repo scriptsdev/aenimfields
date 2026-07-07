@@ -178,3 +178,62 @@ ThemeOptionsContainer::make( __( 'My Plugin Settings', 'my-plugin' ) )
 			->set_default_value( 'test' ),
 		)
 	);
+
+// A second, minimal PostMetaContainer - meta saving is entirely automatic:
+// PostMetaContainer::make() wires both add_meta_boxes and save_post
+// internally (see PostMetaContainer::boot()), so nothing else is needed
+// for "venue"/"capacity" post meta to be written whenever an "event"
+// post is saved - no custom save_post handler, no nonce field to add
+// by hand. "event_date" is stored under "_event_date" instead - see
+// set_meta_key() below - the leading underscore is WordPress's
+// convention for hiding a field from the default Custom Fields meta
+// box / REST API output, while the field itself (form name,
+// sanitize, conditional logic) still refers to it as "event_date".
+PostMetaContainer::make( __( 'Event Details', 'my-plugin' ) )
+	->show_on_post_type( 'event' )
+	->add_fields(
+		array(
+			Field::make( 'date', 'event_date', __( 'Event Date', 'my-plugin' ) )
+				->set_meta_key( '_event_date' ),
+			Field::make( 'text', 'venue', __( 'Venue', 'my-plugin' ) ),
+			Field::make( 'number', 'capacity', __( 'Capacity', 'my-plugin' ) )
+				->set_attribute( 'min', '0' ),
+		)
+	);
+
+/**
+ * Reading the saved values back out - e.g. in a single-event.php template
+ * or a REST callback. fieldsbox doesn't wrap storage in anything special:
+ * each field's meta key is just its own field name, so this is plain
+ * get_post_meta() - no fieldsbox API needed to read values back.
+ *
+ * @param int $post_id
+ */
+function my_plugin_render_event_details( int $post_id ): void {
+	// Note the leading underscore - matches the set_meta_key( '_event_date' )
+	// override above; 'venue' and 'capacity' were never overridden, so
+	// they're stored under their own field name as usual.
+	$event_date = get_post_meta( $post_id, '_event_date', true ); // e.g. "2026-08-14"
+	$venue      = get_post_meta( $post_id, 'venue', true );
+	$capacity   = get_post_meta( $post_id, 'capacity', true );
+
+	printf(
+		'<p>%1$s at %2$s (capacity: %3$s)</p>',
+		esc_html( $event_date ),
+		esc_html( $venue ),
+		esc_html( $capacity )
+	);
+
+	// A repeater/group field stores one serialized array under its own
+	// meta key - here, the "variants" repeater defined on the Product
+	// Details container above.
+	$variants = get_post_meta( $post_id, 'variants', true );
+
+	foreach ( (array) $variants as $variant ) {
+		printf(
+			'<p>%1$s - $%2$s</p>',
+			esc_html( $variant['sku'] ?? '' ),
+			esc_html( $variant['price'] ?? '' )
+		);
+	}
+}
