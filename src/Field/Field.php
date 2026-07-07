@@ -187,6 +187,19 @@ abstract class Field
     }
 
     /**
+     * The configured set_options() keys as strings - used by
+     * SelectField/RadioField/MultiSelectField's sanitize() to reject a
+     * submitted value that isn't actually one of the field's own choices
+     * (e.g. a forged direct POST that bypasses the rendered <select>/radios).
+     *
+     * @return string[]
+     */
+    protected function get_option_keys(): array
+    {
+        return array_map('strval', array_keys($this->options));
+    }
+
+    /**
      * Add a CSS class to the field's wrapper <div> (not the <input> itself -
      * use set_attribute('class', ...) for that). Can be called more than
      * once to add several classes.

@@ -44,9 +44,19 @@ abstract class Container
     protected function __construct(string $title)
     {
         $this->title = $title;
-        // Suffix with a short hash so two containers with the same title
-        // (e.g. across plugins) don't collide on id/menu-slug/option-name.
-        $this->id = sanitize_key($title) . '-' . substr(md5($title . microtime()), 0, 6);
+        // Must be deterministic across requests, NOT random per-request:
+        // PHP re-runs the plugin's whole bootstrap (and therefore this
+        // constructor) fresh on every request, so the id generated while
+        // rendering the edit-post/settings page has to match the id
+        // generated again when that form is submitted - it's what the
+        // nonce action/field name, ThemeOptionsContainer's menu slug, and
+        // its "{id}_options" option name are all built from. Two
+        // containers sharing an identical title (e.g. across two
+        // differently-scoped plugins) is the same "give it a unique
+        // name" constraint every add_menu_page()/add_meta_box() call in
+        // WordPress already has - not something to paper over with
+        // per-request randomness.
+        $this->id = sanitize_key($title);
     }
 
     /**

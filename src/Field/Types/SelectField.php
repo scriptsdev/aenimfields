@@ -33,4 +33,16 @@ class SelectField extends Field
 
         return $html;
     }
+
+    /**
+     * Only accept a value that's actually one of this field's set_options()
+     * choices - guards against a forged direct POST bypassing the rendered
+     * <select>.
+     */
+    public function sanitize(mixed $value): mixed
+    {
+        $value = sanitize_text_field((string) $value);
+
+        return in_array($value, $this->get_option_keys(), true) ? $value : '';
+    }
 }

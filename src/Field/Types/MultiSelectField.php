@@ -41,7 +41,10 @@ class MultiSelectField extends Field
 
     /**
      * Nothing selected submits no field at all, so the container passes an
-     * empty array through here rather than a scalar.
+     * empty array through here rather than a scalar. Also drops any
+     * submitted entry that isn't actually one of this field's
+     * set_options() choices - guards against a forged direct POST
+     * bypassing the rendered <select>.
      */
     public function sanitize(mixed $value): mixed
     {
@@ -49,6 +52,8 @@ class MultiSelectField extends Field
             return [];
         }
 
-        return array_map('sanitize_text_field', $value);
+        $sanitized = array_map('sanitize_text_field', $value);
+
+        return array_values(array_intersect($sanitized, $this->get_option_keys()));
     }
 }

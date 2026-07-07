@@ -20,6 +20,7 @@ if ( ! class_exists( 'Fieldsbox\Fieldsbox' ) ) {
 }
 
 use Fieldsbox\Container\PostMetaContainer;
+use Fieldsbox\Container\TermMetaContainer;
 use Fieldsbox\Container\ThemeOptionsContainer;
 use Fieldsbox\Field\Field;
 
@@ -236,4 +237,37 @@ function my_plugin_render_event_details( int $post_id ): void {
 			esc_html( $variant['price'] ?? '' )
 		);
 	}
+}
+
+// Fields on the "Add New Category" and "Edit Category" screens, persisted
+// as term meta. WordPress renders those two screens with completely
+// different markup (a plain form vs. a <table class="form-table">) -
+// TermMetaContainer handles that difference internally, so this call looks
+// exactly like the PostMetaContainer/ThemeOptionsContainer ones above.
+TermMetaContainer::make( __( 'Category Details', 'my-plugin' ) )
+	->show_on_taxonomy( 'category' )
+	->add_fields(
+		array(
+			Field::make( 'text', 'hero_text', __( 'Hero Text', 'my-plugin' ) )
+				->set_help_text( __( 'Shown at the top of this category\'s archive page.', 'my-plugin' ) ),
+			Field::make( 'color', 'accent_color', __( 'Accent Color', 'my-plugin' ) ),
+		)
+	);
+
+/**
+ * Reading term meta back out - e.g. in a taxonomy archive template. Same
+ * plain get_term_meta() as the post meta example above; fieldsbox doesn't
+ * change how you read anything back.
+ *
+ * @param int $term_id
+ */
+function my_plugin_render_category_details( int $term_id ): void {
+	$hero_text    = get_term_meta( $term_id, 'hero_text', true );
+	$accent_color = get_term_meta( $term_id, 'accent_color', true );
+
+	printf(
+		'<div style="border-top-color: %2$s"><h2>%1$s</h2></div>',
+		esc_html( $hero_text ),
+		esc_attr( $accent_color )
+	);
 }

@@ -289,11 +289,24 @@
                 var attachment = frame.state().get('selection').first().toJSON();
                 input.value = attachment.id;
 
+                // Built via the DOM rather than an innerHTML string, so
+                // attachment.filename/url (data from the media library, not
+                // this page's own markup) can never be parsed as HTML.
+                preview.innerHTML = '';
+
                 if (type === 'image') {
                     var src = (attachment.sizes && attachment.sizes.medium) ? attachment.sizes.medium.url : attachment.url;
-                    preview.innerHTML = '<img src="' + src + '" alt="">';
+                    var img = document.createElement('img');
+                    img.src = src;
+                    img.alt = '';
+                    preview.appendChild(img);
                 } else {
-                    preview.innerHTML = '<a href="' + attachment.url + '" target="_blank" rel="noopener">' + attachment.filename + '</a>';
+                    var link = document.createElement('a');
+                    link.href = attachment.url;
+                    link.target = '_blank';
+                    link.rel = 'noopener';
+                    link.textContent = attachment.filename;
+                    preview.appendChild(link);
                 }
 
                 preview.style.display = '';
@@ -342,8 +355,20 @@
             item.className = 'fieldsbox-gallery-item';
             item.setAttribute('data-id', attachment.id);
 
+            // Built via the DOM rather than an innerHTML string - see the
+            // same reasoning in initMediaField() above.
             var thumb = (attachment.sizes && attachment.sizes.thumbnail) ? attachment.sizes.thumbnail.url : attachment.url;
-            item.innerHTML = '<img src="' + thumb + '" alt=""><button type="button" class="fieldsbox-gallery-remove">&times;</button>';
+            var thumbImg = document.createElement('img');
+            thumbImg.src = thumb;
+            thumbImg.alt = '';
+
+            var removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'fieldsbox-gallery-remove';
+            removeBtn.textContent = '×';
+
+            item.appendChild(thumbImg);
+            item.appendChild(removeBtn);
 
             itemsWrap.appendChild(item);
         }
