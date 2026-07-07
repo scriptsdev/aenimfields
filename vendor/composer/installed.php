@@ -1,6 +1,6 @@
 <?php return array(
     'root' => array(
-        'name' => 'aenimtech/fieldsbox',
+        'name' => 'scriptsdev/fieldsbox',
         'pretty_version' => '1.0.1',
         'version' => '1.0.1.0',
         'reference' => null,
@@ -10,7 +10,7 @@
         'dev' => true,
     ),
     'versions' => array(
-        'aenimtech/fieldsbox' => array(
+        'scriptsdev/fieldsbox' => array(
             'pretty_version' => '1.0.1',
             'version' => '1.0.1.0',
             'reference' => null,

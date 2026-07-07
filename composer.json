@@ -1,13 +1,13 @@
 {
-  "name": "aenimtech/fieldsbox",
+  "name": "scriptsdev/fieldsbox",
   "description": "Reusable PHP/JS meta fields and frontend fields toolkit for custom WordPress plugins.",
   "type": "library",
   "license": "GPL-2.0-or-later",
   "version": "1.0.1",
   "authors": [
     {
-      "name": "AenimTech",
-      "homepage": "https://aenimtech.com"
+      "name": "ScriptsDev",
+      "homepage": "https://scriptsdev.com"
     }
   ],
   "require": {
