@@ -450,3 +450,72 @@
 .fieldsbox-repeater-add {
     margin-top: 8px;
 }
+
+/* ---- Theme options page: two-column field rows ----
+   Scoped to .fieldsbox-theme-options (the wrapper ThemeOptionsContainer
+   renders around itself) so meta boxes and other containers keep their
+   normal stacked layout. Relies on .fieldsbox-help being a direct child of
+   .fieldsbox-field, sibling to .fieldsbox-label/.fieldsbox-input (see
+   Field::render()), so it can be grid-placed under the label independently
+   of the input. */
+
+.fieldsbox-theme-options .fieldsbox-container {
+    max-width: 900px;
+    background: #fff;
+}
+
+.fieldsbox-theme-options .fieldsbox-field {
+    display: grid;
+    grid-template-columns: minmax(220px, 320px) 1fr;
+    column-gap: 32px;
+    align-items: start;
+    margin-bottom: 0;
+    padding: 20px 0;
+    border-bottom: 1px solid #e2e2e2;
+}
+
+.fieldsbox-theme-options .fieldsbox-field:first-child {
+    padding-top: 0;
+}
+
+.fieldsbox-theme-options .fieldsbox-field:last-child {
+    border-bottom: none;
+}
+
+.fieldsbox-theme-options .fieldsbox-label {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.fieldsbox-theme-options .fieldsbox-help {
+    grid-column: 1;
+    grid-row: 2;
+    font-style: normal;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.fieldsbox-theme-options .fieldsbox-input {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+}
+
+.fieldsbox-theme-options .fieldsbox-input input[type="text"],
+.fieldsbox-theme-options .fieldsbox-input input[type="email"],
+.fieldsbox-theme-options .fieldsbox-input input[type="url"],
+.fieldsbox-theme-options .fieldsbox-input input[type="number"],
+.fieldsbox-theme-options .fieldsbox-input textarea,
+.fieldsbox-theme-options .fieldsbox-input select {
+    max-width: 100%;
+    padding: 10px 14px;
+    border-color: #d5d5d5;
+    border-radius: 6px;
+}
+
+.fieldsbox-theme-options .fieldsbox-input input::placeholder,
+.fieldsbox-theme-options .fieldsbox-input textarea::placeholder {
+    color: #a7aaad;
+}

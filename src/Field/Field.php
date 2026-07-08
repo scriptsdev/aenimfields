@@ -362,10 +362,10 @@ abstract class Field {
 			</label>
 			<div class="fieldsbox-input">
 				<?php echo $this->render_input( $value ); ?>
-				<?php if ( $this->help_text !== '' ) : ?>
-					<p class="fieldsbox-help"><?php echo esc_html( $this->help_text ); ?></p>
-				<?php endif; ?>
 			</div>
+			<?php if ( $this->help_text !== '' ) : ?>
+				<p class="fieldsbox-help"><?php echo esc_html( $this->help_text ); ?></p>
+			<?php endif; ?>
 		</div>
 		<?php
 		return ob_get_clean();

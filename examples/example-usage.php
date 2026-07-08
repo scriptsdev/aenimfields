@@ -180,10 +180,14 @@ PostMetaContainer::make( __( 'Product Details', 'my-plugin' ) )
 		)
 	);
 
-// Theme options page under Settings, storing its values as one option row.
+// Theme options page nested under Settings (pass null instead of
+// 'options-general.php' for a top-level menu item), storing its values as
+// one option row. add_tab() works the same way here as on
+// PostMetaContainer above - tabs aren't tied to a specific container type.
 ThemeOptionsContainer::make( __( 'My Plugin Settings', 'my-plugin' ) )
-	->set_menu( __( 'My Plugin', 'my-plugin' ), null, 'manage_options' )
-	->add_fields(
+	->set_menu( __( 'My Plugin', 'my-plugin' ), 'options-general.php', 'manage_options' )
+	->add_tab(
+		__( 'General', 'my-plugin' ),
 		array(
 			Field::make( 'text', 'api_key', __( 'API Key', 'my-plugin' ) )->set_required(),
 			Field::make( 'radio', 'mode', __( 'Mode', 'my-plugin' ) )
@@ -194,6 +198,14 @@ ThemeOptionsContainer::make( __( 'My Plugin Settings', 'my-plugin' ) )
 				)
 			)
 			->set_default_value( 'test' ),
+		)
+	)
+	->add_tab(
+		__( 'Advanced', 'my-plugin' ),
+		array(
+			Field::make( 'number', 'request_timeout', __( 'Request Timeout (seconds)', 'my-plugin' ) )
+				->set_default_value( 30 ),
+			Field::make( 'toggle', 'debug_mode', __( 'Debug Mode', 'my-plugin' ) ),
 		)
 	);
 
