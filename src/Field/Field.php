@@ -13,6 +13,7 @@ use Fieldsbox\Field\Types\GalleryField;
 use Fieldsbox\Field\Types\GoogleMapField;
 use Fieldsbox\Field\Types\GroupField;
 use Fieldsbox\Field\Types\HiddenField;
+use Fieldsbox\Field\Types\HtmlField;
 use Fieldsbox\Field\Types\ImageField;
 use Fieldsbox\Field\Types\MapField;
 use Fieldsbox\Field\Types\MultiSelectField;
@@ -77,6 +78,7 @@ abstract class Field {
 		'datetime'    => DateTimeField::class,
 		'time'        => TimeField::class,
 		'separator'   => SeparatorField::class,
+		'html'        => HtmlField::class,
 	);
 
 	/** Guarantees every rendered field gets a unique id, even repeated instances (see get_html_id()). */

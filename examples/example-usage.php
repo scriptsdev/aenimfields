@@ -97,6 +97,11 @@ PostMetaContainer::make( __( 'Product Details', 'my-plugin' ) )
 			// A separator renders no input and stores no value - just a heading
 			// used to break this long reference list into sections.
 			Field::make( 'separator', 'basic_inputs_separator', __( 'Basic Inputs', 'my-plugin' ) ),
+			// An html field is also presentational-only, but for arbitrary
+			// markup instead of a heading. Its content is output unescaped -
+			// only ever pass trusted, hard-coded markup, never user input.
+			Field::make( 'html', 'basic_inputs_note', __( 'Basic Inputs Note', 'my-plugin' ) )
+				->set_html( '<p>' . esc_html__( 'Here, you can add some useful description for the fields below / above this text.', 'my-plugin' ) . '</p>' ),
 			// 'dropdown' is just an alias for 'select' - same native <select> markup.
 			Field::make( 'dropdown', 'shipping_method', __( 'Shipping Method', 'my-plugin' ) )
 			->set_options(
