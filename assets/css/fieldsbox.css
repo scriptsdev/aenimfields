@@ -320,7 +320,7 @@
 .fieldsbox-google-map-coords {
     display: flex;
     gap: 12px;
-    margin-bottom: 8px;
+    margin-top: 8px;
 }
 
 .fieldsbox-map-coord,

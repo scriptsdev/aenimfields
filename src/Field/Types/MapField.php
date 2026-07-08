@@ -61,6 +61,8 @@ class MapField extends Field
         );
         $html .= '<div class="fieldsbox-map-suggestions" hidden></div>';
         $html .= '</div>';
+        $html .= '<button type="button" class="button fieldsbox-map-locate">' . esc_html('Use my location') . '</button>';
+        $html .= '<div class="fieldsbox-map-canvas"></div>';
         // Read-only, not disabled: disabled inputs don't submit their value.
         // Kept in sync by setPosition() in fieldsbox.js for every way the
         // pin can move (drag, click, address search, "use my location").
@@ -78,8 +80,6 @@ class MapField extends Field
             esc_attr((string) $lng)
         );
         $html .= '</div>';
-        $html .= '<button type="button" class="button fieldsbox-map-locate">' . esc_html('Use my location') . '</button>';
-        $html .= '<div class="fieldsbox-map-canvas"></div>';
         $html .= '</div>';
 
         return $html;

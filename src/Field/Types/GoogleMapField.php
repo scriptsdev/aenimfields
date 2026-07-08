@@ -61,6 +61,8 @@ class GoogleMapField extends Field
             esc_attr((string) $address),
             esc_attr('Search for an address')
         );
+        $html .= '<button type="button" class="button fieldsbox-google-map-locate">' . esc_html('Use my location') . '</button>';
+        $html .= '<div class="fieldsbox-google-map-canvas"></div>';
         // Read-only, not disabled: disabled inputs don't submit their value.
         // Kept in sync by setPosition() in fieldsbox.js for every way the
         // pin can move (drag, click, address search, "use my location").
@@ -78,8 +80,6 @@ class GoogleMapField extends Field
             esc_attr((string) $lng)
         );
         $html .= '</div>';
-        $html .= '<button type="button" class="button fieldsbox-google-map-locate">' . esc_html('Use my location') . '</button>';
-        $html .= '<div class="fieldsbox-google-map-canvas"></div>';
         $html .= '</div>';
 
         return $html;
