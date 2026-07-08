@@ -24,6 +24,15 @@
     /** Map fields that already have a Leaflet instance. */
     var initializedMaps = new WeakSet();
 
+    /** Field element -> its Leaflet map instance, so tab-switching can invalidateSize() it. */
+    var mapInstances = new WeakMap();
+
+    /** Google Map fields that already have a google.maps.Map instance. */
+    var initializedGoogleMaps = new WeakSet();
+
+    /** Field element -> its google.maps.Map instance, so tab-switching can trigger a resize. */
+    var googleMapInstances = new WeakMap();
+
     /** Repeaters that already have their add/remove behaviour wired up. */
     var initializedRepeaters = new WeakSet();
 
@@ -254,13 +263,46 @@
                 tabs.querySelectorAll('.fieldsbox-tab-panel').forEach(function (panel) {
                     panel.classList.toggle('is-active', panel.getAttribute('data-tab-panel') === target);
                 });
+
+                // Leaflet measures its container's size when the map is
+                // created; a map built while its tab panel is still
+                // display:none sees 0x0 and renders blank/broken tiles.
+                // Fix it up now that the panel is actually visible - the
+                // setTimeout lets the browser apply the class toggle above
+                // (and the resulting display change) before Leaflet
+                // re-measures.
+                setTimeout(function () {
+                    tabs.querySelectorAll('.fieldsbox-tab-panel.is-active .fieldsbox-map-field').forEach(function (field) {
+                        var map = mapInstances.get(field);
+                        if (map) {
+                            map.invalidateSize();
+                        }
+                    });
+                    // Same 0x0-at-creation problem as Leaflet above, but
+                    // Google Maps' equivalent fix-up is a resize event
+                    // rather than a method call on the map instance.
+                    tabs.querySelectorAll('.fieldsbox-tab-panel.is-active .fieldsbox-google-map-field').forEach(function (field) {
+                        var map = googleMapInstances.get(field);
+                        if (map) {
+                            google.maps.event.trigger(map, 'resize');
+                        }
+                    });
+                }, 0);
             });
         });
     }
 
     /**
-     * Wire up the "Select"/"Remove" buttons on a single image/file field to
+     * Wire up the "Select"/"Remove" controls on a single image/file field to
      * the WordPress media library modal (wp.media). Idempotent.
+     *
+     * The 'image' type has no separate "Remove" button - it gets a
+     * cross-icon overlay on the thumbnail instead (same visual language as
+     * GalleryField's per-item remove icon), built fresh here since a
+     * freshly-selected image has no such icon in the markup yet; a
+     * page-load image (rendered server-side by ImageField::render_input())
+     * already has one, so it's wired up separately below rather than
+     * duplicated.
      *
      * @param {Element} field
      */
@@ -276,13 +318,65 @@
         var selectBtn = field.querySelector('.fieldsbox-media-select');
         var removeBtn = field.querySelector('.fieldsbox-media-remove');
 
+        // FileField::set_mime_types() restricts the picker (e.g. to
+        // "video" or "application/pdf"); the 'image' field type is always
+        // restricted to images regardless of this attribute.
+        var mimeTypesAttr = field.getAttribute('data-media-mime-types');
+        var mimeTypes = mimeTypesAttr ? mimeTypesAttr.split(',').filter(Boolean) : [];
+        var library = {};
+        if (type === 'image') {
+            library.type = 'image';
+        } else if (mimeTypes.length) {
+            library.type = mimeTypes.length > 1 ? mimeTypes : mimeTypes[0];
+        }
+
+        function clearValue() {
+            input.value = '';
+            preview.innerHTML = '';
+            preview.style.display = 'none';
+            if (removeBtn) {
+                removeBtn.style.display = 'none';
+            }
+        }
+
+        function makeRemoveIcon() {
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'fieldsbox-media-remove-icon';
+            button.title = 'Remove';
+            button.setAttribute('aria-label', 'Remove');
+
+            var icon = document.createElement('span');
+            icon.className = 'dashicons dashicons-no-alt';
+            icon.setAttribute('aria-hidden', 'true');
+            button.appendChild(icon);
+
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                clearValue();
+            });
+
+            return button;
+        }
+
+        // A page-load image (rendered server-side) already has its remove
+        // icon in the markup - wire that one up rather than creating a
+        // duplicate.
+        var existingRemoveIcon = preview.querySelector('.fieldsbox-media-remove-icon');
+        if (existingRemoveIcon) {
+            existingRemoveIcon.addEventListener('click', function (e) {
+                e.preventDefault();
+                clearValue();
+            });
+        }
+
         selectBtn.addEventListener('click', function (e) {
             e.preventDefault();
 
             var frame = wp.media({
                 title: type === 'image' ? 'Select Image' : 'Select File',
                 multiple: false,
-                library: type === 'image' ? { type: 'image' } : {},
+                library: library,
             });
 
             frame.on('select', function () {
@@ -300,6 +394,7 @@
                     img.src = src;
                     img.alt = '';
                     preview.appendChild(img);
+                    preview.appendChild(makeRemoveIcon());
                 } else {
                     var link = document.createElement('a');
                     link.href = attachment.url;
@@ -321,10 +416,7 @@
         if (removeBtn) {
             removeBtn.addEventListener('click', function (e) {
                 e.preventDefault();
-                input.value = '';
-                preview.innerHTML = '';
-                preview.style.display = 'none';
-                removeBtn.style.display = 'none';
+                clearValue();
             });
         }
     }
@@ -463,12 +555,15 @@
         var latInput = field.querySelector('.fieldsbox-map-lat');
         var lngInput = field.querySelector('.fieldsbox-map-lng');
         var locateBtn = field.querySelector('.fieldsbox-map-locate');
+        var addressInput = field.querySelector('.fieldsbox-map-address');
+        var suggestionsBox = field.querySelector('.fieldsbox-map-suggestions');
 
         var lat = parseFloat(latInput.value) || parseFloat(field.getAttribute('data-default-lat'));
         var lng = parseFloat(lngInput.value) || parseFloat(field.getAttribute('data-default-lng'));
         var zoom = parseInt(field.getAttribute('data-default-zoom'), 10) || 13;
 
         var map = L.map(canvas).setView([lat, lng], zoom);
+        mapInstances.set(field, map);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors',
@@ -503,6 +598,230 @@
                 });
             });
         }
+
+        if (addressInput && suggestionsBox) {
+            initAddressSearch(addressInput, suggestionsBox, function (result) {
+                var newLat = parseFloat(result.lat);
+                var newLng = parseFloat(result.lon);
+                setPosition(newLat, newLng);
+                map.setView([newLat, newLng], zoom);
+            });
+        }
+    }
+
+    /**
+     * Initialize a Google Map with a draggable pin and Places Autocomplete
+     * on the address input, for a single google_map field. No-ops until the
+     * Google Maps JS API (enqueued alongside fieldsbox.js only when an API
+     * key is registered - see Fieldsbox::set_google_maps_api_key()) has
+     * loaded. Idempotent.
+     *
+     * Unlike initMap()/initAddressSearch(), the address suggestion dropdown
+     * here is Google's own "pac-container" widget (attached to Autocomplete
+     * automatically) rather than markup this package renders - see the
+     * .pac-container z-index rule in fieldsbox.css for why it needs one.
+     *
+     * @param {Element} field
+     */
+    function initGoogleMap(field) {
+        if (initializedGoogleMaps.has(field) || typeof google === 'undefined' || ! google.maps) {
+            return;
+        }
+        initializedGoogleMaps.add(field);
+
+        var canvas = field.querySelector('.fieldsbox-google-map-canvas');
+        var latInput = field.querySelector('.fieldsbox-google-map-lat');
+        var lngInput = field.querySelector('.fieldsbox-google-map-lng');
+        var locateBtn = field.querySelector('.fieldsbox-google-map-locate');
+        var addressInput = field.querySelector('.fieldsbox-google-map-address');
+
+        var lat = parseFloat(latInput.value) || parseFloat(field.getAttribute('data-default-lat'));
+        var lng = parseFloat(lngInput.value) || parseFloat(field.getAttribute('data-default-lng'));
+        var zoom = parseInt(field.getAttribute('data-default-zoom'), 10) || 13;
+
+        var map = new google.maps.Map(canvas, {
+            center: { lat: lat, lng: lng },
+            zoom: zoom,
+        });
+        googleMapInstances.set(field, map);
+
+        var marker = new google.maps.Marker({
+            position: { lat: lat, lng: lng },
+            map: map,
+            draggable: true,
+        });
+
+        function setPosition(newLat, newLng) {
+            latInput.value = newLat;
+            lngInput.value = newLng;
+            marker.setPosition({ lat: newLat, lng: newLng });
+        }
+
+        marker.addListener('dragend', function () {
+            var pos = marker.getPosition();
+            setPosition(pos.lat(), pos.lng());
+        });
+
+        map.addListener('click', function (e) {
+            setPosition(e.latLng.lat(), e.latLng.lng());
+        });
+
+        if (locateBtn) {
+            locateBtn.addEventListener('click', function () {
+                if (! navigator.geolocation) {
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    setPosition(position.coords.latitude, position.coords.longitude);
+                    map.setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
+                    map.setZoom(zoom);
+                });
+            });
+        }
+
+        if (addressInput && google.maps.places) {
+            var autocomplete = new google.maps.places.Autocomplete(addressInput);
+            autocomplete.bindTo('bounds', map);
+
+            autocomplete.addListener('place_changed', function () {
+                var place = autocomplete.getPlace();
+
+                if (! place.geometry || ! place.geometry.location) {
+                    return;
+                }
+
+                var newLat = place.geometry.location.lat();
+                var newLng = place.geometry.location.lng();
+                setPosition(newLat, newLng);
+                map.setCenter({ lat: newLat, lng: newLng });
+                map.setZoom(zoom);
+            });
+        }
+    }
+
+    /**
+     * Wire up address-to-coordinates lookup for a map field's text input:
+     * debounced-search OpenStreetMap's free Nominatim API as the user types
+     * and render the results as a clickable suggestion list. No API key
+     * needed (same reason Leaflet/OSM tiles were chosen over Google Maps),
+     * but Nominatim's usage policy caps this at light, interactive,
+     * one-request-at-a-time use - which is exactly what a debounced,
+     * abort-the-previous-request search box does.
+     *
+     * @param {HTMLInputElement} input
+     * @param {Element} suggestionsBox
+     * @param {function({lat: string, lon: string, display_name: string})} onSelect
+     */
+    function initAddressSearch(input, suggestionsBox, onSelect) {
+        var debounceTimer = null;
+        var activeController = null;
+        var activeIndex = -1;
+
+        function hideSuggestions() {
+            suggestionsBox.innerHTML = '';
+            suggestionsBox.hidden = true;
+            activeIndex = -1;
+        }
+
+        function highlight(index) {
+            var items = suggestionsBox.querySelectorAll('.fieldsbox-map-suggestion');
+            items.forEach(function (item, i) {
+                item.classList.toggle('is-active', i === index);
+            });
+            activeIndex = index;
+        }
+
+        function renderSuggestions(results) {
+            suggestionsBox.innerHTML = '';
+
+            if (! results.length) {
+                hideSuggestions();
+                return;
+            }
+
+            results.forEach(function (result) {
+                var item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'fieldsbox-map-suggestion';
+                item.textContent = result.display_name;
+                item.addEventListener('click', function () {
+                    input.value = result.display_name;
+                    hideSuggestions();
+                    onSelect(result);
+                });
+                suggestionsBox.appendChild(item);
+            });
+
+            suggestionsBox.hidden = false;
+            activeIndex = -1;
+        }
+
+        function search(query) {
+            if (activeController) {
+                activeController.abort();
+            }
+            activeController = ('AbortController' in global) ? new AbortController() : null;
+
+            // accept-language is pinned to English rather than left to
+            // Nominatim's default (the browser's Accept-Language header),
+            // which otherwise returns results in the editor's own OS/browser
+            // language (e.g. Urdu) regardless of what script they typed in.
+            var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=5&accept-language=en&q=' + encodeURIComponent(query);
+
+            fetch(url, { signal: activeController ? activeController.signal : undefined })
+                .then(function (response) {
+                    return response.ok ? response.json() : [];
+                })
+                .then(renderSuggestions)
+                .catch(function (error) {
+                    if (error && error.name !== 'AbortError') {
+                        hideSuggestions();
+                    }
+                });
+        }
+
+        input.addEventListener('input', function () {
+            var query = input.value.trim();
+
+            clearTimeout(debounceTimer);
+
+            if (query.length < 3) {
+                hideSuggestions();
+                return;
+            }
+
+            debounceTimer = setTimeout(function () {
+                search(query);
+            }, 400);
+        });
+
+        input.addEventListener('keydown', function (e) {
+            var items = suggestionsBox.querySelectorAll('.fieldsbox-map-suggestion');
+
+            if (! items.length || suggestionsBox.hidden) {
+                return;
+            }
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                highlight((activeIndex + 1) % items.length);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                highlight((activeIndex - 1 + items.length) % items.length);
+            } else if (e.key === 'Enter' && activeIndex > -1) {
+                e.preventDefault();
+                items[activeIndex].click();
+            } else if (e.key === 'Escape') {
+                hideSuggestions();
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (e.target !== input && ! suggestionsBox.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
     }
 
     /**
@@ -582,6 +901,7 @@
         container.querySelectorAll('[data-media-type="image"], [data-media-type="file"]').forEach(initMediaField);
         container.querySelectorAll('[data-media-type="gallery"]').forEach(initGalleryField);
         container.querySelectorAll('.fieldsbox-map-field').forEach(initMap);
+        container.querySelectorAll('.fieldsbox-google-map-field').forEach(initGoogleMap);
         container.querySelectorAll('.fieldsbox-flatpickr').forEach(initFlatpickr);
         container.querySelectorAll('.fieldsbox-repeater').forEach(initRepeater);
 

@@ -178,11 +178,46 @@
     max-height: 150px;
     height: auto;
     margin-bottom: 8px;
+    padding: 6px;
     border: 1px solid #dcdcde;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
 .fieldsbox-media-preview {
+    position: relative;
+    display: inline-block;
     margin-bottom: 8px;
+}
+
+/* .fieldsbox-media-preview is inline-block (so the remove icon hugs the
+   thumbnail's actual size) which would otherwise let this button - also
+   inline-block by default - sit beside it instead of below it. */
+.fieldsbox-media-select {
+    display: block;
+}
+
+.fieldsbox-media-remove-icon {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid #dcdcde;
+    background: #fff;
+    cursor: pointer;
+}
+
+.fieldsbox-media-remove-icon .dashicons {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    line-height: 1;
 }
 
 .fieldsbox-gallery-items {
@@ -196,13 +231,18 @@
     position: relative;
     width: 80px;
     height: 80px;
+    padding: 6px;
+    border: 1px solid #dcdcde;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
 .fieldsbox-gallery-item img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border: 1px solid #dcdcde;
+    border-radius: 3px;
 }
 
 .fieldsbox-gallery-remove {
@@ -221,8 +261,59 @@
 
 /* ---- Map field ---- */
 
-.fieldsbox-map-address {
+.fieldsbox-map-field {
+    max-width: 600px;
+}
+
+.fieldsbox-map-address-wrap {
+    position: relative;
     margin-bottom: 8px;
+}
+
+.fieldsbox-map-address {
+    width: 100%;
+}
+
+.fieldsbox-map-suggestions {
+    position: absolute;
+    z-index: 10;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.fieldsbox-map-suggestion {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 8px 10px;
+    border: 0;
+    border-bottom: 1px solid #f0f0f1;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #1d2327;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fieldsbox-map-suggestion:last-child {
+    border-bottom: 0;
+}
+
+.fieldsbox-map-suggestion:hover,
+.fieldsbox-map-suggestion.is-active {
+    background: #f0f0f1;
 }
 
 .fieldsbox-map-locate {
@@ -233,6 +324,38 @@
 .fieldsbox-map-canvas {
     height: 300px;
     max-width: 600px;
+}
+
+/* ---- Google Map field ---- */
+
+.fieldsbox-google-map-field {
+    max-width: 600px;
+}
+
+.fieldsbox-google-map-address {
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.fieldsbox-google-map-locate {
+    display: block;
+    margin: 8px 0;
+}
+
+.fieldsbox-google-map-canvas {
+    height: 300px;
+    max-width: 600px;
+}
+
+.fieldsbox-google-map-missing-key {
+    color: #b32d2e;
+    font-style: italic;
+}
+
+/* Google's own Places Autocomplete dropdown, appended to <body> - without
+   this it can render underneath the WP admin bar/metabox chrome. */
+.pac-container {
+    z-index: 999999;
 }
 
 /* ---- Group & repeater fields ---- */
@@ -254,6 +377,39 @@
 
 .fieldsbox-repeater-row-fields {
     flex: 1;
+}
+
+.fieldsbox-repeater-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid #dcdcde;
+    border-radius: 2px;
+    background: #fff;
+    color: #b32d2e;
+    cursor: pointer;
+}
+
+.fieldsbox-repeater-remove:hover {
+    background: #b32d2e;
+    border-color: #b32d2e;
+    color: #fff;
+}
+
+.fieldsbox-repeater-remove .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.fieldsbox-repeater-add-icon {
+    display: inline-block;
+    font-weight: 600;
 }
 
 .fieldsbox-repeater-row-fields .fieldsbox-field:last-child {

@@ -5,13 +5,16 @@ namespace Fieldsbox;
 use Fieldsbox\Container\Container;
 
 /**
- * Package entry point.
+ * Package entry point. Boots the shared asset-enqueue hooks every
+ * Field/Container needs.
  *
- * Boots shared, one-time behaviour (currently just asset registration) that
- * every Field/Container needs, regardless of how many containers a
- * consuming plugin registers.
+ * Self-boots at the bottom of this file instead of relying on
+ * fieldsbox.php, since Composer's autoloader can satisfy "Fieldsbox\Fieldsbox"
+ * straight from here without fieldsbox.php ever running.
  */
 final class Fieldsbox {
+
+	private const VERSION = '0.1.0';
 
 	/** Leaflet build used by the 'map' field - OpenStreetMap tiles, no API key required. */
 	private const LEAFLET_VERSION = '1.9.4';
@@ -19,11 +22,10 @@ final class Fieldsbox {
 	/** Flatpickr build used by the 'date'/'datetime'/'time' fields. */
 	private const FLATPICKR_VERSION = '4.6.13';
 
-	/**
-	 * Prevents re-registering hooks if init() is somehow called more than
-	 * once (e.g. multiple plugins requiring fieldsbox.php).
-	 */
 	private static bool $booted = false;
+
+	/** Set via set_google_maps_api_key() - unset by default, so nothing Google-related loads unless a plugin opts in. */
+	private static string $google_maps_api_key = '';
 
 	/**
 	 * Wire up the package's WordPress hooks. Safe to call multiple times.
@@ -36,17 +38,52 @@ final class Fieldsbox {
 		self::$booted = true;
 
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue_assets' ) );
+		// Fallback for containers registered later, e.g. from add_meta_boxes.
+		add_action( 'admin_footer', array( self::class, 'enqueue_late_assets' ) );
 	}
 
 	/**
-	 * Enqueue the shared admin CSS/JS, but only on a screen where a
-	 * registered container will actually render - and only the extra
-	 * assets (wp.media, Leaflet, Flatpickr) that the fields on *that*
-	 * screen actually use. Every Container::make() call registers itself
-	 * in Container::$registry, so by the time this runs (admin_enqueue_scripts
-	 * fires after every container on the current request has been built
-	 * and after add_meta_boxes/admin_menu have already run) we know exactly
-	 * which containers apply to this screen and what field types they use.
+	 * Register the Google Maps API key needed by the 'google_map' field
+	 * type. Without it, GoogleMapField shows a setup notice instead of a map.
+	 */
+	public static function set_google_maps_api_key( string $api_key ): void {
+		self::$google_maps_api_key = $api_key;
+	}
+
+	/**
+	 * @internal Read by GoogleMapField and enqueue_assets() only.
+	 */
+	public static function get_google_maps_api_key(): string {
+		return self::$google_maps_api_key;
+	}
+
+	/**
+	 * This package's own base URL, computed from this file's location.
+	 */
+	private static function url(): string {
+		static $url = null;
+
+		if ( null === $url ) {
+			$url = plugins_url( '', dirname( __DIR__ ) . '/fieldsbox.php' );
+		}
+
+		return $url;
+	}
+
+	/**
+	 * admin_footer fallback, re-running enqueue_assets() for containers
+	 * registered after admin_enqueue_scripts already fired.
+	 */
+	public static function enqueue_late_assets(): void {
+		global $hook_suffix;
+
+		self::enqueue_assets( (string) $hook_suffix );
+	}
+
+	/**
+	 * Enqueue shared admin CSS/JS on screens where a registered container
+	 * will render, plus only the extra assets (wp.media, Leaflet, Flatpickr,
+	 * Google Maps) the field types on that screen actually use.
 	 */
 	public static function enqueue_assets( string $hook_suffix ): void {
 		$containers = array_filter(
@@ -60,36 +97,54 @@ final class Fieldsbox {
 			return;
 		}
 
-		wp_enqueue_style( 'fieldsbox', FIELDSBOX_URL . '/assets/css/fieldsbox.css', array(), FIELDSBOX_VERSION );
+		$url = self::url();
 
-		$needs_media     = self::any_container_uses( $containers, array( 'image', 'file', 'gallery' ) );
-		$needs_leaflet   = self::any_container_uses( $containers, array( 'map' ) );
-		$needs_flatpickr = self::any_container_uses( $containers, array( 'date', 'datetime', 'time' ) );
+		$style_handles = array( 'fieldsbox' );
+		wp_enqueue_style( 'fieldsbox', $url . '/assets/css/fieldsbox.css', array(), self::VERSION );
+
+		$needs_media       = self::any_container_uses( $containers, array( 'image', 'file', 'gallery' ) );
+		$needs_leaflet     = self::any_container_uses( $containers, array( 'map' ) );
+		$needs_flatpickr   = self::any_container_uses( $containers, array( 'date', 'datetime', 'time' ) );
+		$needs_google_maps = self::any_container_uses( $containers, array( 'google_map' ) );
 
 		if ( $needs_media ) {
-			// Powers the image/file/gallery fields' "Select"/"Add" buttons.
 			wp_enqueue_media();
 		}
 
 		$script_deps = array();
 
 		if ( $needs_leaflet ) {
-			// Powers the map field's draggable pin - free OpenStreetMap
-			// tiles, no API key. Vendored locally under assets/vendor.
-			wp_enqueue_style( 'leaflet', FIELDSBOX_URL . '/assets/vendor/css/leaflet.css', array(), self::LEAFLET_VERSION );
-			wp_enqueue_script( 'leaflet', FIELDSBOX_URL . '/assets/vendor/js/leaflet.js', array(), self::LEAFLET_VERSION, true );
-			$script_deps[] = 'leaflet';
+			wp_enqueue_style( 'leaflet', $url . '/assets/vendor/css/leaflet.css', array(), self::LEAFLET_VERSION );
+			wp_enqueue_script( 'leaflet', $url . '/assets/vendor/js/leaflet.js', array(), self::LEAFLET_VERSION, true );
+			$style_handles[] = 'leaflet';
+			$script_deps[]   = 'leaflet';
 		}
 
 		if ( $needs_flatpickr ) {
-			// Powers the date/date-time/time fields' calendar popup.
-			// Vendored locally under assets/vendor.
-			wp_enqueue_style( 'flatpickr', FIELDSBOX_URL . '/assets/vendor/css/flatpickr.min.css', array(), self::FLATPICKR_VERSION );
-			wp_enqueue_script( 'flatpickr', FIELDSBOX_URL . '/assets/vendor/js/flatpickr.min.js', array(), self::FLATPICKR_VERSION, true );
-			$script_deps[] = 'flatpickr';
+			wp_enqueue_style( 'flatpickr', $url . '/assets/vendor/css/flatpickr.min.css', array(), self::FLATPICKR_VERSION );
+			wp_enqueue_script( 'flatpickr', $url . '/assets/vendor/js/flatpickr.min.js', array(), self::FLATPICKR_VERSION, true );
+			$style_handles[] = 'flatpickr';
+			$script_deps[]   = 'flatpickr';
 		}
 
-		wp_enqueue_script( 'fieldsbox', FIELDSBOX_URL . '/assets/js/fieldsbox.js', $script_deps, FIELDSBOX_VERSION, true );
+		if ( $needs_google_maps && self::$google_maps_api_key ) {
+			// Google's hosted script - their terms don't allow self-hosting it.
+			wp_enqueue_script(
+				'fieldsbox-google-maps',
+				'https://maps.googleapis.com/maps/api/js?key=' . rawurlencode( self::$google_maps_api_key ) . '&libraries=places&v=weekly',
+				array(),
+				false,
+				true
+			);
+			$script_deps[] = 'fieldsbox-google-maps';
+		}
+
+		// Styles enqueued after <head> has already printed need a manual push.
+		if ( did_action( 'admin_print_styles' ) ) {
+			wp_print_styles( $style_handles );
+		}
+
+		wp_enqueue_script( 'fieldsbox', $url . '/assets/js/fieldsbox.js', $script_deps, self::VERSION, true );
 	}
 
 	/**
@@ -108,3 +163,5 @@ final class Fieldsbox {
 		return false;
 	}
 }
+
+Fieldsbox::init();

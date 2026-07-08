@@ -66,7 +66,10 @@ class RepeaterField extends Field
         }
 
         $html .= '</div>';
-        $html .= sprintf('<button type="button" class="button fieldsbox-repeater-add">%s</button>', esc_html($this->button_label));
+        $html .= sprintf(
+            '<button type="button" class="button fieldsbox-repeater-add"><span class="fieldsbox-repeater-add-icon" aria-hidden="true">+</span> %s</button>',
+            esc_html($this->button_label)
+        );
         // Inert markup (never submitted, never runs embedded editors) cloned
         // by fieldsbox.js to add a fresh row - see the class doc comment.
         $html .= '<template class="fieldsbox-repeater-template">' . $this->render_row('__INDEX__', []) . '</template>';
@@ -86,7 +89,10 @@ class RepeaterField extends Field
         }
 
         $html .= '</div>';
-        $html .= '<button type="button" class="button-link-delete fieldsbox-repeater-remove">' . esc_html('Remove') . '</button>';
+        $html .= sprintf(
+            '<button type="button" class="fieldsbox-repeater-remove" title="%1$s" aria-label="%1$s"><span class="dashicons dashicons-trash" aria-hidden="true"></span></button>',
+            esc_attr('Remove')
+        );
         $html .= '</div>';
 
         return $html;

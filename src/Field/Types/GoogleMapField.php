@@ -3,21 +3,22 @@
 namespace Fieldsbox\Field\Types;
 
 use Fieldsbox\Field\Field;
+use Fieldsbox\Fieldsbox;
 
 /**
- * Interactive location picker: a Leaflet map (OpenStreetMap tiles, no API
- * key) with a draggable pin, plus an address field.
+ * Interactive location picker backed by the Google Maps JavaScript API,
+ * with Places Autocomplete on the address field. Same {lat, lng, address}
+ * storage shape as MapField, so a container can switch between 'map' and
+ * 'google_map' without a data migration.
  *
- * Stores {lat, lng, address} as an array. Typing in the address field
- * queries OpenStreetMap's free Nominatim geocoding API (no API key, same
- * reasoning as the Leaflet/OSM tile choice) and offers matching places as
- * suggestions; picking one moves the pin and fills lat/lng. The lat/lng can
- * also be set directly by dragging the pin, clicking the map, or the "Use
- * my location" button (browser Geolocation API) - the address text itself
- * is still stored as free-text and isn't re-validated against the chosen
- * coordinates. See initMap()/initAddressSearch() in fieldsbox.js.
+ * Requires Fieldsbox::set_google_maps_api_key() to have been called by the
+ * consuming plugin - Google Maps needs a billed API key, unlike the
+ * key-free 'map' field (Leaflet + OpenStreetMap). If no key is set, this
+ * renders an admin-facing notice instead of a broken map, so the missing
+ * setup step is obvious rather than silently failing. See initGoogleMap()
+ * in fieldsbox.js.
  */
-class MapField extends Field
+class GoogleMapField extends Field
 {
     protected float $default_lat = 51.5074;
     protected float $default_lng = -0.1278;
@@ -37,42 +38,41 @@ class MapField extends Field
 
     protected function render_input(mixed $value): string
     {
+        if (! Fieldsbox::get_google_maps_api_key()) {
+            return '<p class="fieldsbox-google-map-missing-key">'
+                . esc_html('Google Maps API key not set. Call Fieldsbox::set_google_maps_api_key() from your plugin, or use the map field type instead.')
+                . '</p>';
+        }
+
         $value = is_array($value) ? $value : [];
         $lat = $value['lat'] ?? '';
         $lng = $value['lng'] ?? '';
         $address = $value['address'] ?? '';
 
         $html = sprintf(
-            '<div class="fieldsbox-map-field" data-default-lat="%s" data-default-lng="%s" data-default-zoom="%d">',
+            '<div class="fieldsbox-google-map-field" data-default-lat="%s" data-default-lng="%s" data-default-zoom="%d">',
             esc_attr((string) $this->default_lat),
             esc_attr((string) $this->default_lng),
             $this->default_zoom
         );
-        // Own positioning wrapper (not the outer .fieldsbox-map-field, which
-        // also contains the map canvas) so the "top: 100%" on the
-        // suggestions dropdown lands directly under the address input
-        // instead of under the whole field.
-        $html .= '<div class="fieldsbox-map-address-wrap">';
         $html .= sprintf(
-            '<input type="text" class="fieldsbox-map-address" name="%1$s[address]" value="%2$s" placeholder="%3$s" autocomplete="off">',
+            '<input type="text" class="fieldsbox-google-map-address" name="%1$s[address]" value="%2$s" placeholder="%3$s" autocomplete="off">',
             esc_attr($this->get_html_name()),
             esc_attr((string) $address),
             esc_attr('Search for an address')
         );
-        $html .= '<div class="fieldsbox-map-suggestions" hidden></div>';
-        $html .= '</div>';
         $html .= sprintf(
-            '<input type="hidden" class="fieldsbox-map-lat" name="%1$s[lat]" value="%2$s">',
+            '<input type="hidden" class="fieldsbox-google-map-lat" name="%1$s[lat]" value="%2$s">',
             esc_attr($this->get_html_name()),
             esc_attr((string) $lat)
         );
         $html .= sprintf(
-            '<input type="hidden" class="fieldsbox-map-lng" name="%1$s[lng]" value="%2$s">',
+            '<input type="hidden" class="fieldsbox-google-map-lng" name="%1$s[lng]" value="%2$s">',
             esc_attr($this->get_html_name()),
             esc_attr((string) $lng)
         );
-        $html .= '<button type="button" class="button fieldsbox-map-locate">' . esc_html('Use my location') . '</button>';
-        $html .= '<div class="fieldsbox-map-canvas"></div>';
+        $html .= '<button type="button" class="button fieldsbox-google-map-locate">' . esc_html('Use my location') . '</button>';
+        $html .= '<div class="fieldsbox-google-map-canvas"></div>';
         $html .= '</div>';
 
         return $html;

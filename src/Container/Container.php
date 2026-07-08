@@ -3,6 +3,7 @@
 namespace Fieldsbox\Container;
 
 use Fieldsbox\Field\Field;
+use Fieldsbox\Fieldsbox;
 
 /**
  * Base class for anything that groups fields together and persists their
@@ -16,10 +17,8 @@ use Fieldsbox\Field\Field;
 abstract class Container
 {
     /**
-     * Every container instance created this request - not redeclared in
-     * PostMetaContainer/ThemeOptionsContainer, so this storage is shared
-     * across both. Fieldsbox::enqueue_assets() walks this to work out
-     * which of its assets the current screen actually needs.
+     * Every container created this request, shared across all subclasses.
+     * Walked by Fieldsbox::enqueue_assets() to work out what's needed.
      *
      * @var Container[]
      */
@@ -44,18 +43,9 @@ abstract class Container
     protected function __construct(string $title)
     {
         $this->title = $title;
-        // Must be deterministic across requests, NOT random per-request:
-        // PHP re-runs the plugin's whole bootstrap (and therefore this
-        // constructor) fresh on every request, so the id generated while
-        // rendering the edit-post/settings page has to match the id
-        // generated again when that form is submitted - it's what the
-        // nonce action/field name, ThemeOptionsContainer's menu slug, and
-        // its "{id}_options" option name are all built from. Two
-        // containers sharing an identical title (e.g. across two
-        // differently-scoped plugins) is the same "give it a unique
-        // name" constraint every add_menu_page()/add_meta_box() call in
-        // WordPress already has - not something to paper over with
-        // per-request randomness.
+        // Derived from the title, not random, so it's stable between the
+        // request that renders the form and the request that submits it -
+        // the nonce, menu slug, and option name all depend on it matching.
         $this->id = sanitize_key($title);
     }
 
@@ -65,6 +55,11 @@ abstract class Container
      */
     public static function make(string $title): static
     {
+        // Ensures Fieldsbox's own hooks are registered even though
+        // consuming plugins normally only ever touch Container/Field, never
+        // Fieldsbox itself directly. Idempotent.
+        Fieldsbox::init();
+
         $container = new static($title);
         $container->boot();
 
@@ -139,20 +134,15 @@ abstract class Container
     abstract protected function boot(): void;
 
     /**
-     * Read back the currently stored value for a single field, or null if
-     * there isn't one yet (the field will then fall back to its default).
-     * Takes the Field itself (not just its name) so implementations can
-     * honor a per-field set_meta_key() storage-key override.
+     * Read back the currently stored value for a field, or null if unset.
+     * Takes the Field itself so implementations can honor a per-field
+     * set_meta_key() storage-key override.
      */
     abstract public function get_value(Field $field): mixed;
 
     /**
-     * Whether this container would actually render on the screen currently
-     * being prepared - used by Fieldsbox::enqueue_assets() to decide
-     * whether this container's field types should count towards this
-     * request's asset needs. Implemented per container type:
-     * PostMetaContainer checks the edited post's type, ThemeOptionsContainer
-     * checks its own settings page.
+     * Whether this container renders on the current screen - used by
+     * Fieldsbox::enqueue_assets() to work out which assets are needed.
      *
      * @param string|false|null $hook_suffix The $hook_suffix admin_enqueue_scripts was called with.
      */

@@ -19,6 +19,11 @@ if ( ! class_exists( 'Fieldsbox\Fieldsbox' ) ) {
 	require_once WP_PLUGIN_DIR . '/fieldsbox/fieldsbox.php';
 }
 
+// Only needed if you use the 'google_map' field type below - the 'map'
+// field (Leaflet/OpenStreetMap) needs no key at all. Omit this call
+// entirely if you don't need Google's geocoding/autocomplete.
+Fieldsbox\Fieldsbox::set_google_maps_api_key( 'your-google-maps-api-key' );
+
 use Fieldsbox\Container\PostMetaContainer;
 use Fieldsbox\Container\TermMetaContainer;
 use Fieldsbox\Container\ThemeOptionsContainer;
@@ -116,12 +121,24 @@ PostMetaContainer::make( __( 'Product Details', 'my-plugin' ) )
 			Field::make( 'wysiwyg', 'full_description', __( 'Full Description', 'my-plugin' ) ),
 			Field::make( 'separator', 'media_separator', __( 'Media', 'my-plugin' ) ),
 			Field::make( 'image', 'featured_image', __( 'Featured Image', 'my-plugin' ) ),
-			Field::make( 'file', 'spec_sheet', __( 'Spec Sheet (PDF)', 'my-plugin' ) ),
+			// set_mime_types() restricts both the media library picker and
+			// what sanitize() will accept - 'application/pdf' here is an
+			// exact mime type; 'video'/'image'/'audio' below are WordPress'
+			// generic type buckets (matches any subtype, e.g. video/mp4).
+			Field::make( 'file', 'spec_sheet', __( 'Spec Sheet (PDF)', 'my-plugin' ) )
+				->set_mime_types( 'application/pdf' ),
+			Field::make( 'file', 'promo_video', __( 'Promo Video', 'my-plugin' ) )
+				->set_mime_types( 'video' ),
 			Field::make( 'gallery', 'product_gallery', __( 'Product Gallery', 'my-plugin' ) ),
 			Field::make( 'separator', 'location_separator', __( 'Location & Structure', 'my-plugin' ) ),
 			// Leaflet + OpenStreetMap, no API key - drag the pin or click the
 			// map to set lat/lng.
 			Field::make( 'map', 'store_location', __( 'Store Location', 'my-plugin' ) )
+				->set_default_position( 51.5074, -0.1278, 12 ),
+			// Same {lat, lng, address} storage shape as 'map', but backed by
+			// Google Maps + Places Autocomplete - requires the API key set
+			// above via Fieldsbox::set_google_maps_api_key().
+			Field::make( 'google_map', 'warehouse_location', __( 'Warehouse Location', 'my-plugin' ) )
 				->set_default_position( 51.5074, -0.1278, 12 ),
 			// A fixed (non-repeating) set of sub-fields, stored as one associative array.
 			Field::make( 'group', 'manufacturer', __( 'Manufacturer', 'my-plugin' ) )

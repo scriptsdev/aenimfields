@@ -9,7 +9,9 @@ use Fieldsbox\Field\Field;
  *
  * Stores the attachment ID (not a URL) so the image can be re-resolved to
  * any size later. The hidden input holds the id; fieldsbox.js wires the
- * "Select"/"Remove" buttons up to wp.media - see initMediaField().
+ * "Select" button and the cross-icon remove button (overlaid on the
+ * thumbnail, same style as GalleryField's per-item remove icon) up to
+ * wp.media - see initMediaField().
  */
 class ImageField extends Field
 {
@@ -26,14 +28,15 @@ class ImageField extends Field
             esc_attr((string) $attachment_id)
         );
         $html .= sprintf('<div class="fieldsbox-media-preview"%s>', $image_url ? '' : ' style="display:none"');
-        $html .= $image_url ? sprintf('<img src="%s" alt="">', esc_url($image_url)) : '';
+        if ($image_url) {
+            $html .= sprintf('<img src="%s" alt="">', esc_url($image_url));
+            $html .= sprintf(
+                '<button type="button" class="fieldsbox-media-remove-icon" title="%1$s" aria-label="%1$s"><span class="dashicons dashicons-no-alt" aria-hidden="true"></span></button>',
+                esc_attr('Remove')
+            );
+        }
         $html .= '</div>';
         $html .= '<button type="button" class="button fieldsbox-media-select">' . esc_html('Select Image') . '</button>';
-        $html .= sprintf(
-            '<button type="button" class="button fieldsbox-media-remove"%s>%s</button>',
-            $attachment_id ? '' : ' style="display:none"',
-            esc_html('Remove')
-        );
         $html .= '</div>';
 
         return $html;
