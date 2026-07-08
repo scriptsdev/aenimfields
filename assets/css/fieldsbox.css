@@ -316,6 +316,30 @@
     background: #f0f0f1;
 }
 
+.fieldsbox-map-coords,
+.fieldsbox-google-map-coords {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.fieldsbox-map-coord,
+.fieldsbox-google-map-coord {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+    color: #646970;
+}
+
+.fieldsbox-map-coord input,
+.fieldsbox-google-map-coord input {
+    width: 140px;
+    background: #f0f0f1;
+    color: #1d2327;
+    cursor: default;
+}
+
 .fieldsbox-map-locate {
     display: block;
     margin: 8px 0;

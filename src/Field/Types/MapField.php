@@ -61,16 +61,23 @@ class MapField extends Field
         );
         $html .= '<div class="fieldsbox-map-suggestions" hidden></div>';
         $html .= '</div>';
+        // Read-only, not disabled: disabled inputs don't submit their value.
+        // Kept in sync by setPosition() in fieldsbox.js for every way the
+        // pin can move (drag, click, address search, "use my location").
+        $html .= '<div class="fieldsbox-map-coords">';
         $html .= sprintf(
-            '<input type="hidden" class="fieldsbox-map-lat" name="%1$s[lat]" value="%2$s">',
+            '<label class="fieldsbox-map-coord">%1$s<input type="text" class="fieldsbox-map-lat" name="%2$s[lat]" value="%3$s" readonly></label>',
+            esc_html('Latitude'),
             esc_attr($this->get_html_name()),
             esc_attr((string) $lat)
         );
         $html .= sprintf(
-            '<input type="hidden" class="fieldsbox-map-lng" name="%1$s[lng]" value="%2$s">',
+            '<label class="fieldsbox-map-coord">%1$s<input type="text" class="fieldsbox-map-lng" name="%2$s[lng]" value="%3$s" readonly></label>',
+            esc_html('Longitude'),
             esc_attr($this->get_html_name()),
             esc_attr((string) $lng)
         );
+        $html .= '</div>';
         $html .= '<button type="button" class="button fieldsbox-map-locate">' . esc_html('Use my location') . '</button>';
         $html .= '<div class="fieldsbox-map-canvas"></div>';
         $html .= '</div>';
