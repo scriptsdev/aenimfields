@@ -321,6 +321,13 @@
     margin: 8px 0;
 }
 
+.fieldsbox-map-locate-status {
+    display: inline-block;
+    margin-left: 8px;
+    color: #b32d2e;
+    font-size: 12px;
+}
+
 .fieldsbox-map-canvas {
     height: 300px;
     max-width: 600px;

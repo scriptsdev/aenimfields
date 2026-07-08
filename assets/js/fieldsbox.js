@@ -539,6 +539,55 @@
     }
 
     /**
+     * Wire up a "Use my location" button shared by the map/google_map
+     * fields. Reports errors next to the button instead of failing
+     * silently - getCurrentPosition() with no error callback (the previous
+     * behaviour) does nothing visible at all when permission is denied or,
+     * most commonly, when the site isn't served over HTTPS (the Geolocation
+     * API refuses to run over plain HTTP except on localhost).
+     *
+     * @param {Element|null} locateBtn
+     * @param {function(number, number)} onSuccess
+     */
+    function initGeolocateButton(locateBtn, onSuccess) {
+        if (! locateBtn) {
+            return;
+        }
+
+        var status = document.createElement('span');
+        status.className = 'fieldsbox-map-locate-status';
+        locateBtn.insertAdjacentElement('afterend', status);
+
+        locateBtn.addEventListener('click', function () {
+            status.textContent = '';
+
+            if (! window.isSecureContext) {
+                status.textContent = 'Getting your location requires HTTPS.';
+                return;
+            }
+
+            if (! navigator.geolocation) {
+                status.textContent = 'Your browser does not support geolocation.';
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    onSuccess(position.coords.latitude, position.coords.longitude);
+                },
+                function (error) {
+                    var messages = {
+                        1: 'Location permission denied.',
+                        2: 'Location unavailable.',
+                        3: 'Location request timed out.',
+                    };
+                    status.textContent = messages[error.code] || 'Could not get your location.';
+                }
+            );
+        });
+    }
+
+    /**
      * Initialize a Leaflet map with a draggable pin for a single map field.
      * No-ops until the Leaflet script (enqueued alongside fieldsbox.js) has
      * loaded. Idempotent.
@@ -586,18 +635,10 @@
             setPosition(e.latlng.lat, e.latlng.lng);
         });
 
-        if (locateBtn) {
-            locateBtn.addEventListener('click', function () {
-                if (! navigator.geolocation) {
-                    return;
-                }
-
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    setPosition(position.coords.latitude, position.coords.longitude);
-                    map.setView([position.coords.latitude, position.coords.longitude], zoom);
-                });
-            });
-        }
+        initGeolocateButton(locateBtn, function (lat, lng) {
+            setPosition(lat, lng);
+            map.setView([lat, lng], zoom);
+        });
 
         if (addressInput && suggestionsBox) {
             initAddressSearch(addressInput, suggestionsBox, function (result) {
@@ -666,19 +707,11 @@
             setPosition(e.latLng.lat(), e.latLng.lng());
         });
 
-        if (locateBtn) {
-            locateBtn.addEventListener('click', function () {
-                if (! navigator.geolocation) {
-                    return;
-                }
-
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    setPosition(position.coords.latitude, position.coords.longitude);
-                    map.setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
-                    map.setZoom(zoom);
-                });
-            });
-        }
+        initGeolocateButton(locateBtn, function (lat, lng) {
+            setPosition(lat, lng);
+            map.setCenter({ lat: lat, lng: lng });
+            map.setZoom(zoom);
+        });
 
         if (addressInput && google.maps.places) {
             var autocomplete = new google.maps.places.Autocomplete(addressInput);
