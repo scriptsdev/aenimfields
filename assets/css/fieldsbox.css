@@ -460,8 +460,7 @@
    of the input. */
 
 .fieldsbox-theme-options .fieldsbox-container {
-    max-width: 900px;
-    background: #fff;
+    width: 100%;
 }
 
 .fieldsbox-theme-options .fieldsbox-field {
@@ -469,8 +468,10 @@
     grid-template-columns: minmax(220px, 320px) 1fr;
     column-gap: 32px;
     align-items: start;
+    box-sizing: border-box;
+    width: 100%;
     margin-bottom: 0;
-    padding: 20px 0;
+    padding: 20px 24px;
     border-bottom: 1px solid #e2e2e2;
 }
 
@@ -509,6 +510,8 @@
 .fieldsbox-theme-options .fieldsbox-input input[type="number"],
 .fieldsbox-theme-options .fieldsbox-input textarea,
 .fieldsbox-theme-options .fieldsbox-input select {
+    box-sizing: border-box;
+    width: 100%;
     max-width: 100%;
     padding: 10px 14px;
     border-color: #d5d5d5;
