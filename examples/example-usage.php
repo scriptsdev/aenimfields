@@ -14,8 +14,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load the shared package once; safe to repeat this guard in every plugin.
-if ( ! class_exists( 'Fieldsbox\Fieldsbox' ) ) {
+// Load the shared package once; safe to repeat this guard in every plugin
+// that bundles its own copy of fieldsbox - only the first one to run this
+// actually requires the file, so you never get a "Cannot redeclare class"
+// fatal when two of your plugins are active together.
+//
+// The second class_exists() argument (false) disables autoloading during
+// the check - without it, Composer's own autoloader (if fieldsbox was
+// installed via a Composer path repository) can satisfy the check and
+// report true even though this file never ran, silently skipping the
+// require_once below. See fieldsbox.php's own doc comment for more.
+if ( ! class_exists( 'Fieldsbox\Fieldsbox', false ) ) {
 	require_once WP_PLUGIN_DIR . '/fieldsbox/fieldsbox.php';
 }
 

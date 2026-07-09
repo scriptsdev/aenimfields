@@ -37,6 +37,9 @@ abstract class Container
     /** @var array<string, array<string, Field>> */
     protected array $tabs = [];
 
+    /** Extra CSS classes added to the container's wrapper <div>. */
+    protected array $classes = [];
+
     /**
      * Not called directly - use the static make() factory.
      */
@@ -107,6 +110,16 @@ abstract class Container
 
         $this->tabs[$label] = $indexed;
 
+        return $this;
+    }
+
+    /**
+     * Add a CSS class to the container's wrapper <div>. Can be called more
+     * than once to add several classes.
+     */
+    public function add_class(string $class): static
+    {
+        $this->classes[] = $class;
         return $this;
     }
 
@@ -194,7 +207,13 @@ abstract class Container
      */
     protected function render(): string
     {
-        $html = sprintf('<div class="fieldsbox-container" id="fieldsbox-container-%s">', esc_attr($this->id));
+        $wrapper_classes = array_merge(['fieldsbox-container'], $this->classes);
+
+        $html = sprintf(
+            '<div class="%1$s" id="fieldsbox-container-%2$s">',
+            esc_attr(implode(' ', $wrapper_classes)),
+            esc_attr($this->id)
+        );
 
         if ($this->fields) {
             $html .= $this->render_fields($this->fields);
