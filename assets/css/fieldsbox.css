@@ -91,6 +91,9 @@
 }
 
 .fieldsbox-tab-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     background: none;
     border: 1px solid transparent;
     border-bottom: none;
@@ -98,6 +101,7 @@
     cursor: pointer;
     font-weight: 600;
     color: #646970;
+    text-align: left;
 }
 
 .fieldsbox-tab-link.is-active {
@@ -105,6 +109,29 @@
     border-color: #dcdcde;
     background: #fff;
     border-radius: 3px 3px 0 0;
+}
+
+/* Optional per-tab icon - only present when add_tab()'s $icon argument is set. */
+.fieldsbox-tab-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.fieldsbox-tab-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.fieldsbox-tab-title {
+    font-weight: 600;
+}
+
+/* Optional per-tab description - only present when add_tab()'s $description argument is set. */
+.fieldsbox-tab-description {
+    font-weight: normal;
+    font-size: 12px;
+    color: #646970;
 }
 
 /* Panels are hidden by default; fieldsbox.js toggles .is-active on click. */

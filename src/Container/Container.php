@@ -33,8 +33,8 @@ abstract class Container
     /** @var array<string, Field> */
     protected array $fields = [];
 
-    /** Fields grouped under a tab label, in add_tab() call order. */
-    /** @var array<string, array<string, Field>> */
+    /** Tabs in add_tab() call order, keyed by label.
+     * @var array<string, array{icon: string, description: string, fields: array<string, Field>}> */
     protected array $tabs = [];
 
     /** Extra CSS classes added to the container's wrapper <div>. */
@@ -98,9 +98,15 @@ abstract class Container
      * with the first tab active by default; see assets/js/fieldsbox.js for
      * the click-to-switch behaviour.
      *
+     * $icon is an arbitrary icon font class rendered as <i class="$icon">
+     * before the title (e.g. a dashicon like 'dashicons dashicons-admin-generic',
+     * or any icon font class your own plugin already loads) - fieldsbox
+     * doesn't ship or assume any particular icon font. $description renders
+     * as a second line under the title.
+     *
      * @param Field[] $fields
      */
-    public function add_tab(string $label, array $fields): static
+    public function add_tab(string $label, array $fields, string $icon = '', string $description = ''): static
     {
         $indexed = [];
 
@@ -108,7 +114,11 @@ abstract class Container
             $indexed[$field->get_name()] = $field;
         }
 
-        $this->tabs[$label] = $indexed;
+        $this->tabs[$label] = [
+            'icon' => $icon,
+            'description' => $description,
+            'fields' => $indexed,
+        ];
 
         return $this;
     }
@@ -133,8 +143,8 @@ abstract class Container
     {
         $all = $this->fields;
 
-        foreach ($this->tabs as $tab_fields) {
-            $all += $tab_fields;
+        foreach ($this->tabs as $tab) {
+            $all += $tab['fields'];
         }
 
         return $all;
@@ -225,14 +235,23 @@ abstract class Container
 
             // First pass: one nav button per tab, first one marked active.
             $index = 0;
-            foreach ($this->tabs as $label => $tab_fields) {
+            foreach ($this->tabs as $label => $tab) {
                 $html .= sprintf(
-                    '<button type="button" class="fieldsbox-tab-link%s" data-tab="%s-%d">%s</button>',
+                    '<button type="button" class="fieldsbox-tab-link%s" data-tab="%s-%d">',
                     $index === 0 ? ' is-active' : '',
                     esc_attr($this->id),
-                    $index,
-                    esc_html($label)
+                    $index
                 );
+                if ($tab['icon'] !== '') {
+                    $html .= sprintf('<i class="fieldsbox-tab-icon %s"></i>', esc_attr($tab['icon']));
+                }
+                $html .= '<span class="fieldsbox-tab-content">';
+                $html .= sprintf('<span class="fieldsbox-tab-title">%s</span>', esc_html($label));
+                if ($tab['description'] !== '') {
+                    $html .= sprintf('<span class="fieldsbox-tab-description">%s</span>', esc_html($tab['description']));
+                }
+                $html .= '</span>';
+                $html .= '</button>';
                 $index++;
             }
 
@@ -242,14 +261,14 @@ abstract class Container
             // "{container-id}-{index}" used in data-tab above so the JS
             // can wire nav clicks to the right panel.
             $index = 0;
-            foreach ($this->tabs as $label => $tab_fields) {
+            foreach ($this->tabs as $label => $tab) {
                 $html .= sprintf(
                     '<div class="fieldsbox-tab-panel%s" data-tab-panel="%s-%d">',
                     $index === 0 ? ' is-active' : '',
                     esc_attr($this->id),
                     $index
                 );
-                $html .= $this->render_fields($tab_fields);
+                $html .= $this->render_fields($tab['fields']);
                 $html .= '</div>';
                 $index++;
             }

@@ -38,7 +38,10 @@ use Fieldsbox\Container\TermMetaContainer;
 use Fieldsbox\Container\ThemeOptionsContainer;
 use Fieldsbox\Field\Field;
 
-// Post meta box with tabs and a conditionally shown field.
+// Post meta box with tabs and a conditionally shown field. add_tab() takes
+// two more optional arguments - $icon (an <i> class from whatever icon font
+// your own plugin already loads; fieldsbox doesn't ship one) and
+// $description (a second line under the tab title).
 PostMetaContainer::make( __( 'Product Details', 'my-plugin' ) )
 	->show_on_post_type( 'product' )
 	->add_tab(
@@ -83,7 +86,9 @@ PostMetaContainer::make( __( 'Product Details', 'my-plugin' ) )
 						),
 					)
 				),
-		)
+		),
+		'dashicons dashicons-admin-generic',
+		__( 'Core product details shown on every listing.', 'my-plugin' )
 	)
 	->add_tab(
 		__( 'Options', 'my-plugin' ),
