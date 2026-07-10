@@ -205,6 +205,9 @@ PostMetaContainer::make( __( 'Product Details', 'my-plugin' ) )
 // PostMetaContainer above - tabs aren't tied to a specific container type.
 ThemeOptionsContainer::make( __( 'My Plugin Settings', 'my-plugin' ) )
 	->set_menu( __( 'My Plugin', 'my-plugin' ), 'options-general.php', 'manage_options' )
+	// Optional: strips other plugins' admin_notices/all_admin_notices output
+	// from this page only, for a cleaner settings screen. Off by default.
+	->hide_other_notices()
 	->add_tab(
 		__( 'General', 'my-plugin' ),
 		array(

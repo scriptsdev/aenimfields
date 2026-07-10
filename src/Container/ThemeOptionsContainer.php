@@ -29,6 +29,9 @@ class ThemeOptionsContainer extends Container
 
     protected int $position = 100;
 
+    /** Set via hide_other_notices() - strips other plugins' admin_notices from this page only. */
+    protected bool $hide_other_notices = false;
+
     /**
      * The hook suffix WordPress assigns this settings page, captured from
      * add_menu_page()/add_submenu_page()'s return value so matches_screen()
@@ -50,6 +53,20 @@ class ThemeOptionsContainer extends Container
 
         add_action('admin_menu', [$this, 'register_page']);
         add_action('admin_init', [$this, 'maybe_save']);
+        add_action('in_admin_header', [$this, 'maybe_hide_other_notices']);
+    }
+
+    /**
+     * Opt-in: strip other plugins' admin_notices/all_admin_notices output
+     * from this settings page only (every other wp-admin screen is
+     * unaffected). Off by default - a lot of plugins don't scope their own
+     * notices to their own screen, which is their bug, not fieldsbox's, but
+     * you may still want a clean page for your own settings UI.
+     */
+    public function hide_other_notices(bool $hide = true): static
+    {
+        $this->hide_other_notices = $hide;
+        return $this;
     }
 
     /**
@@ -90,6 +107,28 @@ class ThemeOptionsContainer extends Container
         } else {
             $this->hook_suffix = add_menu_page($this->title, $this->menu_title, $this->capability, $this->menu_slug, [$this, 'render_page'], $this->icon, $this->position);
         }
+    }
+
+    /**
+     * in_admin_header callback - fires reliably after admin_menu (so
+     * $this->hook_suffix is already set) but before WordPress fires
+     * admin_notices/all_admin_notices, so removing them here is still in
+     * time to stop other plugins' output from ever printing on this page.
+     */
+    public function maybe_hide_other_notices(): void
+    {
+        if (! $this->hide_other_notices) {
+            return;
+        }
+
+        $screen = get_current_screen();
+
+        if (! $screen || $screen->id !== $this->hook_suffix) {
+            return;
+        }
+
+        remove_all_actions('admin_notices');
+        remove_all_actions('all_admin_notices');
     }
 
     /**
