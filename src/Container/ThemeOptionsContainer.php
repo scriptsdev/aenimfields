@@ -46,7 +46,7 @@ class ThemeOptionsContainer extends Container
     /**
      * Register the WordPress hooks that add the settings page and persist it.
      */
-    protected function boot(): void
+    public function boot(): void
     {
         $this->menu_title = $this->title;
         $this->menu_slug = $this->id;

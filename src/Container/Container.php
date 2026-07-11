@@ -53,8 +53,32 @@ abstract class Container
     }
 
     /**
-     * Create and boot a container. boot() is called immediately so the
-     * container's WordPress hooks are registered as soon as it's declared.
+     * Create a container and defer boot()'s hook registration until
+     * wp_loaded.
+     *
+     * This is deferred - rather than called synchronously here, right after
+     * construction - because a subclass's boot() can bake a configurable
+     * property directly into a hook name (TermMetaContainer registers
+     * "{$taxonomy}_add_form_fields", derived from $this->taxonomies).
+     * Calling boot() immediately would lock in whatever that property
+     * defaults to, before the rest of the fluent chain
+     * (->show_on_taxonomy(), ->add_fields(), ...) - which runs synchronously
+     * right after make() returns, in the same call stack - has a chance to
+     * configure it.
+     *
+     * wp_loaded specifically, not init: it fires exactly once, strictly
+     * after every plugin's own init callbacks have already completed - so
+     * this stays correct even when a consuming plugin calls
+     * Container::make() from inside its own init hook (a common pattern
+     * alongside register_taxonomy()). Re-adding a callback to init at an
+     * earlier priority than one already executing would silently never
+     * fire again that request - WP_Hook does not rewind to a priority it
+     * has already passed. wp_loaded can't have "already passed" in that
+     * scenario, since it only fires after init (all priorities) finishes.
+     * The did_action() guard below covers the rarer case of make() being
+     * called even later than that (e.g. from an admin_menu callback) - by
+     * then the fluent chain has necessarily already finished too, so
+     * booting immediately is just as safe as deferring would have been.
      */
     public static function make(string $title): static
     {
@@ -64,7 +88,12 @@ abstract class Container
         Fieldsbox::init();
 
         $container = new static($title);
-        $container->boot();
+
+        if (did_action('wp_loaded')) {
+            $container->boot();
+        } else {
+            add_action('wp_loaded', [$container, 'boot']);
+        }
 
         self::$registry[] = $container;
 
@@ -153,8 +182,10 @@ abstract class Container
     /**
      * Register whatever WordPress hooks are needed to render and save this
      * container (e.g. add_meta_boxes/save_post, or admin_menu/admin_init).
+     * Public rather than protected: make() registers it as a wp_loaded
+     * callback (or calls it directly), both from outside the class.
      */
-    abstract protected function boot(): void;
+    abstract public function boot(): void;
 
     /**
      * Read back the currently stored value for a field, or null if unset.

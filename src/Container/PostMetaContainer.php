@@ -50,7 +50,7 @@ class PostMetaContainer extends Container
     /**
      * Register the WordPress hooks that draw the meta box and persist it.
      */
-    protected function boot(): void
+    public function boot(): void
     {
         add_action('add_meta_boxes', [$this, 'register_meta_box']);
         add_action('save_post', [$this, 'save']);

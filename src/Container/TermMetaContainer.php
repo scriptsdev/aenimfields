@@ -43,7 +43,7 @@ class TermMetaContainer extends Container
      * "category_add_form_fields"), so this loops over every configured
      * taxonomy rather than registering once.
      */
-    protected function boot(): void
+    public function boot(): void
     {
         foreach ($this->taxonomies as $taxonomy) {
             add_action("{$taxonomy}_add_form_fields", [$this, 'render_add_fields']);
