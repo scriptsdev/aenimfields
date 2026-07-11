@@ -54,31 +54,31 @@ abstract class Container
 
     /**
      * Create a container and defer boot()'s hook registration until
-     * wp_loaded.
+     * wp_loaded - never call boot() synchronously here.
      *
-     * This is deferred - rather than called synchronously here, right after
-     * construction - because a subclass's boot() can bake a configurable
+     * boot() is deferred because a subclass can bake a configurable
      * property directly into a hook name (TermMetaContainer registers
      * "{$taxonomy}_add_form_fields", derived from $this->taxonomies).
-     * Calling boot() immediately would lock in whatever that property
-     * defaults to, before the rest of the fluent chain
-     * (->show_on_taxonomy(), ->add_fields(), ...) - which runs synchronously
-     * right after make() returns, in the same call stack - has a chance to
-     * configure it.
+     * Calling boot() immediately, before returning, would lock in whatever
+     * that property defaults to - the fluent chain that configures it
+     * (->show_on_taxonomy(), ->add_fields(), ...) only runs *after* make()
+     * returns, in the same call stack, since it's chained onto make()'s
+     * return value in the same statement.
      *
-     * wp_loaded specifically, not init: it fires exactly once, strictly
-     * after every plugin's own init callbacks have already completed - so
-     * this stays correct even when a consuming plugin calls
-     * Container::make() from inside its own init hook (a common pattern
-     * alongside register_taxonomy()). Re-adding a callback to init at an
-     * earlier priority than one already executing would silently never
-     * fire again that request - WP_Hook does not rewind to a priority it
-     * has already passed. wp_loaded can't have "already passed" in that
-     * scenario, since it only fires after init (all priorities) finishes.
-     * The did_action() guard below covers the rarer case of make() being
-     * called even later than that (e.g. from an admin_menu callback) - by
-     * then the fluent chain has necessarily already finished too, so
-     * booting immediately is just as safe as deferring would have been.
+     * PHP_INT_MAX priority matters if make() is itself called from inside
+     * an already-executing wp_loaded callback: WP_Hook still includes a
+     * same-hook callback added at a priority >= the one currently running
+     * in that same do_action() pass (verified: a callback added at a LOWER
+     * priority than the one currently running is silently skipped for the
+     * rest of that pass, but PHP_INT_MAX is never lower than whatever's
+     * currently running) - so boot() still runs after the chain completes
+     * rather than being skipped entirely.
+     *
+     * The admin_menu fallback - mirroring the admin_enqueue_scripts +
+     * admin_footer pattern in Fieldsbox::enqueue_assets() - covers the rarer
+     * case of make() being called even later, after wp_loaded has already
+     * fully finished (not just reached a later priority) - e.g. from an
+     * admin_init callback.
      */
     public static function make(string $title): static
     {
@@ -89,10 +89,10 @@ abstract class Container
 
         $container = new static($title);
 
-        if (did_action('wp_loaded')) {
-            $container->boot();
+        if (did_action('wp_loaded') && ! doing_action('wp_loaded')) {
+            add_action('admin_menu', [$container, 'boot'], PHP_INT_MAX);
         } else {
-            add_action('wp_loaded', [$container, 'boot']);
+            add_action('wp_loaded', [$container, 'boot'], PHP_INT_MAX);
         }
 
         self::$registry[] = $container;
