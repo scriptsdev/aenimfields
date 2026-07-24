@@ -1,21 +1,15 @@
 {
   "name": "scriptsdev/fieldsbox",
-  "description": "Reusable PHP/JS meta fields and frontend fields toolkit for custom WordPress plugins.",
+  "description": "A lightweight PHP field framework for WordPress admin and frontend forms.",
   "type": "library",
   "license": "GPL-2.0-or-later",
-  "authors": [
-    {
-      "name": "ScriptsDev",
-      "homepage": "https://scriptsdev.com"
-    }
-  ],
-  "require": {
-    "php": ">=8.0"
-  },
   "autoload": {
     "psr-4": {
-      "Fieldsbox\\": "src/"
+      "FieldsBox\\": "src/"
     }
+  },
+  "require": {
+    "php": ">=8.0"
   },
   "config": {
     "optimize-autoloader": true,
