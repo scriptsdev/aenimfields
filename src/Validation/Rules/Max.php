@@ -31,6 +31,10 @@ class Max {
 			return true;
 		}
 
+		if ( '' === $value || array() === $value ) {
+			return true;
+		}
+
 		$max = (float) $parameter;
 
 		if ( is_array( $value ) ) {
@@ -41,7 +45,10 @@ class Max {
 			return true;
 		}
 
-		if ( is_numeric( $value ) ) {
+		// Only a genuine int/float counts as a number here — a sanitized
+		// text value is always a string even when it looks numeric (e.g.
+		// a zip code), and should be measured by length, not magnitude.
+		if ( is_int( $value ) || is_float( $value ) ) {
 			if ( (float) $value > $max ) {
 				return sprintf( __( 'The "%1$s" field must not be greater than %2$s.', 'fieldsbox' ), $label, $parameter );
 			}

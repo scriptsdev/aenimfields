@@ -3,13 +3,20 @@
   "description": "A lightweight PHP field framework for WordPress admin and frontend forms.",
   "type": "library",
   "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "ScriptsDev",
+      "email": "scriptsdevsolutions@gmail.com"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "FieldsBox\\": "src/"
     }
   },
   "require": {
-    "php": ">=8.0"
+    "php": ">=8.0",
+    "ext-mbstring": "*"
   },
   "config": {
     "optimize-autoloader": true,

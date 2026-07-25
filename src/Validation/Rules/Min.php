@@ -31,6 +31,10 @@ class Min {
 			return true;
 		}
 
+		if ( '' === $value || array() === $value ) {
+			return true;
+		}
+
 		$min = (float) $parameter;
 
 		if ( is_array( $value ) ) {
@@ -41,7 +45,10 @@ class Min {
 			return true;
 		}
 
-		if ( is_numeric( $value ) ) {
+		// Only a genuine int/float counts as a number here — a sanitized
+		// text value is always a string even when it looks numeric (e.g.
+		// a zip code), and should be measured by length, not magnitude.
+		if ( is_int( $value ) || is_float( $value ) ) {
 			if ( (float) $value < $min ) {
 				return sprintf( __( 'The "%1$s" field must be at least %2$s.', 'fieldsbox' ), $label, $parameter );
 			}
