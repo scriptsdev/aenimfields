@@ -138,4 +138,17 @@ interface FieldInterface extends
 	 * @return bool
 	 */
 	public function is_required(): bool;
+
+	/**
+	 * Returns the keys of any assets (scripts/styles) this field needs
+	 * enqueued in order to render/function, e.g. `['datepicker']`.
+	 *
+	 * Keys are resolved by `Core\Assets::enqueue()`. Fields with no
+	 * extra asset needs return an empty array.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[]
+	 */
+	public function assets(): array;
 }

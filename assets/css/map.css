@@ -1,0 +1,59 @@
+.fieldsbox-map {
+	position: relative;
+}
+
+.fieldsbox-map-address {
+	width: 100%;
+	box-sizing: border-box;
+	margin-bottom: 8px;
+}
+
+.fieldsbox-map-canvas {
+	width: 100%;
+	background: #eee;
+	border: 1px solid #ccd0d4;
+	margin-bottom: 8px;
+}
+
+.fieldsbox-map-coordinates {
+	display: flex;
+	gap: 12px;
+}
+
+.fieldsbox-map-coordinates label {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 12px;
+}
+
+.fieldsbox-map-coordinates input {
+	width: 140px;
+}
+
+.fieldsbox-map-suggestions {
+	position: absolute;
+	z-index: 10;
+	max-width: 400px;
+	max-height: 200px;
+	margin: -4px 0 8px;
+	padding: 0;
+	overflow-y: auto;
+	list-style: none;
+	background: #fff;
+	border: 1px solid #ccd0d4;
+}
+
+.fieldsbox-map-suggestions li {
+	padding: 6px 10px;
+	cursor: pointer;
+}
+
+.fieldsbox-map-suggestions li:hover {
+	background: #f0f0f1;
+}
+
+.fieldsbox-map-notice {
+	color: #b32d2e;
+	font-style: italic;
+}

@@ -9,7 +9,8 @@ namespace FieldsBox\Core;
  *
  * Registers FieldsBox's scripts on construction — cheap, since this only
  * describes them to WordPress and does not load them — then enqueues
- * them on demand from Renderer, only when a field is actually rendered.
+ * them on demand, keyed by name, only when a field that actually needs
+ * them is rendered (see FieldInterface::assets() / Renderer::render()).
  * A page that never renders a FieldsBox field never loads FieldsBox's JS.
  *
  * @since 1.0.0
@@ -24,6 +25,13 @@ class Assets {
 	const FLATPICKR_VERSION = '4.6.13';
 
 	/**
+	 * Leaflet's bundled version.
+	 *
+	 * @var string
+	 */
+	const LEAFLET_VERSION = '1.9.4';
+
+	/**
 	 * Whether scripts have already been registered for this request.
 	 *
 	 * @var bool
@@ -31,35 +39,49 @@ class Assets {
 	protected static bool $registered = false;
 
 	/**
-	 * Whether the dependency script has already been enqueued for this
-	 * request.
+	 * Which asset keys have already been enqueued for this request.
 	 *
-	 * @var bool
+	 * @var array<string, bool>
 	 */
-	protected static bool $enqueued = false;
+	protected static array $enqueued = array();
 
 	/**
-	 * Whether the datepicker assets have already been enqueued for this
-	 * request.
+	 * The Google Maps JavaScript API key, set by the consuming plugin via
+	 * set_google_maps_api_key(). Empty until then.
 	 *
-	 * @var bool
+	 * @var string
 	 */
-	protected static bool $datepicker_enqueued = false;
+	protected static string $google_maps_api_key = '';
 
 	/**
-	 * Whether the media assets have already been enqueued for this request.
+	 * Set the Google Maps JavaScript API key.
 	 *
-	 * @var bool
+	 * Call this once from the consuming plugin's own bootstrap (it's a
+	 * site-wide credential, not something to repeat on every field
+	 * definition). A `map` field with `provider => 'google'` renders an
+	 * inline notice instead of a map if no key has been set by the time
+	 * it's enqueued.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $key
+	 *
+	 * @return void
 	 */
-	protected static bool $media_enqueued = false;
+	public static function set_google_maps_api_key( string $key ): void {
+		self::$google_maps_api_key = $key;
+	}
 
 	/**
-	 * Whether the repeater script has already been enqueued for this
-	 * request.
+	 * Get the configured Google Maps JavaScript API key.
 	 *
-	 * @var bool
+	 * @since 1.0.0
+	 *
+	 * @return string Empty string if none has been set.
 	 */
-	protected static bool $repeater_enqueued = false;
+	public static function get_google_maps_api_key(): string {
+		return self::$google_maps_api_key;
+	}
 
 	/**
 	 * Register scripts and styles.
@@ -126,107 +148,143 @@ class Assets {
 			FIELDSBOX_VERSION,
 			true
 		);
+
+		wp_register_style(
+			'fieldsbox-leaflet',
+			FIELDSBOX_URL . 'assets/vendor/css/leaflet.css',
+			array(),
+			self::LEAFLET_VERSION
+		);
+
+		wp_register_script(
+			'fieldsbox-leaflet',
+			FIELDSBOX_URL . 'assets/vendor/js/leaflet.js',
+			array(),
+			self::LEAFLET_VERSION,
+			true
+		);
+
+		wp_register_style(
+			'fieldsbox-map',
+			FIELDSBOX_URL . 'assets/css/map.css',
+			array(),
+			FIELDSBOX_VERSION
+		);
+
+		wp_register_script(
+			'fieldsbox-map-osm',
+			FIELDSBOX_URL . 'assets/js/map-osm.js',
+			array( 'fieldsbox-leaflet' ),
+			FIELDSBOX_VERSION,
+			true
+		);
+
+		// 'fieldsbox-map-google' is registered lazily, from the 'map_google'
+		// manifest entry below, once its dependency on 'fieldsbox-google-maps'
+		// (which itself needs the API key) can be declared correctly.
 	}
 
 	/**
-	 * Enqueue the dependency (depends_on) script.
+	 * The asset manifest.
 	 *
-	 * Called by Renderer each time a field is rendered, so it only loads
-	 * on pages that actually render a FieldsBox field. Safe to call
-	 * repeatedly; only enqueues once per request.
+	 * Maps an asset key (as returned by FieldInterface::assets()) to the
+	 * callback that actually enqueues it. Adding a new field type that
+	 * needs a new heavy asset means registering its handles in
+	 * register() and adding one entry here — no new method, no new
+	 * guard property.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return void
+	 * @return array<string, callable>
 	 */
-	public static function enqueue(): void {
+	protected static function manifest(): array {
+		return array(
+			'dependency' => static function (): void {
+				wp_enqueue_script( 'fieldsbox-dependency' );
+			},
+			'datepicker' => static function (): void {
+				wp_enqueue_style( 'fieldsbox-flatpickr' );
+				wp_enqueue_script( 'fieldsbox-flatpickr' );
+				wp_enqueue_script( 'fieldsbox-datepicker' );
+			},
+			'media'      => static function (): void {
+				wp_enqueue_media();
+				wp_enqueue_script( 'fieldsbox-media' );
+			},
+			'repeater'   => static function (): void {
+				wp_enqueue_script( 'fieldsbox-repeater' );
+			},
+			'map_osm'    => static function (): void {
+				wp_enqueue_style( 'fieldsbox-leaflet' );
+				wp_enqueue_style( 'fieldsbox-map' );
+				wp_enqueue_script( 'fieldsbox-leaflet' );
+				wp_enqueue_script( 'fieldsbox-map-osm' );
+			},
+			'map_google' => static function (): void {
 
-		if ( self::$enqueued ) {
-			return;
-		}
+				$api_key = self::$google_maps_api_key;
 
-		self::$enqueued = true;
+				if ( '' === $api_key ) {
+					// No key configured; the field template renders its
+					// own inline notice, so there's nothing to enqueue.
+					return;
+				}
 
-		self::register();
+				wp_register_script(
+					'fieldsbox-google-maps',
+					add_query_arg(
+						array(
+							'key'       => $api_key,
+							'libraries' => 'places',
+						),
+						'https://maps.googleapis.com/maps/api/js'
+					),
+					array(),
+					null,
+					true
+				);
 
-		wp_enqueue_script( 'fieldsbox-dependency' );
+				wp_register_script(
+					'fieldsbox-map-google',
+					FIELDSBOX_URL . 'assets/js/map-google.js',
+					array( 'fieldsbox-google-maps' ),
+					FIELDSBOX_VERSION,
+					true
+				);
+
+				wp_enqueue_style( 'fieldsbox-map' );
+				wp_enqueue_script( 'fieldsbox-google-maps' );
+				wp_enqueue_script( 'fieldsbox-map-google' );
+			},
+		);
 	}
 
 	/**
-	 * Enqueue flatpickr and its FieldsBox init script.
+	 * Enqueue an asset by key.
 	 *
-	 * Called only by the date/datetime field templates, so the (heavier)
-	 * flatpickr library only loads on pages that actually render a date
-	 * or datetime field — not on every FieldsBox field like enqueue()
-	 * above. Safe to call repeatedly; only enqueues once per request.
+	 * Safe to call repeatedly with the same key; only enqueues once per
+	 * request. Unknown keys are silently ignored.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return void
-	 */
-	public static function enqueue_datepicker(): void {
-
-		if ( self::$datepicker_enqueued ) {
-			return;
-		}
-
-		self::$datepicker_enqueued = true;
-
-		self::register();
-
-		wp_enqueue_style( 'fieldsbox-flatpickr' );
-		wp_enqueue_script( 'fieldsbox-flatpickr' );
-		wp_enqueue_script( 'fieldsbox-datepicker' );
-	}
-
-	/**
-	 * Enqueue the WordPress media library and its FieldsBox init script.
-	 *
-	 * Called only by the image/gallery/file field templates, so
-	 * wp_enqueue_media() (needed for wp.media(), the media library
-	 * picker) only loads on pages that actually render one of those
-	 * field types. Safe to call repeatedly; only enqueues once per
-	 * request.
-	 *
-	 * @since 1.0.0
+	 * @param string $key Asset key, e.g. 'datepicker', 'media', 'repeater'.
 	 *
 	 * @return void
 	 */
-	public static function enqueue_media(): void {
+	public static function enqueue( string $key = 'dependency' ): void {
 
-		if ( self::$media_enqueued ) {
+		if ( isset( self::$enqueued[ $key ] ) ) {
 			return;
 		}
 
-		self::$media_enqueued = true;
+		self::$enqueued[ $key ] = true;
 
 		self::register();
 
-		wp_enqueue_media();
-		wp_enqueue_script( 'fieldsbox-media' );
-	}
+		$manifest = self::manifest();
 
-	/**
-	 * Enqueue the repeater init script.
-	 *
-	 * Called only by the repeater field template, so it only loads on
-	 * pages that actually render a repeater field. Safe to call
-	 * repeatedly; only enqueues once per request.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public static function enqueue_repeater(): void {
-
-		if ( self::$repeater_enqueued ) {
-			return;
+		if ( isset( $manifest[ $key ] ) ) {
+			$manifest[ $key ]();
 		}
-
-		self::$repeater_enqueued = true;
-
-		self::register();
-
-		wp_enqueue_script( 'fieldsbox-repeater' );
 	}
 }

@@ -83,6 +83,22 @@ class Repeater extends BaseField implements ContainerFieldInterface {
 	}
 
 	/**
+	 * Assets this field needs enqueued.
+	 *
+	 * Only its own add/remove-row script — any sub-fields' assets
+	 * (e.g. an `image` or `date` sub-field) are picked up automatically
+	 * when each row is rendered, since every sub-field goes through the
+	 * same Renderer::render() as a top-level field.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[]
+	 */
+	public function assets(): array {
+		return array( 'repeater' );
+	}
+
+	/**
 	 * Sanitize the field value.
 	 *
 	 * @since 1.0.0

@@ -18,6 +18,17 @@ namespace FieldsBox\Fields;
 class Gallery extends BaseField {
 
 	/**
+	 * Assets this field needs enqueued.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[]
+	 */
+	public function assets(): array {
+		return array( 'media' );
+	}
+
+	/**
 	 * Sanitize the field value.
 	 *
 	 * Accepts either an array of IDs, or the comma-separated string the

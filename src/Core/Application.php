@@ -15,6 +15,7 @@ use FieldsBox\Fields\Group;
 use FieldsBox\Fields\Heading;
 use FieldsBox\Fields\Hidden;
 use FieldsBox\Fields\Image;
+use FieldsBox\Fields\Map;
 use FieldsBox\Fields\MultiSelect;
 use FieldsBox\Fields\Number;
 use FieldsBox\Fields\Password;
@@ -124,6 +125,7 @@ class Application {
 		Registry::register( 'file', File::class );
 		Registry::register( 'image', Image::class );
 		Registry::register( 'gallery', Gallery::class );
+		Registry::register( 'map', Map::class );
 		Registry::register( 'repeater', Repeater::class );
 		Registry::register( 'group', Group::class );
 		Registry::register( 'wysiwyg', Wysiwyg::class );

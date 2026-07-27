@@ -2,10 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Assets;
 use FieldsBox\Core\Helpers;
-
-Assets::enqueue_media();
 
 $attachment_id = absint( $field->get_value() );
 $preview_url   = $attachment_id

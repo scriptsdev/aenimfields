@@ -25,6 +25,10 @@ class Renderer {
 	public function render( FieldInterface $field ): string {
 		Assets::enqueue();
 
+		foreach ( $field->assets() as $key ) {
+			Assets::enqueue( $key );
+		}
+
 		$template = FIELDSBOX_DIR . '/templates/field-wrapper.php';
 
 		if ( ! file_exists( $template ) ) {

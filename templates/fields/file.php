@@ -2,10 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Assets;
 use FieldsBox\Core\Helpers;
-
-Assets::enqueue_media();
 
 $attachment_id = absint( $field->get_value() );
 $file_url      = $attachment_id ? wp_get_attachment_url( $attachment_id ) : '';

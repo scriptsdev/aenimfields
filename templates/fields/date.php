@@ -2,10 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Assets;
 use FieldsBox\Core\Helpers;
-
-Assets::enqueue_datepicker();
 
 $extra = array(
 	'type'                       => 'text',

@@ -227,6 +227,25 @@ function fieldsbox_example_metabox_fields(): array {
 			'wrapper_class'     => 'fieldsbox-example-attachment-wrapper',
 		),
 		array(
+			'type'              => 'map',
+			'name'              => 'fieldsbox_location',
+			'label'             => __( 'Location', 'fieldsbox' ),
+			'label_description' => __( 'Where this post\'s content takes place.', 'fieldsbox' ),
+			'description'       => __( 'Search an address, or drag the pin to fine-tune it.', 'fieldsbox' ),
+			'help'              => __( 'Uses the free OpenStreetMap provider — no API key needed.', 'fieldsbox' ),
+			'default'           => array(
+				'address' => '',
+				'lat'     => '',
+				'lng'     => '',
+				'zoom'    => 14,
+			),
+			'provider'          => 'osm', // Or 'google' — see Core\Assets::set_google_maps_api_key().
+			'height'            => 350,
+			'required'          => false,
+			'class'             => 'fieldsbox-example-location',
+			'wrapper_class'     => 'fieldsbox-example-location-wrapper',
+		),
+		array(
 			'type'              => 'group',
 			'name'              => 'fieldsbox_seo',
 			'label'             => __( 'SEO Settings', 'fieldsbox' ),

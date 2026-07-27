@@ -55,7 +55,7 @@ See [`examples/`](examples/) for complete, working patterns: an admin metabox, a
 
 ## Field types
 
-Implemented: `text`, `textarea`, `number`, `email`, `url`, `password`, `hidden`, `checkbox`, `radio`, `toggle`, `select`, `multiselect`, `color`, `date`, `datetime`, `wysiwyg`, `image`, `gallery`, `file`, `repeater`, `group`, `separator` (a display-only section divider), `heading` (a display-only label/sub-text block).
+Implemented: `text`, `textarea`, `number`, `email`, `url`, `password`, `hidden`, `checkbox`, `radio`, `toggle`, `select`, `multiselect`, `color`, `date`, `datetime`, `wysiwyg`, `image`, `gallery`, `file`, `map`, `repeater`, `group`, `separator` (a display-only section divider), `heading` (a display-only label/sub-text block).
 
 Every registered field type is now implemented.
 
@@ -129,6 +129,49 @@ Accepts `rows` (default `10`, taller than the usual default of `5`), plus `media
 `image` and `gallery` restrict the media library to images and reject non-image attachment IDs in `validate()`; `file` accepts any attachment type. `preview_size` (default `'thumbnail'`) controls the image size shown for `image`/`gallery`. `select_text` and `title_text` customize the button label and media-modal title.
 
 `wp_enqueue_media()` and this plugin's `assets/js/media.js` only load on pages that actually render one of these three field types — same selective-loading approach as the datepicker.
+
+### Map field
+
+`map` is a location picker: an address search box, a draggable-pin map, and latitude/longitude inputs, all kept in sync. Stores `['address' => string, 'lat' => float|string, 'lng' => float|string, 'zoom' => int]` — `lat`/`lng` are `''` until a location has actually been picked.
+
+```php
+[
+    'type'  => 'map',
+    'name'  => 'business_location',
+    'label' => __( 'Business Location', 'your-textdomain' ),
+],
+```
+
+Two providers, chosen with `provider`:
+
+- **`'osm'` (default)** — [Leaflet](https://leafletjs.com/) + OpenStreetMap tiles, bundled locally under `assets/vendor/`. Address search uses [Nominatim](https://nominatim.org/), OSM's free geocoding service — no API key, but it's rate-limited; a site with heavy traffic on this field should self-host Nominatim or switch to a paid geocoder.
+- **`'google'`** — the Google Maps JavaScript API (map, marker, Places Autocomplete, reverse geocoding). Requires an API key.
+
+```php
+[
+    'type'     => 'map',
+    'name'     => 'business_location',
+    'label'    => __( 'Business Location', 'your-textdomain' ),
+    'provider' => 'google',
+],
+```
+
+#### Google Maps API key
+
+The key is a site-wide credential, not a per-field value — set it once from your plugin's own bootstrap, wherever your plugin stores its own settings:
+
+```php
+$app = new \FieldsBox\Core\Application();
+\FieldsBox\Core\Assets::set_google_maps_api_key( 'AIza...' );
+```
+
+If a `map` field with `provider => 'google'` renders before a key has been set, it shows an inline notice instead of a broken map. Because the key is used in a client-side `<script src="...">` URL, it's inherently visible in the page source — that's normal for the Google Maps JS API. Restrict it in the Google Cloud Console (HTTP referrer restriction, limited to the Maps JavaScript API / Places API / Geocoding API) rather than relying on it staying secret.
+
+#### Options
+
+`default_lat` / `default_lng` (where the map centers before a location is picked), `zoom` (default `14`), `min_zoom` / `max_zoom` (default `2` / `20`), `height` (canvas height in px, default `400`), `show_address` (default `true` — set `false` for a lat/lng-only picker with no search box), `marker_draggable` (default `true`), `map_type` (Google only: `roadmap`/`satellite`/`hybrid`/`terrain`), `search_placeholder`.
+
+Both providers' JS/CSS only load on pages that actually render a `map` field, and only the provider actually in use — a page with an `osm` map never loads the Google Maps script, and vice versa.
 
 ### Repeater field
 

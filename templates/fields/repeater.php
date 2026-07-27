@@ -3,10 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use FieldsBox\Core\Application;
-use FieldsBox\Core\Assets;
 use FieldsBox\Core\Helpers;
-
-Assets::enqueue_repeater();
 
 $app  = new Application();
 $rows = array_values( (array) $field->get_value() );

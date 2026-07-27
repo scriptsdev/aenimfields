@@ -150,9 +150,9 @@
 
 		/**
 		 * Re-run other FieldsBox modules so fields in a newly added row —
-		 * conditional visibility, date pickers, media pickers — become
-		 * interactive. Each is optional; only loaded if actually used by
-		 * at least one field on the page.
+		 * conditional visibility, date pickers, media pickers, maps —
+		 * become interactive. Each is optional; only loaded if actually
+		 * used by at least one field on the page.
 		 */
 		reinitFields: function () {
 
@@ -166,6 +166,14 @@
 
 			if ( window.FieldsBox && window.FieldsBox.Media ) {
 				window.FieldsBox.Media.init();
+			}
+
+			if ( window.FieldsBox && window.FieldsBox.MapOsm ) {
+				window.FieldsBox.MapOsm.init();
+			}
+
+			if ( window.FieldsBox && window.FieldsBox.MapGoogle ) {
+				window.FieldsBox.MapGoogle.init();
 			}
 		},
 	};

@@ -231,6 +231,20 @@ abstract class BaseField implements FieldInterface {
 	}
 
 	/**
+	 * Assets this field needs enqueued.
+	 *
+	 * Child classes should override this when they depend on a
+	 * registered asset key (see `Core\Assets`).
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[]
+	 */
+	public function assets(): array {
+		return array();
+	}
+
+	/**
 	 * Default sanitization.
 	 *
 	 * Child classes should override this.

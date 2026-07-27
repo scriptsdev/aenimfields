@@ -18,6 +18,17 @@ namespace FieldsBox\Fields;
 class File extends BaseField {
 
 	/**
+	 * Assets this field needs enqueued.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[]
+	 */
+	public function assets(): array {
+		return array( 'media' );
+	}
+
+	/**
 	 * Sanitize the field value.
 	 *
 	 * Only normalizes to an attachment ID (or '' when absent); does not

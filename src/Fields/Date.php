@@ -43,6 +43,17 @@ class Date extends BaseField {
 	}
 
 	/**
+	 * Assets this field needs enqueued.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[]
+	 */
+	public function assets(): array {
+		return array( 'datepicker' );
+	}
+
+	/**
 	 * Sanitize the field value.
 	 *
 	 * Only trims the value; does not enforce the date format here, so

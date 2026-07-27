@@ -2,10 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Assets;
 use FieldsBox\Core\Helpers;
-
-Assets::enqueue_media();
 
 $ids = array_filter( array_map( 'absint', (array) $field->get_value() ) );
 
