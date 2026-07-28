@@ -2,8 +2,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Application;
-use FieldsBox\Core\Helpers;
+use ScriptsDev\FieldsBox\Core\Application;
+use ScriptsDev\FieldsBox\Core\Helpers;
 
 $app  = new Application();
 $rows = array_values( (array) $field->get_value() );

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Validation;
+namespace ScriptsDev\FieldsBox\Validation;
 
 /**
  * Validation result.

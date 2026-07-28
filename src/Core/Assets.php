@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Core;
+namespace ScriptsDev\FieldsBox\Core;
 
 /**
  * Assets class.
@@ -112,14 +112,14 @@ class Assets {
 
 		wp_register_style(
 			'fieldsbox-flatpickr',
-			FIELDSBOX_URL . 'assets/vendor/css/flatpickr.min.css',
+			FIELDSBOX_URL . 'assets/libraries/flatpickr/css/flatpickr.min.css',
 			array(),
 			self::FLATPICKR_VERSION
 		);
 
 		wp_register_script(
 			'fieldsbox-flatpickr',
-			FIELDSBOX_URL . 'assets/vendor/js/flatpickr.min.js',
+			FIELDSBOX_URL . 'assets/libraries/flatpickr/js/flatpickr.min.js',
 			array(),
 			self::FLATPICKR_VERSION,
 			true
@@ -151,14 +151,14 @@ class Assets {
 
 		wp_register_style(
 			'fieldsbox-leaflet',
-			FIELDSBOX_URL . 'assets/vendor/css/leaflet.css',
+			FIELDSBOX_URL . 'assets/libraries/leaflet/css/leaflet.css',
 			array(),
 			self::LEAFLET_VERSION
 		);
 
 		wp_register_script(
 			'fieldsbox-leaflet',
-			FIELDSBOX_URL . 'assets/vendor/js/leaflet.js',
+			FIELDSBOX_URL . 'assets/libraries/leaflet/js/leaflet.js',
 			array(),
 			self::LEAFLET_VERSION,
 			true

@@ -19,7 +19,7 @@ composer require scriptsdev/fieldsbox
 Then, from your plugin or theme, construct the application wherever you render fields or process a submission:
 
 ```php
-$app = new \FieldsBox\Core\Application();
+$app = new \ScriptsDev\FieldsBox\Core\Application();
 ```
 
 Constructing `Application` is cheap and safe to call more than once per request (e.g. once from your main setup and again inside a metabox callback) — field registration, asset registration, and the `FIELDSBOX_*` constants are all idempotent.
@@ -53,6 +53,35 @@ echo $app->render( [
 
 See [`examples/`](examples/) for complete, working patterns: an admin metabox, a settings page, and a public-facing frontend form, each covering rendering, sanitizing, and validating a submission.
 
+### Fluent builder (`Field::make()`)
+
+`ScriptsDev\FieldsBox\Core\Field` is a Carbon Fields-style fluent alternative to the array API above — same engine underneath, just chained method calls instead of an args array:
+
+```php
+use ScriptsDev\FieldsBox\Core\Field;
+
+echo Field::make( 'text', 'site_tagline', __( 'Site Tagline', 'your-textdomain' ) )
+    ->set_required()
+    ->set_description( __( 'Shown under the site title.', 'your-textdomain' ) )
+    ->render();
+```
+
+`set_required()` (or any `set_<arg>( $value )` call) sets the matching arg from the [common field args](#common-field-args) or a field-specific one (`set_options( [...] )`, `set_min_rows( 1 )`, `set_date_format( 'Y-m-d' )`, `set_provider( 'google' )`, etc.) — there's no fixed list of setters to keep in sync, any registered arg name works. Calling it with no argument (`set_required()`) sets `true`.
+
+`repeater`/`group` sub-fields (`set_fields( [...] )`) can be `Field` builders themselves, mixed with raw arrays:
+
+```php
+echo Field::make( 'repeater', 'team_members', __( 'Team Members', 'your-textdomain' ) )
+    ->set_min_rows( 1 )
+    ->set_fields( [
+        Field::make( 'text', 'name', __( 'Name', 'your-textdomain' ) )->set_required(),
+        Field::make( 'image', 'photo', __( 'Photo', 'your-textdomain' ) ),
+    ] )
+    ->render();
+```
+
+`set_conditional_logic( $field, $value )` is a named shortcut for `depends_on` (see [Conditional fields](#conditional-fields-depends_on) below). `sanitize( $value )` / `validate( $value )` mirror `Core\Sanitizer`/`Core\Validator`, and `to_array()` returns the plain args array if you need to hand a built field to code that expects the array API (e.g. nest it under a raw `repeater` `fields` array).
+
 ## Field types
 
 Implemented: `text`, `textarea`, `number`, `email`, `url`, `password`, `hidden`, `checkbox`, `radio`, `toggle`, `select`, `multiselect`, `color`, `date`, `datetime`, `wysiwyg`, `image`, `gallery`, `file`, `map`, `repeater`, `group`, `separator` (a display-only section divider), `heading` (a display-only label/sub-text block).
@@ -61,7 +90,7 @@ Every registered field type is now implemented.
 
 ### Date / DateTime fields
 
-`date` and `datetime` render as a text input progressively enhanced by [flatpickr](https://flatpickr.js.org/) (bundled locally under `assets/vendor/`, no CDN). Both accept a `date_format` arg using PHP's `date()` tokens — default `Y-m-d` for `date`, `Y-m-d H:i` for `datetime`. Stick to tokens both PHP and flatpickr understand (`Y`, `m`, `d`, `H`, `i`, `s`) if you customize it.
+`date` and `datetime` render as a text input progressively enhanced by [flatpickr](https://flatpickr.js.org/) (bundled locally under `assets/libraries/flatpickr/`, no CDN). Both accept a `date_format` arg using PHP's `date()` tokens — default `Y-m-d` for `date`, `Y-m-d H:i` for `datetime`. Stick to tokens both PHP and flatpickr understand (`Y`, `m`, `d`, `H`, `i`, `s`) if you customize it.
 
 ```php
 [
@@ -144,7 +173,7 @@ Accepts `rows` (default `10`, taller than the usual default of `5`), plus `media
 
 Two providers, chosen with `provider`:
 
-- **`'osm'` (default)** — [Leaflet](https://leafletjs.com/) + OpenStreetMap tiles, bundled locally under `assets/vendor/`. Address search uses [Nominatim](https://nominatim.org/), OSM's free geocoding service — no API key, but it's rate-limited; a site with heavy traffic on this field should self-host Nominatim or switch to a paid geocoder.
+- **`'osm'` (default)** — [Leaflet](https://leafletjs.com/) + OpenStreetMap tiles, bundled locally under `assets/libraries/leaflet/`. Address search uses [Nominatim](https://nominatim.org/), OSM's free geocoding service — no API key, but it's rate-limited; a site with heavy traffic on this field should self-host Nominatim or switch to a paid geocoder.
 - **`'google'`** — the Google Maps JavaScript API (map, marker, Places Autocomplete, reverse geocoding). Requires an API key.
 
 ```php
@@ -161,8 +190,8 @@ Two providers, chosen with `provider`:
 The key is a site-wide credential, not a per-field value — set it once from your plugin's own bootstrap, wherever your plugin stores its own settings:
 
 ```php
-$app = new \FieldsBox\Core\Application();
-\FieldsBox\Core\Assets::set_google_maps_api_key( 'AIza...' );
+$app = new \ScriptsDev\FieldsBox\Core\Application();
+\ScriptsDev\FieldsBox\Core\Assets::set_google_maps_api_key( 'AIza...' );
 ```
 
 If a `map` field with `provider => 'google'` renders before a key has been set, it shows an inline notice instead of a broken map. Because the key is used in a client-side `<script src="...">` URL, it's inherently visible in the page source — that's normal for the Google Maps JS API. Restrict it in the Google Cloud Console (HTTP referrer restriction, limited to the Maps JavaScript API / Places API / Geocoding API) rather than relying on it staying secret.
@@ -229,9 +258,9 @@ Every field accepts `type`, `name`, `label`, `label_description` (a sub-line ren
 ## Sanitizing and validating a submission
 
 ```php
-use FieldsBox\Core\FieldFactory;
-use FieldsBox\Core\Sanitizer;
-use FieldsBox\Core\Validator;
+use ScriptsDev\FieldsBox\Core\FieldFactory;
+use ScriptsDev\FieldsBox\Core\Sanitizer;
+use ScriptsDev\FieldsBox\Core\Validator;
 
 $factory = new FieldFactory();
 $field   = $factory->make( [

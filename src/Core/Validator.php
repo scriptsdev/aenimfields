@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Core;
+namespace ScriptsDev\FieldsBox\Core;
 
-use FieldsBox\Contracts\FieldInterface;
-use FieldsBox\Validation\Rules\Email;
-use FieldsBox\Validation\Rules\Max;
-use FieldsBox\Validation\Rules\Min;
-use FieldsBox\Validation\Rules\Numeric;
-use FieldsBox\Validation\Rules\Regex;
-use FieldsBox\Validation\Rules\Required;
-use FieldsBox\Validation\Rules\Url;
-use FieldsBox\Validation\ValidationResult;
+use ScriptsDev\FieldsBox\Contracts\FieldInterface;
+use ScriptsDev\FieldsBox\Validation\Rules\Email;
+use ScriptsDev\FieldsBox\Validation\Rules\Max;
+use ScriptsDev\FieldsBox\Validation\Rules\Min;
+use ScriptsDev\FieldsBox\Validation\Rules\Numeric;
+use ScriptsDev\FieldsBox\Validation\Rules\Regex;
+use ScriptsDev\FieldsBox\Validation\Rules\Required;
+use ScriptsDev\FieldsBox\Validation\Rules\Url;
+use ScriptsDev\FieldsBox\Validation\ValidationResult;
 
 /**
  * Validator class.

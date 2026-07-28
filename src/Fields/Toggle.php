@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Fields;
+namespace ScriptsDev\FieldsBox\Fields;
 
-use FieldsBox\Sanitization\BooleanSanitizer;
+use ScriptsDev\FieldsBox\Sanitization\BooleanSanitizer;
 
 /**
  * Toggle field.

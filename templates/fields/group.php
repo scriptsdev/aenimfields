@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Application;
+use ScriptsDev\FieldsBox\Core\Application;
 
 $app = new Application();
 

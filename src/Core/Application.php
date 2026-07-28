@@ -2,32 +2,32 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Core;
+namespace ScriptsDev\FieldsBox\Core;
 
-use FieldsBox\Fields\Checkbox;
-use FieldsBox\Fields\Color;
-use FieldsBox\Fields\Date;
-use FieldsBox\Fields\DateTime;
-use FieldsBox\Fields\Email;
-use FieldsBox\Fields\File;
-use FieldsBox\Fields\Gallery;
-use FieldsBox\Fields\Group;
-use FieldsBox\Fields\Heading;
-use FieldsBox\Fields\Hidden;
-use FieldsBox\Fields\Image;
-use FieldsBox\Fields\Map;
-use FieldsBox\Fields\MultiSelect;
-use FieldsBox\Fields\Number;
-use FieldsBox\Fields\Password;
-use FieldsBox\Fields\Radio;
-use FieldsBox\Fields\Repeater;
-use FieldsBox\Fields\Select;
-use FieldsBox\Fields\Separator;
-use FieldsBox\Fields\Text;
-use FieldsBox\Fields\Textarea;
-use FieldsBox\Fields\Toggle;
-use FieldsBox\Fields\Url;
-use FieldsBox\Fields\Wysiwyg;
+use ScriptsDev\FieldsBox\Fields\Checkbox;
+use ScriptsDev\FieldsBox\Fields\Color;
+use ScriptsDev\FieldsBox\Fields\Date;
+use ScriptsDev\FieldsBox\Fields\DateTime;
+use ScriptsDev\FieldsBox\Fields\Email;
+use ScriptsDev\FieldsBox\Fields\File;
+use ScriptsDev\FieldsBox\Fields\Gallery;
+use ScriptsDev\FieldsBox\Fields\Group;
+use ScriptsDev\FieldsBox\Fields\Heading;
+use ScriptsDev\FieldsBox\Fields\Hidden;
+use ScriptsDev\FieldsBox\Fields\Image;
+use ScriptsDev\FieldsBox\Fields\Map;
+use ScriptsDev\FieldsBox\Fields\MultiSelect;
+use ScriptsDev\FieldsBox\Fields\Number;
+use ScriptsDev\FieldsBox\Fields\Password;
+use ScriptsDev\FieldsBox\Fields\Radio;
+use ScriptsDev\FieldsBox\Fields\Repeater;
+use ScriptsDev\FieldsBox\Fields\Select;
+use ScriptsDev\FieldsBox\Fields\Separator;
+use ScriptsDev\FieldsBox\Fields\Text;
+use ScriptsDev\FieldsBox\Fields\Textarea;
+use ScriptsDev\FieldsBox\Fields\Toggle;
+use ScriptsDev\FieldsBox\Fields\Url;
+use ScriptsDev\FieldsBox\Fields\Wysiwyg;
 
 /**
  * Application class.

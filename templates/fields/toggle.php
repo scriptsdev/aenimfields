@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Helpers;
+use ScriptsDev\FieldsBox\Core\Helpers;
 
 $attributes = Helpers::input_attributes(
 	$field,

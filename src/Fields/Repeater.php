@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Fields;
+namespace ScriptsDev\FieldsBox\Fields;
 
-use FieldsBox\Contracts\ContainerFieldInterface;
-use FieldsBox\Core\FieldFactory;
-use FieldsBox\Core\Validator;
-use FieldsBox\Sanitization\RepeaterSanitizer;
+use ScriptsDev\FieldsBox\Contracts\ContainerFieldInterface;
+use ScriptsDev\FieldsBox\Core\FieldFactory;
+use ScriptsDev\FieldsBox\Core\Validator;
+use ScriptsDev\FieldsBox\Sanitization\RepeaterSanitizer;
 
 /**
  * Repeater field.

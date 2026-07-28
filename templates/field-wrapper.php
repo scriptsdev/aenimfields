@@ -3,12 +3,12 @@
 /**
  * Field Wrapper Template
  *
- * @var \FieldsBox\Contracts\FieldInterface $field
+ * @var \ScriptsDev\FieldsBox\Contracts\FieldInterface $field
  */
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Helpers;
+use ScriptsDev\FieldsBox\Core\Helpers;
 
 $field_template = FIELDSBOX_DIR . '/templates/fields/' . strtolower( $field->get_type() ) . '.php';
 

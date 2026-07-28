@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Core;
+namespace ScriptsDev\FieldsBox\Core;
 
 use InvalidArgumentException;
 

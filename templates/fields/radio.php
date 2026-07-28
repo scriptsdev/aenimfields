@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Helpers;
+use ScriptsDev\FieldsBox\Core\Helpers;
 
 $options = (array) $field->get_arg( 'options' );
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Contracts;
+namespace ScriptsDev\FieldsBox\Contracts;
 
 /**
  * Interface FieldInterface

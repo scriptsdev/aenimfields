@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Helpers;
+use ScriptsDev\FieldsBox\Core\Helpers;
 
 $attachment_id = absint( $field->get_value() );
 $file_url      = $attachment_id ? wp_get_attachment_url( $attachment_id ) : '';

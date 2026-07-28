@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Helpers;
+use ScriptsDev\FieldsBox\Core\Helpers;
 
 $ids = array_filter( array_map( 'absint', (array) $field->get_value() ) );
 

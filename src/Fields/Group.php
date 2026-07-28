@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Fields;
+namespace ScriptsDev\FieldsBox\Fields;
 
-use FieldsBox\Contracts\ContainerFieldInterface;
-use FieldsBox\Core\FieldFactory;
-use FieldsBox\Core\Sanitizer;
-use FieldsBox\Core\Validator;
+use ScriptsDev\FieldsBox\Contracts\ContainerFieldInterface;
+use ScriptsDev\FieldsBox\Core\FieldFactory;
+use ScriptsDev\FieldsBox\Core\Sanitizer;
+use ScriptsDev\FieldsBox\Core\Validator;
 
 /**
  * Group field.

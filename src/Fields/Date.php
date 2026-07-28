@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Fields;
+namespace ScriptsDev\FieldsBox\Fields;
 
 /**
  * Date field.

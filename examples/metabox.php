@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Application;
-use FieldsBox\Core\FieldFactory;
-use FieldsBox\Core\Sanitizer;
-use FieldsBox\Core\Validator;
+use ScriptsDev\FieldsBox\Core\Application;
+use ScriptsDev\FieldsBox\Core\FieldFactory;
+use ScriptsDev\FieldsBox\Core\Sanitizer;
+use ScriptsDev\FieldsBox\Core\Validator;
 
 /**
  * Field definitions for the metabox.

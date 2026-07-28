@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Sanitization;
+namespace ScriptsDev\FieldsBox\Sanitization;
 
-use FieldsBox\Core\FieldFactory;
-use FieldsBox\Core\Sanitizer;
+use ScriptsDev\FieldsBox\Core\FieldFactory;
+use ScriptsDev\FieldsBox\Core\Sanitizer;
 
 /**
  * Repeater sanitizer.

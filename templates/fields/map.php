@@ -2,8 +2,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use FieldsBox\Core\Assets;
-use FieldsBox\Core\Helpers;
+use ScriptsDev\FieldsBox\Core\Assets;
+use ScriptsDev\FieldsBox\Core\Helpers;
 
 $provider = (string) $field->get_arg( 'provider', 'osm' );
 $value    = (array) $field->get_value();
@@ -14,7 +14,7 @@ if ( 'google' === $provider && '' === Assets::get_google_maps_api_key() ) :
 	<p class="fieldsbox-map-notice">
 		<?php
 		esc_html_e(
-			'Google Maps API key not configured. Call FieldsBox\Core\Assets::set_google_maps_api_key() from your plugin, or set this field\'s "provider" option to "osm".',
+			'Google Maps API key not configured. Call ScriptsDev\FieldsBox\Core\Assets::set_google_maps_api_key() from your plugin, or set this field\'s "provider" option to "osm".',
 			'fieldsbox'
 		);
 		?>

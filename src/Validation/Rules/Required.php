@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FieldsBox\Validation\Rules;
+namespace ScriptsDev\FieldsBox\Validation\Rules;
 
 /**
  * Required rule.
