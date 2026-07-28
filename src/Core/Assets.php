@@ -220,14 +220,17 @@ class Assets {
 				wp_enqueue_script( 'fieldsbox-leaflet' );
 				wp_enqueue_script( 'fieldsbox-map-osm' );
 			},
-			'map_google' => static function (): void {
+			'map_google' => static function (): bool {
 
 				$api_key = self::$google_maps_api_key;
 
 				if ( '' === $api_key ) {
 					// No key configured; the field template renders its
 					// own inline notice, so there's nothing to enqueue.
-					return;
+					// Returning false stops enqueue() from caching this
+					// key as done, so a later render (once the key is
+					// set) can still succeed.
+					return false;
 				}
 
 				wp_register_script(
@@ -255,6 +258,8 @@ class Assets {
 				wp_enqueue_style( 'fieldsbox-map' );
 				wp_enqueue_script( 'fieldsbox-google-maps' );
 				wp_enqueue_script( 'fieldsbox-map-google' );
+
+				return true;
 			},
 		);
 	}
@@ -263,7 +268,10 @@ class Assets {
 	 * Enqueue an asset by key.
 	 *
 	 * Safe to call repeatedly with the same key; only enqueues once per
-	 * request. Unknown keys are silently ignored.
+	 * request. Unknown keys are silently ignored. If a manifest callback
+	 * returns false (e.g. 'map_google' with no API key configured yet),
+	 * the key is NOT cached as done, so a later call — once the
+	 * precondition is met — can still succeed.
 	 *
 	 * @since 1.0.0
 	 *
@@ -277,14 +285,14 @@ class Assets {
 			return;
 		}
 
-		self::$enqueued[ $key ] = true;
-
 		self::register();
 
 		$manifest = self::manifest();
 
-		if ( isset( $manifest[ $key ] ) ) {
-			$manifest[ $key ]();
+		if ( isset( $manifest[ $key ] ) && false === $manifest[ $key ]() ) {
+			return;
 		}
+
+		self::$enqueued[ $key ] = true;
 	}
 }
