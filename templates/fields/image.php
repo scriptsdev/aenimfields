@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Helpers;
+use AenimTech\AenimFields\Core\Helpers;
 
 $attachment_id = absint( $field->get_value() );
 $preview_url   = $attachment_id
@@ -19,25 +19,25 @@ $attributes = Helpers::input_attributes(
 ?>
 
 <div
-	class="fieldsbox-media-field fieldsbox-media-field-image"
-	data-fieldsbox-media="image"
-	data-fieldsbox-media-title="<?php echo esc_attr( $field->get_arg( 'title_text', __( 'Select Image', 'fieldsbox' ) ) ); ?>"
+	class="aenimfields-media-field aenimfields-media-field-image"
+	data-aenimfields-media="image"
+	data-aenimfields-media-title="<?php echo esc_attr( $field->get_arg( 'title_text', __( 'Select Image', 'aenimfields' ) ) ); ?>"
 >
 
 	<input <?php echo Helpers::attributes( $attributes ); ?>>
 
-	<div class="fieldsbox-media-preview" <?php echo $preview_url ? '' : 'hidden'; ?>>
+	<div class="aenimfields-media-preview" <?php echo $preview_url ? '' : 'hidden'; ?>>
 		<?php if ( $preview_url ) : ?>
 			<img src="<?php echo esc_url( $preview_url ); ?>" alt="">
 		<?php endif; ?>
 	</div>
 
-	<p class="fieldsbox-media-actions">
-		<button type="button" class="button fieldsbox-media-select">
-			<?php echo esc_html( $field->get_arg( 'select_text', __( 'Select Image', 'fieldsbox' ) ) ); ?>
+	<p class="aenimfields-media-actions">
+		<button type="button" class="button aenimfields-media-select">
+			<?php echo esc_html( $field->get_arg( 'select_text', __( 'Select Image', 'aenimfields' ) ) ); ?>
 		</button>
-		<button type="button" class="button fieldsbox-media-remove" <?php echo $preview_url ? '' : 'hidden'; ?>>
-			<?php esc_html_e( 'Remove', 'fieldsbox' ); ?>
+		<button type="button" class="button aenimfields-media-remove" <?php echo $preview_url ? '' : 'hidden'; ?>>
+			<?php esc_html_e( 'Remove', 'aenimfields' ); ?>
 		</button>
 	</p>
 

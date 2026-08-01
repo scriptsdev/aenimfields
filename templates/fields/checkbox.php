@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Helpers;
+use AenimTech\AenimFields\Core\Helpers;
 
 $options = $field->get_arg( 'options' );
 $value   = $field->get_value();
@@ -31,7 +31,7 @@ if ( ! empty( $options ) ) :
 
 		?>
 
-		<label class="fieldsbox-checkbox">
+		<label class="aenimfields-checkbox">
 
 			<input <?php echo Helpers::attributes( $attributes ); ?>>
 
@@ -65,7 +65,7 @@ else :
 
 	?>
 
-	<label class="fieldsbox-checkbox">
+	<label class="aenimfields-checkbox">
 
 		<input <?php echo Helpers::attributes( $attributes ); ?>>
 

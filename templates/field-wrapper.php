@@ -3,23 +3,23 @@
 /**
  * Field Wrapper Template
  *
- * @var \ScriptsDev\FieldsBox\Contracts\FieldInterface $field
+ * @var \AenimTech\AenimFields\Contracts\FieldInterface $field
  */
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Helpers;
+use AenimTech\AenimFields\Core\Helpers;
 
-$field_template = FIELDSBOX_DIR . '/templates/fields/' . strtolower( $field->get_type() ) . '.php';
+$field_template = AENIMFIELDS_DIR . '/templates/fields/' . strtolower( $field->get_type() ) . '.php';
 
 $wrapper_class = array(
-	'fieldsbox-field',
-	'fieldsbox-field-' . $field->get_type(),
+	'aenimfields-field',
+	'aenimfields-field-' . $field->get_type(),
 	$field->get_arg( 'wrapper_class' ),
 );
 
 if ( $field->get_arg( 'error' ) ) {
-	$wrapper_class[] = 'fieldsbox-field-error';
+	$wrapper_class[] = 'aenimfields-field-error';
 }
 
 $wrapper_class = implode( ' ', array_filter( $wrapper_class ) );
@@ -36,8 +36,8 @@ $wrapper_attributes = array_merge(
 		// condition is met, so there is no flash of a field that should
 		// stay hidden.
 		'hidden'                          => true,
-		'data-fieldsbox-depends-on-field' => $depends_on['field'],
-		'data-fieldsbox-depends-on-value' => wp_json_encode( $depends_on['value'] ?? '' ),
+		'data-aenimfields-depends-on-field' => $depends_on['field'],
+		'data-aenimfields-depends-on-value' => wp_json_encode( $depends_on['value'] ?? '' ),
 	) : array(),
 	$field->get_arg( 'wrapper_attr' )
 );
@@ -54,7 +54,7 @@ $wrapper_attributes = array_merge(
 		$label_attributes = array_merge(
 			array(
 				'for'   => $field->get_id(),
-				'class' => 'fieldsbox-label',
+				'class' => 'aenimfields-label',
 			),
 			$field->get_arg( 'label_attr' )
 		);
@@ -65,14 +65,14 @@ $wrapper_attributes = array_merge(
 			<?php echo esc_html( $field->get_arg( 'label' ) ); ?>
 
 			<?php if ( $field->is_required() ) : ?>
-				<span class="fieldsbox-required">*</span>
+				<span class="aenimfields-required">*</span>
 			<?php endif; ?>
 
 		</label>
 
 		<?php if ( $field->get_arg( 'label_description' ) ) : ?>
 
-			<p class="fieldsbox-label-description">
+			<p class="aenimfields-label-description">
 
 				<?php echo wp_kses_post( $field->get_arg( 'label_description' ) ); ?>
 
@@ -82,7 +82,7 @@ $wrapper_attributes = array_merge(
 
 	<?php endif; ?>
 
-	<div class="fieldsbox-field-control">
+	<div class="aenimfields-field-control">
 
 		<?php
 
@@ -90,7 +90,7 @@ $wrapper_attributes = array_merge(
 
 			?>
 
-			<span class="fieldsbox-prefix">
+			<span class="aenimfields-prefix">
 
 				<?php echo wp_kses_post( $field->get_arg( 'prefix' ) ); ?>
 
@@ -108,7 +108,7 @@ $wrapper_attributes = array_merge(
 
 			?>
 
-			<span class="fieldsbox-suffix">
+			<span class="aenimfields-suffix">
 
 				<?php echo wp_kses_post( $field->get_arg( 'suffix' ) ); ?>
 
@@ -124,7 +124,7 @@ $wrapper_attributes = array_merge(
 
 	<?php if ( $field->get_arg( 'error' ) ) : ?>
 
-	<p class="fieldsbox-error">
+	<p class="aenimfields-error">
 
 		<?php echo esc_html( $field->get_arg( 'error' ) ); ?>
 
@@ -134,7 +134,7 @@ $wrapper_attributes = array_merge(
 
 	<?php if ( $field->get_arg( 'description' ) ) : ?>
 
-		<p class="fieldsbox-description">
+		<p class="aenimfields-description">
 
 			<?php echo wp_kses_post( $field->get_arg( 'description' ) ); ?>
 
@@ -144,7 +144,7 @@ $wrapper_attributes = array_merge(
 
 	<?php if ( $field->get_arg( 'help' ) ) : ?>
 
-		<p class="fieldsbox-help">
+		<p class="aenimfields-help">
 
 			<?php echo wp_kses_post( $field->get_arg( 'help' ) ); ?>
 

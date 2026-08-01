@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Validation\Rules;
+namespace AenimTech\AenimFields\Validation\Rules;
 
 /**
  * URL rule.
@@ -29,7 +29,7 @@ class Url {
 		}
 
 		if ( ! wp_http_validate_url( (string) $value ) ) {
-			return sprintf( __( 'The "%s" field must be a valid URL.', 'fieldsbox' ), $label );
+			return sprintf( __( 'The "%s" field must be a valid URL.', 'aenimfields' ), $label );
 		}
 
 		return true;

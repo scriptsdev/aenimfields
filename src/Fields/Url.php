@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
 /**
  * URL field.
@@ -49,7 +49,7 @@ class Url extends BaseField {
 		}
 
 		if ( '' !== $value && ! wp_http_validate_url( $value ) ) {
-			return __( 'Please enter a valid URL.', 'fieldsbox' );
+			return __( 'Please enter a valid URL.', 'aenimfields' );
 		}
 
 		return true;

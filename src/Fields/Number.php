@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
-use ScriptsDev\FieldsBox\Sanitization\NumberSanitizer;
+use AenimTech\AenimFields\Sanitization\NumberSanitizer;
 
 /**
  * Number field.
@@ -43,7 +43,7 @@ class Number extends BaseField {
 		}
 
 		if ( $value !== '' && ! is_numeric( $value ) ) {
-			return __( 'Please enter a valid number.', 'fieldsbox' );
+			return __( 'Please enter a valid number.', 'aenimfields' );
 		}
 
 		return true;

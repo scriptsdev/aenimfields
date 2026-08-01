@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Sanitization;
+namespace AenimTech\AenimFields\Sanitization;
 
 /**
  * Select sanitizer.

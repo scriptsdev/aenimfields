@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
-use ScriptsDev\FieldsBox\Contracts\ContainerFieldInterface;
-use ScriptsDev\FieldsBox\Core\FieldFactory;
-use ScriptsDev\FieldsBox\Core\Validator;
-use ScriptsDev\FieldsBox\Sanitization\RepeaterSanitizer;
+use AenimTech\AenimFields\Contracts\ContainerFieldInterface;
+use AenimTech\AenimFields\Core\FieldFactory;
+use AenimTech\AenimFields\Core\Validator;
+use AenimTech\AenimFields\Sanitization\RepeaterSanitizer;
 
 /**
  * Repeater field.
@@ -139,7 +139,7 @@ class Repeater extends BaseField implements ContainerFieldInterface {
 
 		if ( $min_rows > 0 && $count < $min_rows ) {
 			return sprintf(
-				__( 'The "%1$s" field must have at least %2$d row(s).', 'fieldsbox' ),
+				__( 'The "%1$s" field must have at least %2$d row(s).', 'aenimfields' ),
 				$label,
 				$min_rows
 			);
@@ -147,7 +147,7 @@ class Repeater extends BaseField implements ContainerFieldInterface {
 
 		if ( $max_rows > 0 && $count > $max_rows ) {
 			return sprintf(
-				__( 'The "%1$s" field must have %2$d row(s) at most.', 'fieldsbox' ),
+				__( 'The "%1$s" field must have %2$d row(s) at most.', 'aenimfields' ),
 				$label,
 				$max_rows
 			);
@@ -172,7 +172,7 @@ class Repeater extends BaseField implements ContainerFieldInterface {
 				if ( ! $sub_result->passed() ) {
 					return sprintf(
 						/* translators: 1: row number, 2: the sub-field's own validation error message */
-						__( 'Row %1$d: %2$s', 'fieldsbox' ),
+						__( 'Row %1$d: %2$s', 'aenimfields' ),
 						$row_index + 1,
 						$sub_result->message()
 					);

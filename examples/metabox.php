@@ -5,19 +5,19 @@ declare(strict_types=1);
 /**
  * Example: Metabox
  *
- * Demonstrates rendering FieldsBox fields inside a post edit-screen
+ * Demonstrates rendering AenimFields fields inside a post edit-screen
  * metabox, and sanitizing + validating submitted values on save.
  *
- * This file is not loaded automatically by FieldsBox; copy the parts
+ * This file is not loaded automatically by AenimFields; copy the parts
  * you need into your own plugin or theme.
  */
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Application;
-use ScriptsDev\FieldsBox\Core\FieldFactory;
-use ScriptsDev\FieldsBox\Core\Sanitizer;
-use ScriptsDev\FieldsBox\Core\Validator;
+use AenimTech\AenimFields\Core\Application;
+use AenimTech\AenimFields\Core\FieldFactory;
+use AenimTech\AenimFields\Core\Sanitizer;
+use AenimTech\AenimFields\Core\Validator;
 
 /**
  * Field definitions for the metabox.
@@ -26,54 +26,54 @@ use ScriptsDev\FieldsBox\Core\Validator;
  *
  * @return array
  */
-function fieldsbox_example_metabox_fields(): array {
+function aenimfields_example_metabox_fields(): array {
 	return array(
 		array(
 			'type'              => 'text',
-			'name'              => 'fieldsbox_subtitle',
-			'label'             => __( 'Subtitle', 'fieldsbox' ),
-			'label_description' => __( 'A short line shown under the title.', 'fieldsbox' ),
-			'description'       => __( 'Shown below the post title.', 'fieldsbox' ),
-			'help'              => __( 'Keep it under 60 characters for best display.', 'fieldsbox' ),
-			'placeholder'       => __( 'e.g. A beginner-friendly guide', 'fieldsbox' ),
+			'name'              => 'aenimfields_subtitle',
+			'label'             => __( 'Subtitle', 'aenimfields' ),
+			'label_description' => __( 'A short line shown under the title.', 'aenimfields' ),
+			'description'       => __( 'Shown below the post title.', 'aenimfields' ),
+			'help'              => __( 'Keep it under 60 characters for best display.', 'aenimfields' ),
+			'placeholder'       => __( 'e.g. A beginner-friendly guide', 'aenimfields' ),
 			'default'           => '',
 			'required'          => false,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-subtitle',
-			'wrapper_class'     => 'fieldsbox-example-subtitle-wrapper',
+			'class'             => 'aenimfields-example-subtitle',
+			'wrapper_class'     => 'aenimfields-example-subtitle-wrapper',
 			'autocomplete'      => 'off',
 			'validate'          => array( 'max:60' ),
-			'input_attr'        => array( 'data-fieldsbox-example' => 'subtitle' ),
-			'label_attr'        => array( 'data-fieldsbox-example' => 'subtitle-label' ),
-			'wrapper_attr'      => array( 'data-fieldsbox-example' => 'subtitle-wrapper' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'subtitle' ),
+			'label_attr'        => array( 'data-aenimfields-example' => 'subtitle-label' ),
+			'wrapper_attr'      => array( 'data-aenimfields-example' => 'subtitle-wrapper' ),
 		),
 		array(
 			'type'              => 'textarea',
-			'name'              => 'fieldsbox_summary',
-			'label'             => __( 'Summary', 'fieldsbox' ),
-			'label_description' => __( 'A short overview, not the full content.', 'fieldsbox' ),
-			'description'       => __( 'Used in list views and social previews.', 'fieldsbox' ),
-			'help'              => __( 'Aim for one or two sentences.', 'fieldsbox' ),
-			'placeholder'       => __( 'Write a brief summary…', 'fieldsbox' ),
+			'name'              => 'aenimfields_summary',
+			'label'             => __( 'Summary', 'aenimfields' ),
+			'label_description' => __( 'A short overview, not the full content.', 'aenimfields' ),
+			'description'       => __( 'Used in list views and social previews.', 'aenimfields' ),
+			'help'              => __( 'Aim for one or two sentences.', 'aenimfields' ),
+			'placeholder'       => __( 'Write a brief summary…', 'aenimfields' ),
 			'default'           => '',
 			'rows'              => 4,
 			'cols'              => 50,
 			'required'          => false,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-summary',
-			'wrapper_class'     => 'fieldsbox-example-summary-wrapper',
+			'class'             => 'aenimfields-example-summary',
+			'wrapper_class'     => 'aenimfields-example-summary-wrapper',
 			'validate'          => array( 'max:300' ),
-			'input_attr'        => array( 'data-fieldsbox-example' => 'summary' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'summary' ),
 		),
 		array(
 			'type'              => 'number',
-			'name'              => 'fieldsbox_price',
-			'label'             => __( 'Price', 'fieldsbox' ),
-			'label_description' => __( 'The amount charged for this item.', 'fieldsbox' ),
-			'description'       => __( 'Shown on the frontend price display.', 'fieldsbox' ),
-			'help'              => __( 'Use 0 for free items.', 'fieldsbox' ),
+			'name'              => 'aenimfields_price',
+			'label'             => __( 'Price', 'aenimfields' ),
+			'label_description' => __( 'The amount charged for this item.', 'aenimfields' ),
+			'description'       => __( 'Shown on the frontend price display.', 'aenimfields' ),
+			'help'              => __( 'Use 0 for free items.', 'aenimfields' ),
 			'placeholder'       => '0.00',
 			'default'           => 0,
 			'min'               => 0,
@@ -82,73 +82,73 @@ function fieldsbox_example_metabox_fields(): array {
 			'required'          => true,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-price',
-			'wrapper_class'     => 'fieldsbox-example-price-wrapper',
+			'class'             => 'aenimfields-example-price',
+			'wrapper_class'     => 'aenimfields-example-price-wrapper',
 			'prefix'            => '$',
-			'suffix'            => __( 'USD', 'fieldsbox' ),
+			'suffix'            => __( 'USD', 'aenimfields' ),
 			'validate'          => array( 'min:0', 'max:100000' ),
-			'input_attr'        => array( 'data-fieldsbox-example' => 'price' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'price' ),
 		),
 		array(
 			'type'              => 'email',
-			'name'              => 'fieldsbox_contact_email',
-			'label'             => __( 'Contact Email', 'fieldsbox' ),
-			'label_description' => __( 'Used for inquiries about this content.', 'fieldsbox' ),
-			'description'       => __( 'Displayed publicly on the post.', 'fieldsbox' ),
-			'help'              => __( 'Double-check for typos.', 'fieldsbox' ),
+			'name'              => 'aenimfields_contact_email',
+			'label'             => __( 'Contact Email', 'aenimfields' ),
+			'label_description' => __( 'Used for inquiries about this content.', 'aenimfields' ),
+			'description'       => __( 'Displayed publicly on the post.', 'aenimfields' ),
+			'help'              => __( 'Double-check for typos.', 'aenimfields' ),
 			'placeholder'       => 'name@example.com',
 			'default'           => '',
 			'required'          => false,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-email',
-			'wrapper_class'     => 'fieldsbox-example-email-wrapper',
+			'class'             => 'aenimfields-example-email',
+			'wrapper_class'     => 'aenimfields-example-email-wrapper',
 			'autocomplete'      => 'email',
 			'validate'          => array( 'email' ),
-			'input_attr'        => array( 'data-fieldsbox-example' => 'contact-email' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'contact-email' ),
 		),
 		array(
 			'type'              => 'select',
-			'name'              => 'fieldsbox_status',
-			'label'             => __( 'Status', 'fieldsbox' ),
-			'label_description' => __( 'Controls where this content appears.', 'fieldsbox' ),
-			'description'       => __( 'Archived items are hidden from listings.', 'fieldsbox' ),
-			'help'              => __( 'Draft items are visible only to editors.', 'fieldsbox' ),
-			'placeholder'       => __( '— Select a status —', 'fieldsbox' ),
+			'name'              => 'aenimfields_status',
+			'label'             => __( 'Status', 'aenimfields' ),
+			'label_description' => __( 'Controls where this content appears.', 'aenimfields' ),
+			'description'       => __( 'Archived items are hidden from listings.', 'aenimfields' ),
+			'help'              => __( 'Draft items are visible only to editors.', 'aenimfields' ),
+			'placeholder'       => __( '— Select a status —', 'aenimfields' ),
 			'options'           => array(
-				'draft'    => __( 'Draft', 'fieldsbox' ),
-				'active'   => __( 'Active', 'fieldsbox' ),
-				'archived' => __( 'Archived', 'fieldsbox' ),
+				'draft'    => __( 'Draft', 'aenimfields' ),
+				'active'   => __( 'Active', 'aenimfields' ),
+				'archived' => __( 'Archived', 'aenimfields' ),
 			),
 			'default'           => 'draft',
 			'required'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-status',
-			'wrapper_class'     => 'fieldsbox-example-status-wrapper',
-			'input_attr'        => array( 'data-fieldsbox-example' => 'status' ),
+			'class'             => 'aenimfields-example-status',
+			'wrapper_class'     => 'aenimfields-example-status-wrapper',
+			'input_attr'        => array( 'data-aenimfields-example' => 'status' ),
 		),
 		array(
 			'type'              => 'toggle',
-			'name'              => 'fieldsbox_featured',
-			'label'             => __( 'Featured', 'fieldsbox' ),
-			'label_description' => __( 'Highlight this content in featured listings.', 'fieldsbox' ),
-			'description'       => __( 'Featured items appear on the homepage.', 'fieldsbox' ),
-			'help'              => __( 'Limit to a handful of items at a time.', 'fieldsbox' ),
-			'text'              => __( 'Show in featured listings', 'fieldsbox' ),
+			'name'              => 'aenimfields_featured',
+			'label'             => __( 'Featured', 'aenimfields' ),
+			'label_description' => __( 'Highlight this content in featured listings.', 'aenimfields' ),
+			'description'       => __( 'Featured items appear on the homepage.', 'aenimfields' ),
+			'help'              => __( 'Limit to a handful of items at a time.', 'aenimfields' ),
+			'text'              => __( 'Show in featured listings', 'aenimfields' ),
 			'default'           => 0,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-featured',
-			'wrapper_class'     => 'fieldsbox-example-featured-wrapper',
-			'input_attr'        => array( 'data-fieldsbox-example' => 'featured' ),
+			'class'             => 'aenimfields-example-featured',
+			'wrapper_class'     => 'aenimfields-example-featured-wrapper',
+			'input_attr'        => array( 'data-aenimfields-example' => 'featured' ),
 		),
 		array(
 			'type'              => 'date',
-			'name'              => 'fieldsbox_event_date',
-			'label'             => __( 'Event Date', 'fieldsbox' ),
-			'label_description' => __( 'When this content goes live or takes place.', 'fieldsbox' ),
-			'description'       => __( 'Optional date this content is associated with.', 'fieldsbox' ),
-			'help'              => __( 'Shown to visitors on the frontend.', 'fieldsbox' ),
-			'placeholder'       => __( 'YYYY-MM-DD', 'fieldsbox' ),
+			'name'              => 'aenimfields_event_date',
+			'label'             => __( 'Event Date', 'aenimfields' ),
+			'label_description' => __( 'When this content goes live or takes place.', 'aenimfields' ),
+			'description'       => __( 'Optional date this content is associated with.', 'aenimfields' ),
+			'help'              => __( 'Shown to visitors on the frontend.', 'aenimfields' ),
+			'placeholder'       => __( 'YYYY-MM-DD', 'aenimfields' ),
 			'default'           => '',
 			'date_format'       => 'Y-m-d',
 			'min_date'          => 'today',
@@ -156,22 +156,22 @@ function fieldsbox_example_metabox_fields(): array {
 			'required'          => false,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-event-date',
-			'wrapper_class'     => 'fieldsbox-example-event-date-wrapper',
+			'class'             => 'aenimfields-example-event-date',
+			'wrapper_class'     => 'aenimfields-example-event-date-wrapper',
 			// Only shown once the status above is set to "Active".
 			'depends_on'        => array(
-				'field' => 'fieldsbox_status',
+				'field' => 'aenimfields_status',
 				'value' => 'active',
 			),
-			'input_attr'        => array( 'data-fieldsbox-example' => 'event-date' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'event-date' ),
 		),
 		array(
 			'type'              => 'wysiwyg',
-			'name'              => 'fieldsbox_long_description',
-			'label'             => __( 'Long Description', 'fieldsbox' ),
-			'label_description' => __( 'The full, detailed content for this item.', 'fieldsbox' ),
-			'description'       => __( 'Supports rich text formatting, links, and embedded media.', 'fieldsbox' ),
-			'help'              => __( 'Shown below the summary on the single view.', 'fieldsbox' ),
+			'name'              => 'aenimfields_long_description',
+			'label'             => __( 'Long Description', 'aenimfields' ),
+			'label_description' => __( 'The full, detailed content for this item.', 'aenimfields' ),
+			'description'       => __( 'Supports rich text formatting, links, and embedded media.', 'aenimfields' ),
+			'help'              => __( 'Shown below the summary on the single view.', 'aenimfields' ),
 			'default'           => '',
 			'rows'              => 8,
 			'media_buttons'     => true,
@@ -179,60 +179,60 @@ function fieldsbox_example_metabox_fields(): array {
 			'tinymce'           => true,
 			'quicktags'         => true,
 			'required'          => false,
-			'class'             => 'fieldsbox-example-long-description',
-			'wrapper_class'     => 'fieldsbox-example-long-description-wrapper',
+			'class'             => 'aenimfields-example-long-description',
+			'wrapper_class'     => 'aenimfields-example-long-description-wrapper',
 		),
 		array(
 			'type'              => 'image',
-			'name'              => 'fieldsbox_hero_image',
-			'label'             => __( 'Hero Image', 'fieldsbox' ),
-			'label_description' => __( 'The large image shown at the top of this content.', 'fieldsbox' ),
-			'description'       => __( 'Recommended size: 1600×900px.', 'fieldsbox' ),
-			'help'              => __( 'Falls back to the featured image if left empty.', 'fieldsbox' ),
+			'name'              => 'aenimfields_hero_image',
+			'label'             => __( 'Hero Image', 'aenimfields' ),
+			'label_description' => __( 'The large image shown at the top of this content.', 'aenimfields' ),
+			'description'       => __( 'Recommended size: 1600×900px.', 'aenimfields' ),
+			'help'              => __( 'Falls back to the featured image if left empty.', 'aenimfields' ),
 			'default'           => '',
 			'preview_size'      => 'medium',
-			'select_text'       => __( 'Select Hero Image', 'fieldsbox' ),
-			'title_text'        => __( 'Choose a Hero Image', 'fieldsbox' ),
+			'select_text'       => __( 'Select Hero Image', 'aenimfields' ),
+			'title_text'        => __( 'Choose a Hero Image', 'aenimfields' ),
 			'required'          => false,
-			'class'             => 'fieldsbox-example-hero-image',
-			'wrapper_class'     => 'fieldsbox-example-hero-image-wrapper',
+			'class'             => 'aenimfields-example-hero-image',
+			'wrapper_class'     => 'aenimfields-example-hero-image-wrapper',
 		),
 		array(
 			'type'              => 'gallery',
-			'name'              => 'fieldsbox_photo_gallery',
-			'label'             => __( 'Photo Gallery', 'fieldsbox' ),
-			'label_description' => __( 'Additional photos shown in a gallery below the content.', 'fieldsbox' ),
-			'description'       => __( 'Images display in the order they were added.', 'fieldsbox' ),
-			'help'              => __( 'Add as many images as you like.', 'fieldsbox' ),
+			'name'              => 'aenimfields_photo_gallery',
+			'label'             => __( 'Photo Gallery', 'aenimfields' ),
+			'label_description' => __( 'Additional photos shown in a gallery below the content.', 'aenimfields' ),
+			'description'       => __( 'Images display in the order they were added.', 'aenimfields' ),
+			'help'              => __( 'Add as many images as you like.', 'aenimfields' ),
 			'default'           => array(),
 			'preview_size'      => 'thumbnail',
-			'select_text'       => __( 'Add Photos', 'fieldsbox' ),
-			'title_text'        => __( 'Choose Gallery Images', 'fieldsbox' ),
+			'select_text'       => __( 'Add Photos', 'aenimfields' ),
+			'title_text'        => __( 'Choose Gallery Images', 'aenimfields' ),
 			'required'          => false,
-			'class'             => 'fieldsbox-example-gallery',
-			'wrapper_class'     => 'fieldsbox-example-gallery-wrapper',
+			'class'             => 'aenimfields-example-gallery',
+			'wrapper_class'     => 'aenimfields-example-gallery-wrapper',
 		),
 		array(
 			'type'              => 'file',
-			'name'              => 'fieldsbox_attachment',
-			'label'             => __( 'Attachment', 'fieldsbox' ),
-			'label_description' => __( 'A downloadable file related to this content.', 'fieldsbox' ),
-			'description'       => __( 'e.g. a spec sheet, brochure, or dataset.', 'fieldsbox' ),
-			'help'              => __( 'Linked as a download button on the frontend.', 'fieldsbox' ),
+			'name'              => 'aenimfields_attachment',
+			'label'             => __( 'Attachment', 'aenimfields' ),
+			'label_description' => __( 'A downloadable file related to this content.', 'aenimfields' ),
+			'description'       => __( 'e.g. a spec sheet, brochure, or dataset.', 'aenimfields' ),
+			'help'              => __( 'Linked as a download button on the frontend.', 'aenimfields' ),
 			'default'           => '',
-			'select_text'       => __( 'Select Attachment', 'fieldsbox' ),
-			'title_text'        => __( 'Choose a File', 'fieldsbox' ),
+			'select_text'       => __( 'Select Attachment', 'aenimfields' ),
+			'title_text'        => __( 'Choose a File', 'aenimfields' ),
 			'required'          => false,
-			'class'             => 'fieldsbox-example-attachment',
-			'wrapper_class'     => 'fieldsbox-example-attachment-wrapper',
+			'class'             => 'aenimfields-example-attachment',
+			'wrapper_class'     => 'aenimfields-example-attachment-wrapper',
 		),
 		array(
 			'type'              => 'map',
-			'name'              => 'fieldsbox_location',
-			'label'             => __( 'Location', 'fieldsbox' ),
-			'label_description' => __( 'Where this post\'s content takes place.', 'fieldsbox' ),
-			'description'       => __( 'Search an address, or drag the pin to fine-tune it.', 'fieldsbox' ),
-			'help'              => __( 'Uses the free OpenStreetMap provider — no API key needed.', 'fieldsbox' ),
+			'name'              => 'aenimfields_location',
+			'label'             => __( 'Location', 'aenimfields' ),
+			'label_description' => __( 'Where this post\'s content takes place.', 'aenimfields' ),
+			'description'       => __( 'Search an address, or drag the pin to fine-tune it.', 'aenimfields' ),
+			'help'              => __( 'Uses the free OpenStreetMap provider — no API key needed.', 'aenimfields' ),
 			'default'           => array(
 				'address' => '',
 				'lat'     => '',
@@ -242,63 +242,63 @@ function fieldsbox_example_metabox_fields(): array {
 			'provider'          => 'osm', // Or 'google' — see Core\Assets::set_google_maps_api_key().
 			'height'            => 350,
 			'required'          => false,
-			'class'             => 'fieldsbox-example-location',
-			'wrapper_class'     => 'fieldsbox-example-location-wrapper',
+			'class'             => 'aenimfields-example-location',
+			'wrapper_class'     => 'aenimfields-example-location-wrapper',
 		),
 		array(
 			'type'              => 'group',
-			'name'              => 'fieldsbox_seo',
-			'label'             => __( 'SEO Settings', 'fieldsbox' ),
-			'label_description' => __( 'Overrides the default title and description search engines see.', 'fieldsbox' ),
-			'description'       => __( 'Leave blank to use the post title and excerpt.', 'fieldsbox' ),
-			'help'              => __( 'Recommended: title under 60 characters, description under 160.', 'fieldsbox' ),
+			'name'              => 'aenimfields_seo',
+			'label'             => __( 'SEO Settings', 'aenimfields' ),
+			'label_description' => __( 'Overrides the default title and description search engines see.', 'aenimfields' ),
+			'description'       => __( 'Leave blank to use the post title and excerpt.', 'aenimfields' ),
+			'help'              => __( 'Recommended: title under 60 characters, description under 160.', 'aenimfields' ),
 			'default'           => array(),
 			'required'          => false,
-			'class'             => 'fieldsbox-example-seo',
-			'wrapper_class'     => 'fieldsbox-example-seo-wrapper',
+			'class'             => 'aenimfields-example-seo',
+			'wrapper_class'     => 'aenimfields-example-seo-wrapper',
 			'fields'            => array(
 				array(
 					'type'        => 'text',
 					'name'        => 'meta_title',
-					'label'       => __( 'Meta Title', 'fieldsbox' ),
-					'placeholder' => __( 'e.g. The Ultimate Guide to…', 'fieldsbox' ),
+					'label'       => __( 'Meta Title', 'aenimfields' ),
+					'placeholder' => __( 'e.g. The Ultimate Guide to…', 'aenimfields' ),
 					'validate'    => array( 'max:60' ),
 				),
 				array(
 					'type'        => 'textarea',
 					'name'        => 'meta_description',
-					'label'       => __( 'Meta Description', 'fieldsbox' ),
+					'label'       => __( 'Meta Description', 'aenimfields' ),
 					'rows'        => 3,
-					'placeholder' => __( 'A short, compelling summary for search results.', 'fieldsbox' ),
+					'placeholder' => __( 'A short, compelling summary for search results.', 'aenimfields' ),
 					'validate'    => array( 'max:160' ),
 				),
 			),
 		),
 		array(
 			'type'              => 'repeater',
-			'name'              => 'fieldsbox_links',
-			'label'             => __( 'Additional Links', 'fieldsbox' ),
-			'label_description' => __( 'Related links shown at the end of the content.', 'fieldsbox' ),
-			'description'       => __( 'e.g. sources, further reading, or related products.', 'fieldsbox' ),
-			'help'              => __( 'Displayed in the order added.', 'fieldsbox' ),
+			'name'              => 'aenimfields_links',
+			'label'             => __( 'Additional Links', 'aenimfields' ),
+			'label_description' => __( 'Related links shown at the end of the content.', 'aenimfields' ),
+			'description'       => __( 'e.g. sources, further reading, or related products.', 'aenimfields' ),
+			'help'              => __( 'Displayed in the order added.', 'aenimfields' ),
 			'default'           => array(),
 			'min_rows'          => 0,
 			'max_rows'          => 10,
-			'add_button_text'   => __( 'Add Link', 'fieldsbox' ),
+			'add_button_text'   => __( 'Add Link', 'aenimfields' ),
 			'required'          => false,
-			'class'             => 'fieldsbox-example-links',
-			'wrapper_class'     => 'fieldsbox-example-links-wrapper',
+			'class'             => 'aenimfields-example-links',
+			'wrapper_class'     => 'aenimfields-example-links-wrapper',
 			'fields'            => array(
 				array(
 					'type'     => 'text',
 					'name'     => 'link_label',
-					'label'    => __( 'Label', 'fieldsbox' ),
+					'label'    => __( 'Label', 'aenimfields' ),
 					'required' => true,
 				),
 				array(
 					'type'     => 'url',
 					'name'     => 'link_url',
-					'label'    => __( 'URL', 'fieldsbox' ),
+					'label'    => __( 'URL', 'aenimfields' ),
 					'required' => true,
 					'validate' => array( 'url' ),
 				),
@@ -306,38 +306,38 @@ function fieldsbox_example_metabox_fields(): array {
 		),
 		array(
 			'type'              => 'text',
-			'name'              => 'fieldsbox_internal_note',
-			'label'             => __( 'Internal Note', 'fieldsbox' ),
-			'label_description' => __( 'Editorial use only.', 'fieldsbox' ),
-			'description'       => __( 'Not shown publicly; for editorial reference only.', 'fieldsbox' ),
-			'help'              => __( 'Visible only to users who can edit this post.', 'fieldsbox' ),
-			'placeholder'       => __( 'e.g. Needs a second review before publishing', 'fieldsbox' ),
+			'name'              => 'aenimfields_internal_note',
+			'label'             => __( 'Internal Note', 'aenimfields' ),
+			'label_description' => __( 'Editorial use only.', 'aenimfields' ),
+			'description'       => __( 'Not shown publicly; for editorial reference only.', 'aenimfields' ),
+			'help'              => __( 'Visible only to users who can edit this post.', 'aenimfields' ),
+			'placeholder'       => __( 'e.g. Needs a second review before publishing', 'aenimfields' ),
 			'default'           => '',
 			'required'          => false,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-note',
-			'wrapper_class'     => 'fieldsbox-example-note-wrapper',
-			'before'            => '<!-- fieldsbox_internal_note start -->',
-			'after'             => '<!-- fieldsbox_internal_note end -->',
+			'class'             => 'aenimfields-example-note',
+			'wrapper_class'     => 'aenimfields-example-note-wrapper',
+			'before'            => '<!-- aenimfields_internal_note start -->',
+			'after'             => '<!-- aenimfields_internal_note end -->',
 			'validate'          => array( 'max:200' ),
-			'input_attr'        => array( 'data-fieldsbox-example' => 'internal-note' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'internal-note' ),
 		),
 	);
 }
 
-add_action( 'add_meta_boxes', 'fieldsbox_example_register_metabox' );
+add_action( 'add_meta_boxes', 'aenimfields_example_register_metabox' );
 
 /**
  * Register the metabox.
  *
  * @return void
  */
-function fieldsbox_example_register_metabox(): void {
+function aenimfields_example_register_metabox(): void {
 	add_meta_box(
-		'fieldsbox_example',
-		__( 'FieldsBox Example', 'fieldsbox' ),
-		'fieldsbox_example_render_metabox',
+		'aenimfields_example',
+		__( 'AenimFields Example', 'aenimfields' ),
+		'aenimfields_example_render_metabox',
 		'post',
 		'normal',
 		'default'
@@ -351,12 +351,12 @@ function fieldsbox_example_register_metabox(): void {
  *
  * @return void
  */
-function fieldsbox_example_render_metabox( WP_Post $post ): void {
+function aenimfields_example_render_metabox( WP_Post $post ): void {
 
-	wp_nonce_field( 'fieldsbox_example_save', 'fieldsbox_example_nonce' );
+	wp_nonce_field( 'aenimfields_example_save', 'aenimfields_example_nonce' );
 
 	$app    = new Application();
-	$fields = fieldsbox_example_metabox_fields();
+	$fields = aenimfields_example_metabox_fields();
 
 	foreach ( $fields as &$field ) {
 		$field['value'] = get_post_meta( $post->ID, $field['name'], true );
@@ -366,13 +366,13 @@ function fieldsbox_example_render_metabox( WP_Post $post ): void {
 	// Pull the last field out to render it on its own, demonstrating that
 	// Application::render() also accepts a single field's args directly
 	// (no outer array) — not only a list of fields.
-	$note = array_pop( $fields ); // fieldsbox_internal_note, defined last above.
+	$note = array_pop( $fields ); // aenimfields_internal_note, defined last above.
 
 	echo $app->render( $fields );
 	echo $app->render( $note );
 }
 
-add_action( 'save_post', 'fieldsbox_example_save_metabox' );
+add_action( 'save_post', 'aenimfields_example_save_metabox' );
 
 /**
  * Sanitize, validate, and persist the submitted metabox values.
@@ -381,10 +381,10 @@ add_action( 'save_post', 'fieldsbox_example_save_metabox' );
  *
  * @return void
  */
-function fieldsbox_example_save_metabox( int $post_id ): void {
+function aenimfields_example_save_metabox( int $post_id ): void {
 
-	if ( ! isset( $_POST['fieldsbox_example_nonce'] )
-		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fieldsbox_example_nonce'] ) ), 'fieldsbox_example_save' )
+	if ( ! isset( $_POST['aenimfields_example_nonce'] )
+		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['aenimfields_example_nonce'] ) ), 'aenimfields_example_save' )
 	) {
 		return;
 	}
@@ -399,7 +399,7 @@ function fieldsbox_example_save_metabox( int $post_id ): void {
 
 	$factory = new FieldFactory();
 
-	foreach ( fieldsbox_example_metabox_fields() as $args ) {
+	foreach ( aenimfields_example_metabox_fields() as $args ) {
 
 		$field  = $factory->make( $args );
 		$raw    = wp_unslash( $_POST[ $field->get_name() ] ?? '' );

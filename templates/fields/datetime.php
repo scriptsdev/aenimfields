@@ -2,22 +2,22 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Helpers;
+use AenimTech\AenimFields\Core\Helpers;
 
 $extra = array(
 	'type'                       => 'text',
 	'autocomplete'               => 'off',
-	'data-fieldsbox-datepicker'  => true,
-	'data-fieldsbox-date-format' => $field->get_arg( 'date_format', 'Y-m-d H:i' ),
-	'data-fieldsbox-enable-time' => 'true',
+	'data-aenimfields-datepicker'  => true,
+	'data-aenimfields-date-format' => $field->get_arg( 'date_format', 'Y-m-d H:i' ),
+	'data-aenimfields-enable-time' => 'true',
 );
 
 if ( '' !== $field->get_min_date() ) {
-	$extra['data-fieldsbox-min-date'] = $field->get_min_date();
+	$extra['data-aenimfields-min-date'] = $field->get_min_date();
 }
 
 if ( '' !== $field->get_max_date() ) {
-	$extra['data-fieldsbox-max-date'] = $field->get_max_date();
+	$extra['data-aenimfields-max-date'] = $field->get_max_date();
 }
 
 $attributes = Helpers::input_attributes( $field, $extra );

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
 /**
  * Image field.
@@ -73,7 +73,7 @@ class Image extends BaseField {
 
 		if ( ! wp_attachment_is_image( absint( $value ) ) ) {
 			return sprintf(
-				__( 'The "%s" field must reference a valid image.', 'fieldsbox' ),
+				__( 'The "%s" field must reference a valid image.', 'aenimfields' ),
 				$this->get_arg( 'label', $this->get_name() )
 			);
 		}

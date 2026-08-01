@@ -7,10 +7,10 @@ declare(strict_types=1);
  *
  * Pending. This example is meant to demonstrate:
  *
- * - A `repeater` field (ScriptsDev\FieldsBox\Fields\Repeater) rendering a
+ * - A `repeater` field (AenimTech\AenimFields\Fields\Repeater) rendering a
  *   dynamic, add/remove list of field groups.
  * - Conditional fields via the `dependency` argument, evaluated by
- *   ScriptsDev\FieldsBox\Core\DependencyEngine and the ScriptsDev\FieldsBox\Dependency\*
+ *   AenimTech\AenimFields\Core\DependencyEngine and the AenimTech\AenimFields\Dependency\*
  *   classes, e.g. showing a field only when another field has a
  *   given value.
  *

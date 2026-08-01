@@ -1,14 +1,14 @@
 /**
- * FieldsBox — date/datetime fields, powered by flatpickr.
+ * AenimFields — date/datetime fields, powered by flatpickr.
  *
  * Initializes flatpickr (assets/vendor/js/flatpickr.min.js) on every
- * input carrying `data-fieldsbox-datepicker`, reading its date format
+ * input carrying `data-aenimfields-datepicker`, reading its date format
  * and enable-time option from the data attributes written by
  * templates/fields/date.php and templates/fields/datetime.php.
  *
- * Exposed as `window.FieldsBox.Datepicker` so other code — e.g. a script
+ * Exposed as `window.AenimFields.Datepicker` so other code — e.g. a script
  * that injects new fields dynamically (a repeater row, an AJAX response) —
- * can call `FieldsBox.Datepicker.init()` to pick up newly-added fields.
+ * can call `AenimFields.Datepicker.init()` to pick up newly-added fields.
  */
 ( function ( window, document ) {
 	'use strict';
@@ -27,26 +27,26 @@
 			}
 
 			var fields = document.querySelectorAll(
-				'[data-fieldsbox-datepicker]:not([data-fieldsbox-datepicker-ready])'
+				'[data-aenimfields-datepicker]:not([data-aenimfields-datepicker-ready])'
 			);
 
 			fields.forEach( function ( field ) {
 
-				field.setAttribute( 'data-fieldsbox-datepicker-ready', '' );
+				field.setAttribute( 'data-aenimfields-datepicker-ready', '' );
 
 				window.flatpickr( field, {
-					dateFormat: field.getAttribute( 'data-fieldsbox-date-format' ) || 'Y-m-d',
-					enableTime: 'true' === field.getAttribute( 'data-fieldsbox-enable-time' ),
+					dateFormat: field.getAttribute( 'data-aenimfields-date-format' ) || 'Y-m-d',
+					enableTime: 'true' === field.getAttribute( 'data-aenimfields-enable-time' ),
 					allowInput: true,
-					minDate: field.getAttribute( 'data-fieldsbox-min-date' ) || undefined,
-					maxDate: field.getAttribute( 'data-fieldsbox-max-date' ) || undefined,
+					minDate: field.getAttribute( 'data-aenimfields-min-date' ) || undefined,
+					maxDate: field.getAttribute( 'data-aenimfields-max-date' ) || undefined,
 				} );
 			} );
 		},
 	};
 
-	window.FieldsBox = window.FieldsBox || {};
-	window.FieldsBox.Datepicker = Datepicker;
+	window.AenimFields = window.AenimFields || {};
+	window.AenimFields.Datepicker = Datepicker;
 
 	document.addEventListener( 'DOMContentLoaded', Datepicker.init );
 } )( window, document );

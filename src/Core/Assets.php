@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Core;
+namespace AenimTech\AenimFields\Core;
 
 /**
  * Assets class.
  *
- * Registers FieldsBox's scripts on construction — cheap, since this only
+ * Registers AenimFields's scripts on construction — cheap, since this only
  * describes them to WordPress and does not load them — then enqueues
  * them on demand, keyed by name, only when a field that actually needs
  * them is rendered (see FieldInterface::assets() / Renderer::render()).
- * A page that never renders a FieldsBox field never loads FieldsBox's JS.
+ * A page that never renders a AenimFields field never loads AenimFields's JS.
  *
  * @since 1.0.0
  */
@@ -103,84 +103,84 @@ class Assets {
 		self::$registered = true;
 
 		wp_register_script(
-			'fieldsbox-dependency',
-			FIELDSBOX_URL . 'assets/js/dependency.js',
+			'aenimfields-dependency',
+			AENIMFIELDS_URL . 'assets/js/dependency.js',
 			array(),
-			FIELDSBOX_VERSION,
+			AENIMFIELDS_VERSION,
 			true
 		);
 
 		wp_register_style(
-			'fieldsbox-flatpickr',
-			FIELDSBOX_URL . 'assets/libraries/flatpickr/css/flatpickr.min.css',
+			'aenimfields-flatpickr',
+			AENIMFIELDS_URL . 'assets/libraries/flatpickr/css/flatpickr.min.css',
 			array(),
 			self::FLATPICKR_VERSION
 		);
 
 		wp_register_script(
-			'fieldsbox-flatpickr',
-			FIELDSBOX_URL . 'assets/libraries/flatpickr/js/flatpickr.min.js',
+			'aenimfields-flatpickr',
+			AENIMFIELDS_URL . 'assets/libraries/flatpickr/js/flatpickr.min.js',
 			array(),
 			self::FLATPICKR_VERSION,
 			true
 		);
 
 		wp_register_script(
-			'fieldsbox-datepicker',
-			FIELDSBOX_URL . 'assets/js/datepicker.js',
-			array( 'fieldsbox-flatpickr' ),
-			FIELDSBOX_VERSION,
+			'aenimfields-datepicker',
+			AENIMFIELDS_URL . 'assets/js/datepicker.js',
+			array( 'aenimfields-flatpickr' ),
+			AENIMFIELDS_VERSION,
 			true
 		);
 
 		wp_register_script(
-			'fieldsbox-media',
-			FIELDSBOX_URL . 'assets/js/media.js',
+			'aenimfields-media',
+			AENIMFIELDS_URL . 'assets/js/media.js',
 			array( 'media-editor' ),
-			FIELDSBOX_VERSION,
+			AENIMFIELDS_VERSION,
 			true
 		);
 
 		wp_register_script(
-			'fieldsbox-repeater',
-			FIELDSBOX_URL . 'assets/js/repeater.js',
-			array( 'fieldsbox-dependency' ),
-			FIELDSBOX_VERSION,
+			'aenimfields-repeater',
+			AENIMFIELDS_URL . 'assets/js/repeater.js',
+			array( 'aenimfields-dependency' ),
+			AENIMFIELDS_VERSION,
 			true
 		);
 
 		wp_register_style(
-			'fieldsbox-leaflet',
-			FIELDSBOX_URL . 'assets/libraries/leaflet/css/leaflet.css',
+			'aenimfields-leaflet',
+			AENIMFIELDS_URL . 'assets/libraries/leaflet/css/leaflet.css',
 			array(),
 			self::LEAFLET_VERSION
 		);
 
 		wp_register_script(
-			'fieldsbox-leaflet',
-			FIELDSBOX_URL . 'assets/libraries/leaflet/js/leaflet.js',
+			'aenimfields-leaflet',
+			AENIMFIELDS_URL . 'assets/libraries/leaflet/js/leaflet.js',
 			array(),
 			self::LEAFLET_VERSION,
 			true
 		);
 
 		wp_register_style(
-			'fieldsbox-map',
-			FIELDSBOX_URL . 'assets/css/map.css',
+			'aenimfields-map',
+			AENIMFIELDS_URL . 'assets/css/map.css',
 			array(),
-			FIELDSBOX_VERSION
+			AENIMFIELDS_VERSION
 		);
 
 		wp_register_script(
-			'fieldsbox-map-osm',
-			FIELDSBOX_URL . 'assets/js/map-osm.js',
-			array( 'fieldsbox-leaflet' ),
-			FIELDSBOX_VERSION,
+			'aenimfields-map-osm',
+			AENIMFIELDS_URL . 'assets/js/map-osm.js',
+			array( 'aenimfields-leaflet' ),
+			AENIMFIELDS_VERSION,
 			true
 		);
 
-		// 'fieldsbox-map-google' is registered lazily, from the 'map_google'
-		// manifest entry below, once its dependency on 'fieldsbox-google-maps'
+		// 'aenimfields-map-google' is registered lazily, from the 'map_google'
+		// manifest entry below, once its dependency on 'aenimfields-google-maps'
 		// (which itself needs the API key) can be declared correctly.
 	}
 
@@ -200,25 +200,25 @@ class Assets {
 	protected static function manifest(): array {
 		return array(
 			'dependency' => static function (): void {
-				wp_enqueue_script( 'fieldsbox-dependency' );
+				wp_enqueue_script( 'aenimfields-dependency' );
 			},
 			'datepicker' => static function (): void {
-				wp_enqueue_style( 'fieldsbox-flatpickr' );
-				wp_enqueue_script( 'fieldsbox-flatpickr' );
-				wp_enqueue_script( 'fieldsbox-datepicker' );
+				wp_enqueue_style( 'aenimfields-flatpickr' );
+				wp_enqueue_script( 'aenimfields-flatpickr' );
+				wp_enqueue_script( 'aenimfields-datepicker' );
 			},
 			'media'      => static function (): void {
 				wp_enqueue_media();
-				wp_enqueue_script( 'fieldsbox-media' );
+				wp_enqueue_script( 'aenimfields-media' );
 			},
 			'repeater'   => static function (): void {
-				wp_enqueue_script( 'fieldsbox-repeater' );
+				wp_enqueue_script( 'aenimfields-repeater' );
 			},
 			'map_osm'    => static function (): void {
-				wp_enqueue_style( 'fieldsbox-leaflet' );
-				wp_enqueue_style( 'fieldsbox-map' );
-				wp_enqueue_script( 'fieldsbox-leaflet' );
-				wp_enqueue_script( 'fieldsbox-map-osm' );
+				wp_enqueue_style( 'aenimfields-leaflet' );
+				wp_enqueue_style( 'aenimfields-map' );
+				wp_enqueue_script( 'aenimfields-leaflet' );
+				wp_enqueue_script( 'aenimfields-map-osm' );
 			},
 			'map_google' => static function (): bool {
 
@@ -234,7 +234,7 @@ class Assets {
 				}
 
 				wp_register_script(
-					'fieldsbox-google-maps',
+					'aenimfields-google-maps',
 					add_query_arg(
 						array(
 							'key'       => $api_key,
@@ -248,16 +248,16 @@ class Assets {
 				);
 
 				wp_register_script(
-					'fieldsbox-map-google',
-					FIELDSBOX_URL . 'assets/js/map-google.js',
-					array( 'fieldsbox-google-maps' ),
-					FIELDSBOX_VERSION,
+					'aenimfields-map-google',
+					AENIMFIELDS_URL . 'assets/js/map-google.js',
+					array( 'aenimfields-google-maps' ),
+					AENIMFIELDS_VERSION,
 					true
 				);
 
-				wp_enqueue_style( 'fieldsbox-map' );
-				wp_enqueue_script( 'fieldsbox-google-maps' );
-				wp_enqueue_script( 'fieldsbox-map-google' );
+				wp_enqueue_style( 'aenimfields-map' );
+				wp_enqueue_script( 'aenimfields-google-maps' );
+				wp_enqueue_script( 'aenimfields-map-google' );
 
 				return true;
 			},

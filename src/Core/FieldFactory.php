@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Core;
+namespace AenimTech\AenimFields\Core;
 
-use ScriptsDev\FieldsBox\Contracts\FieldInterface;
+use AenimTech\AenimFields\Contracts\FieldInterface;
 use InvalidArgumentException;
 
 /**
@@ -30,7 +30,7 @@ class FieldFactory {
 	public function make( array $args ): FieldInterface {
 		if ( empty( $args['type'] ) ) {
 			throw new InvalidArgumentException(
-				__( 'Field type is required.', 'fieldsbox' )
+				__( 'Field type is required.', 'aenimfields' )
 			);
 		}
 
@@ -39,7 +39,7 @@ class FieldFactory {
 		if ( ! class_exists( $class ) ) {
 			throw new InvalidArgumentException(
 				sprintf(
-					__( 'Field type "%s" is not registered.', 'fieldsbox' ),
+					__( 'Field type "%s" is not registered.', 'aenimfields' ),
 					$args['type']
 				)
 			);
@@ -50,7 +50,7 @@ class FieldFactory {
 		if ( ! $field instanceof FieldInterface ) {
 			throw new InvalidArgumentException(
 				sprintf(
-					__( '"%s" must implement FieldInterface.', 'fieldsbox' ),
+					__( '"%s" must implement FieldInterface.', 'aenimfields' ),
 					$class
 				)
 			);

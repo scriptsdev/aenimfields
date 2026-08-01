@@ -5,31 +5,31 @@ declare(strict_types=1);
 /**
  * Example: Frontend Form
  *
- * Demonstrates rendering FieldsBox fields on the site's public
+ * Demonstrates rendering AenimFields fields on the site's public
  * frontend via a shortcode, and sanitizing + validating a submission
  * before acting on it (here: sending an email).
  *
- * This file is not loaded automatically by FieldsBox; copy the parts
+ * This file is not loaded automatically by AenimFields; copy the parts
  * you need into your own plugin or theme.
  */
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Application;
-use ScriptsDev\FieldsBox\Core\FieldFactory;
-use ScriptsDev\FieldsBox\Core\Sanitizer;
-use ScriptsDev\FieldsBox\Core\Validator;
+use AenimTech\AenimFields\Core\Application;
+use AenimTech\AenimFields\Core\FieldFactory;
+use AenimTech\AenimFields\Core\Sanitizer;
+use AenimTech\AenimFields\Core\Validator;
 
 /**
  * Subject options, shared between the field definition and the sent email.
  *
  * @return array
  */
-function fieldsbox_example_contact_subjects(): array {
+function aenimfields_example_contact_subjects(): array {
 	return array(
-		'general' => __( 'General Question', 'fieldsbox' ),
-		'support' => __( 'Support', 'fieldsbox' ),
-		'sales'   => __( 'Sales', 'fieldsbox' ),
+		'general' => __( 'General Question', 'aenimfields' ),
+		'support' => __( 'Support', 'aenimfields' ),
+		'sales'   => __( 'Sales', 'aenimfields' ),
 	);
 }
 
@@ -38,128 +38,128 @@ function fieldsbox_example_contact_subjects(): array {
  *
  * @return array
  */
-function fieldsbox_example_contact_fields(): array {
+function aenimfields_example_contact_fields(): array {
 	return array(
 		array(
 			'type'              => 'text',
 			'name'              => 'name',
-			'label'             => __( 'Name', 'fieldsbox' ),
-			'label_description' => __( 'How should we address you?', 'fieldsbox' ),
-			'description'       => __( 'Your full name.', 'fieldsbox' ),
-			'placeholder'       => __( 'Jane Doe', 'fieldsbox' ),
+			'label'             => __( 'Name', 'aenimfields' ),
+			'label_description' => __( 'How should we address you?', 'aenimfields' ),
+			'description'       => __( 'Your full name.', 'aenimfields' ),
+			'placeholder'       => __( 'Jane Doe', 'aenimfields' ),
 			'default'           => '',
 			'required'          => true,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-name',
-			'wrapper_class'     => 'fieldsbox-example-name-wrapper',
+			'class'             => 'aenimfields-example-name',
+			'wrapper_class'     => 'aenimfields-example-name-wrapper',
 			'autocomplete'      => 'name',
 			'validate'          => array( 'max:100' ),
-			'input_attr'        => array( 'data-fieldsbox-example' => 'name' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'name' ),
 		),
 		array(
 			'type'              => 'email',
 			'name'              => 'email',
-			'label'             => __( 'Email', 'fieldsbox' ),
-			'label_description' => __( "We'll reply here.", 'fieldsbox' ),
-			'description'       => __( 'Never shared with anyone else.', 'fieldsbox' ),
+			'label'             => __( 'Email', 'aenimfields' ),
+			'label_description' => __( "We'll reply here.", 'aenimfields' ),
+			'description'       => __( 'Never shared with anyone else.', 'aenimfields' ),
 			'placeholder'       => 'you@example.com',
 			'default'           => '',
 			'required'          => true,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-email',
-			'wrapper_class'     => 'fieldsbox-example-email-wrapper',
+			'class'             => 'aenimfields-example-email',
+			'wrapper_class'     => 'aenimfields-example-email-wrapper',
 			'autocomplete'      => 'email',
 			'validate'          => array( 'email' ),
-			'input_attr'        => array( 'data-fieldsbox-example' => 'email' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'email' ),
 		),
 		array(
 			'type'              => 'select',
 			'name'              => 'subject',
-			'label'             => __( 'Subject', 'fieldsbox' ),
-			'label_description' => __( 'What is this regarding?', 'fieldsbox' ),
-			'description'       => __( 'Helps us route your message to the right person.', 'fieldsbox' ),
-			'placeholder'       => __( '— Choose a subject —', 'fieldsbox' ),
-			'options'           => fieldsbox_example_contact_subjects(),
+			'label'             => __( 'Subject', 'aenimfields' ),
+			'label_description' => __( 'What is this regarding?', 'aenimfields' ),
+			'description'       => __( 'Helps us route your message to the right person.', 'aenimfields' ),
+			'placeholder'       => __( '— Choose a subject —', 'aenimfields' ),
+			'options'           => aenimfields_example_contact_subjects(),
 			'default'           => 'general',
 			'required'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-subject',
-			'wrapper_class'     => 'fieldsbox-example-subject-wrapper',
-			'input_attr'        => array( 'data-fieldsbox-example' => 'subject' ),
+			'class'             => 'aenimfields-example-subject',
+			'wrapper_class'     => 'aenimfields-example-subject-wrapper',
+			'input_attr'        => array( 'data-aenimfields-example' => 'subject' ),
 		),
 		array(
 			'type'              => 'textarea',
 			'name'              => 'message',
-			'label'             => __( 'Message', 'fieldsbox' ),
-			'label_description' => __( 'At least 10 characters.', 'fieldsbox' ),
-			'description'       => __( 'Include any details that will help us help you.', 'fieldsbox' ),
-			'placeholder'       => __( 'How can we help?', 'fieldsbox' ),
+			'label'             => __( 'Message', 'aenimfields' ),
+			'label_description' => __( 'At least 10 characters.', 'aenimfields' ),
+			'description'       => __( 'Include any details that will help us help you.', 'aenimfields' ),
+			'placeholder'       => __( 'How can we help?', 'aenimfields' ),
 			'default'           => '',
 			'rows'              => 6,
 			'cols'              => 50,
 			'required'          => true,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-message',
-			'wrapper_class'     => 'fieldsbox-example-message-wrapper',
+			'class'             => 'aenimfields-example-message',
+			'wrapper_class'     => 'aenimfields-example-message-wrapper',
 			'validate'          => array( 'min:10' ),
-			'input_attr'        => array( 'data-fieldsbox-example' => 'message' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'message' ),
 		),
 		array(
 			'type'              => 'date',
 			'name'              => 'preferred_contact_date',
-			'label'             => __( 'Preferred Contact Date (optional)', 'fieldsbox' ),
-			'label_description' => __( "The earliest day we'll reach out.", 'fieldsbox' ),
-			'description'       => __( "We'll try to call within a day of this date.", 'fieldsbox' ),
-			'placeholder'       => __( 'YYYY-MM-DD', 'fieldsbox' ),
+			'label'             => __( 'Preferred Contact Date (optional)', 'aenimfields' ),
+			'label_description' => __( "The earliest day we'll reach out.", 'aenimfields' ),
+			'description'       => __( "We'll try to call within a day of this date.", 'aenimfields' ),
+			'placeholder'       => __( 'YYYY-MM-DD', 'aenimfields' ),
 			'default'           => '',
 			'date_format'       => 'Y-m-d',
 			'min_date'          => 'today',
 			'required'          => false,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-contact-date',
-			'wrapper_class'     => 'fieldsbox-example-contact-date-wrapper',
-			'input_attr'        => array( 'data-fieldsbox-example' => 'preferred-contact-date' ),
+			'class'             => 'aenimfields-example-contact-date',
+			'wrapper_class'     => 'aenimfields-example-contact-date-wrapper',
+			'input_attr'        => array( 'data-aenimfields-example' => 'preferred-contact-date' ),
 		),
 		array(
 			'type'              => 'text',
 			'name'              => 'phone',
-			'label'             => __( 'Phone (optional)', 'fieldsbox' ),
-			'label_description' => __( 'For a faster response.', 'fieldsbox' ),
-			'description'       => __( "We'll only call if you provide a preferred contact date above.", 'fieldsbox' ),
+			'label'             => __( 'Phone (optional)', 'aenimfields' ),
+			'label_description' => __( 'For a faster response.', 'aenimfields' ),
+			'description'       => __( "We'll only call if you provide a preferred contact date above.", 'aenimfields' ),
 			'placeholder'       => '+1 555 123 4567',
 			'default'           => '',
 			'required'          => false,
 			'readonly'          => false,
 			'disabled'          => false,
-			'class'             => 'fieldsbox-example-phone',
-			'wrapper_class'     => 'fieldsbox-example-phone-wrapper',
+			'class'             => 'aenimfields-example-phone',
+			'wrapper_class'     => 'aenimfields-example-phone-wrapper',
 			'autocomplete'      => 'tel',
 			'pattern'           => '^\+?[0-9 ]{7,}$',
-			'input_attr'        => array( 'data-fieldsbox-example' => 'phone' ),
+			'input_attr'        => array( 'data-aenimfields-example' => 'phone' ),
 		),
 	);
 }
 
-add_shortcode( 'fieldsbox_example_form', 'fieldsbox_example_render_form' );
+add_shortcode( 'aenimfields_example_form', 'aenimfields_example_render_form' );
 
 /**
  * Render (and process) the contact form.
  *
  * @return string
  */
-function fieldsbox_example_render_form(): string {
+function aenimfields_example_render_form(): string {
 
-	$fields    = fieldsbox_example_contact_fields();
+	$fields    = aenimfields_example_contact_fields();
 	$submitted = array();
 	$errors    = array();
 	$notice    = '';
 
-	if ( isset( $_POST['fieldsbox_example_form_nonce'] )
-		&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fieldsbox_example_form_nonce'] ) ), 'fieldsbox_example_submit_form' )
+	if ( isset( $_POST['aenimfields_example_form_nonce'] )
+		&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['aenimfields_example_form_nonce'] ) ), 'aenimfields_example_submit_form' )
 	) {
 
 		// Honeypot: real visitors never see or fill this field; bots often do.
@@ -168,7 +168,7 @@ function fieldsbox_example_render_form(): string {
 		if ( '' !== $honeypot ) {
 
 			// Pretend success without actually sending anything.
-			$notice = __( 'Thanks, your message has been sent.', 'fieldsbox' );
+			$notice = __( 'Thanks, your message has been sent.', 'aenimfields' );
 
 		} else {
 
@@ -193,7 +193,7 @@ function fieldsbox_example_render_form(): string {
 
 			if ( ! $has_errors ) {
 
-				$subjects = fieldsbox_example_contact_subjects();
+				$subjects = aenimfields_example_contact_subjects();
 				$body     = $submitted['message'];
 
 				if ( '' !== $submitted['phone'] ) {
@@ -211,7 +211,7 @@ function fieldsbox_example_render_form(): string {
 					array( sprintf( 'Reply-To: %1$s <%2$s>', $submitted['name'], $submitted['email'] ) )
 				);
 
-				$notice    = __( 'Thanks, your message has been sent.', 'fieldsbox' );
+				$notice    = __( 'Thanks, your message has been sent.', 'aenimfields' );
 				$submitted = array();
 			}
 		}
@@ -239,15 +239,15 @@ function fieldsbox_example_render_form(): string {
 	?>
 
 	<?php if ( $notice ) : ?>
-		<p class="fieldsbox-form-notice"><?php echo esc_html( $notice ); ?></p>
+		<p class="aenimfields-form-notice"><?php echo esc_html( $notice ); ?></p>
 	<?php endif; ?>
 
 	<form method="post">
-		<?php wp_nonce_field( 'fieldsbox_example_submit_form', 'fieldsbox_example_form_nonce' ); ?>
+		<?php wp_nonce_field( 'aenimfields_example_submit_form', 'aenimfields_example_form_nonce' ); ?>
 
 		<?php echo $app->render( $fields ); ?>
 
-		<p class="fieldsbox-form-hint"><?php esc_html_e( 'Optional details:', 'fieldsbox' ); ?></p>
+		<p class="aenimfields-form-hint"><?php esc_html_e( 'Optional details:', 'aenimfields' ); ?></p>
 		<?php echo $app->render( $phone ); ?>
 
 		<?php
@@ -261,7 +261,7 @@ function fieldsbox_example_render_form(): string {
 		);
 		?>
 
-		<button type="submit"><?php esc_html_e( 'Send', 'fieldsbox' ); ?></button>
+		<button type="submit"><?php esc_html_e( 'Send', 'aenimfields' ); ?></button>
 	</form>
 
 	<?php

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Validation\Rules;
+namespace AenimTech\AenimFields\Validation\Rules;
 
 /**
  * Email rule.
@@ -29,7 +29,7 @@ class Email {
 		}
 
 		if ( ! is_email( (string) $value ) ) {
-			return sprintf( __( 'The "%s" field must be a valid email address.', 'fieldsbox' ), $label );
+			return sprintf( __( 'The "%s" field must be a valid email address.', 'aenimfields' ), $label );
 		}
 
 		return true;

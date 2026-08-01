@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Contracts;
+namespace AenimTech\AenimFields\Contracts;
 
 /**
  * Defines the contract for sanitizing a field value.

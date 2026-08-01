@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Validation\Rules;
+namespace AenimTech\AenimFields\Validation\Rules;
 
 /**
  * Required rule.
@@ -29,7 +29,7 @@ class Required {
 			: ( $value === null || $value === '' );
 
 		if ( $empty ) {
-			return sprintf( __( 'The "%s" field is required.', 'fieldsbox' ), $label );
+			return sprintf( __( 'The "%s" field is required.', 'aenimfields' ), $label );
 		}
 
 		return true;

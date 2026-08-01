@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Core;
+namespace AenimTech\AenimFields\Core;
 
-use ScriptsDev\FieldsBox\Contracts\FieldInterface;
+use AenimTech\AenimFields\Contracts\FieldInterface;
 
 /**
  * Renderer class.
@@ -29,7 +29,7 @@ class Renderer {
 			Assets::enqueue( $key );
 		}
 
-		$template = FIELDSBOX_DIR . '/templates/field-wrapper.php';
+		$template = AENIMFIELDS_DIR . '/templates/field-wrapper.php';
 
 		if ( ! file_exists( $template ) ) {
 			return '';

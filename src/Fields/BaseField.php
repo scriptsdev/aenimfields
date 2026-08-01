@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
-use ScriptsDev\FieldsBox\Contracts\FieldInterface;
+use AenimTech\AenimFields\Contracts\FieldInterface;
 
 /**
  * Base field class.
@@ -98,7 +98,7 @@ abstract class BaseField implements FieldInterface {
 		if ( empty( $this->args['id'] ) ) {
 			$this->args['id'] = '' !== $this->args['name']
 				? $this->args['name']
-				: 'fieldsbox-field-' . ++self::$auto_id;
+				: 'aenimfields-field-' . ++self::$auto_id;
 		}
 	}
 
@@ -278,7 +278,7 @@ abstract class BaseField implements FieldInterface {
 
 			if ( $empty ) {
 				return sprintf(
-					__( 'The "%s" field is required.', 'fieldsbox' ),
+					__( 'The "%s" field is required.', 'aenimfields' ),
 					$this->get_arg( 'label', $this->get_name() )
 				);
 			}

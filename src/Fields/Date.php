@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
 /**
  * Date field.
@@ -97,7 +97,7 @@ class Date extends BaseField {
 
 		if ( ! $date instanceof \DateTime || $date->format( $format ) !== $value ) {
 			return sprintf(
-				__( 'Please enter a valid date (%s).', 'fieldsbox' ),
+				__( 'Please enter a valid date (%s).', 'aenimfields' ),
 				$format
 			);
 		}
@@ -108,7 +108,7 @@ class Date extends BaseField {
 
 		if ( '' !== $min && $date < \DateTime::createFromFormat( $format, $min ) ) {
 			return sprintf(
-				__( 'The "%1$s" field must not be before %2$s.', 'fieldsbox' ),
+				__( 'The "%1$s" field must not be before %2$s.', 'aenimfields' ),
 				$label,
 				$min
 			);
@@ -118,7 +118,7 @@ class Date extends BaseField {
 
 		if ( '' !== $max && $date > \DateTime::createFromFormat( $format, $max ) ) {
 			return sprintf(
-				__( 'The "%1$s" field must not be after %2$s.', 'fieldsbox' ),
+				__( 'The "%1$s" field must not be after %2$s.', 'aenimfields' ),
 				$label,
 				$max
 			);

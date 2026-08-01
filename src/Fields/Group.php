@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
-use ScriptsDev\FieldsBox\Contracts\ContainerFieldInterface;
-use ScriptsDev\FieldsBox\Core\FieldFactory;
-use ScriptsDev\FieldsBox\Core\Sanitizer;
-use ScriptsDev\FieldsBox\Core\Validator;
+use AenimTech\AenimFields\Contracts\ContainerFieldInterface;
+use AenimTech\AenimFields\Core\FieldFactory;
+use AenimTech\AenimFields\Core\Sanitizer;
+use AenimTech\AenimFields\Core\Validator;
 
 /**
  * Group field.

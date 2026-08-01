@@ -1,14 +1,14 @@
 /**
- * FieldsBox — conditional field visibility ("depends_on").
+ * AenimFields — conditional field visibility ("depends_on").
  *
- * Reads `data-fieldsbox-depends-on-field` / `data-fieldsbox-depends-on-value`
- * attributes on `.fieldsbox-field` wrappers (written by templates/field-wrapper.php)
+ * Reads `data-aenimfields-depends-on-field` / `data-aenimfields-depends-on-value`
+ * attributes on `.aenimfields-field` wrappers (written by templates/field-wrapper.php)
  * and shows/hides each dependent field based on the current value of the
  * field it depends on.
  *
- * Exposed as `window.FieldsBox.Dependency` so other code — e.g. a script
+ * Exposed as `window.AenimFields.Dependency` so other code — e.g. a script
  * that injects new fields dynamically (a repeater row, an AJAX response) —
- * can call `FieldsBox.Dependency.evaluateAll()` to re-run the check on demand.
+ * can call `AenimFields.Dependency.evaluateAll()` to re-run the check on demand.
  */
 ( function ( window, document ) {
 	'use strict';
@@ -92,13 +92,13 @@
 		 */
 		evaluate: function ( wrapper ) {
 
-			var name = wrapper.getAttribute( 'data-fieldsbox-depends-on-field' );
+			var name = wrapper.getAttribute( 'data-aenimfields-depends-on-field' );
 
 			if ( ! name ) {
 				return;
 			}
 
-			var expected = wrapper.getAttribute( 'data-fieldsbox-depends-on-value' );
+			var expected = wrapper.getAttribute( 'data-aenimfields-depends-on-value' );
 
 			try {
 				expected = JSON.parse( expected );
@@ -114,7 +114,7 @@
 		 */
 		evaluateAll: function () {
 			document
-				.querySelectorAll( '[data-fieldsbox-depends-on-field]' )
+				.querySelectorAll( '[data-aenimfields-depends-on-field]' )
 				.forEach( Dependency.evaluate );
 		},
 
@@ -128,8 +128,8 @@
 		},
 	};
 
-	window.FieldsBox = window.FieldsBox || {};
-	window.FieldsBox.Dependency = Dependency;
+	window.AenimFields = window.AenimFields || {};
+	window.AenimFields.Dependency = Dependency;
 
 	Dependency.init();
 } )( window, document );

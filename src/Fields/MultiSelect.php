@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
-use ScriptsDev\FieldsBox\Sanitization\SelectSanitizer;
+use AenimTech\AenimFields\Sanitization\SelectSanitizer;
 
 /**
  * Multi-select field.
@@ -52,7 +52,7 @@ class MultiSelect extends BaseField {
 		foreach ( $value as $selected ) {
 
 			if ( ! array_key_exists( (string) $selected, $options ) ) {
-				return __( 'Please select valid options.', 'fieldsbox' );
+				return __( 'Please select valid options.', 'aenimfields' );
 			}
 		}
 

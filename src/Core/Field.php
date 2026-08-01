@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Core;
+namespace AenimTech\AenimFields\Core;
 
-use ScriptsDev\FieldsBox\Contracts\FieldInterface;
-use ScriptsDev\FieldsBox\Validation\ValidationResult;
+use AenimTech\AenimFields\Contracts\FieldInterface;
+use AenimTech\AenimFields\Validation\ValidationResult;
 use BadMethodCallException;
 
 /**
@@ -193,7 +193,7 @@ class Field {
 	 *
 	 * @param mixed $value
 	 *
-	 * @return \ScriptsDev\FieldsBox\Validation\ValidationResult
+	 * @return \AenimTech\AenimFields\Validation\ValidationResult
 	 */
 	public function validate( $value ) {
 		return Validator::validate( $this->field, $value );

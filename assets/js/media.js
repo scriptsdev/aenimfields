@@ -1,5 +1,5 @@
 /**
- * FieldsBox — image/gallery/file fields, powered by wp.media().
+ * AenimFields — image/gallery/file fields, powered by wp.media().
  *
  * Wires up the "Select"/"Remove" buttons rendered by
  * templates/fields/{image,gallery,file}.php to WordPress's native media
@@ -7,9 +7,9 @@
  * value — an attachment ID, or a comma-separated list for galleries) in
  * sync with what's selected.
  *
- * Exposed as `window.FieldsBox.Media` so other code — e.g. a script
+ * Exposed as `window.AenimFields.Media` so other code — e.g. a script
  * that injects new fields dynamically — can call
- * `FieldsBox.Media.init()` to pick up newly-added fields.
+ * `AenimFields.Media.init()` to pick up newly-added fields.
  */
 ( function ( window, document ) {
 	'use strict';
@@ -23,7 +23,7 @@
 		 */
 		init: function () {
 			document
-				.querySelectorAll( '[data-fieldsbox-media]:not([data-fieldsbox-media-ready])' )
+				.querySelectorAll( '[data-aenimfields-media]:not([data-aenimfields-media-ready])' )
 				.forEach( Media.setup );
 		},
 
@@ -32,12 +32,12 @@
 		 */
 		setup: function ( wrapper ) {
 
-			wrapper.setAttribute( 'data-fieldsbox-media-ready', '' );
+			wrapper.setAttribute( 'data-aenimfields-media-ready', '' );
 
-			var type      = wrapper.getAttribute( 'data-fieldsbox-media' );
+			var type      = wrapper.getAttribute( 'data-aenimfields-media' );
 			var input     = wrapper.querySelector( 'input[type="hidden"]' );
-			var selectBtn = wrapper.querySelector( '.fieldsbox-media-select' );
-			var removeBtn = wrapper.querySelector( '.fieldsbox-media-remove' );
+			var selectBtn = wrapper.querySelector( '.aenimfields-media-select' );
+			var removeBtn = wrapper.querySelector( '.aenimfields-media-remove' );
 
 			if ( ! input ) {
 				return;
@@ -57,7 +57,7 @@
 				} );
 			}
 
-			wrapper.querySelectorAll( '.fieldsbox-media-gallery-remove-item' ).forEach( function ( button ) {
+			wrapper.querySelectorAll( '.aenimfields-media-gallery-remove-item' ).forEach( function ( button ) {
 				Media.bindGalleryRemove( button, input );
 			} );
 		},
@@ -79,7 +79,7 @@
 			var isImage   = 'image' === type || isGallery;
 
 			var frame = window.wp.media( {
-				title: wrapper.getAttribute( 'data-fieldsbox-media-title' ) || '',
+				title: wrapper.getAttribute( 'data-aenimfields-media-title' ) || '',
 				library: isImage ? { type: 'image' } : {},
 				multiple: isGallery,
 			} );
@@ -114,8 +114,8 @@
 
 			input.value = attachment.id;
 
-			var preview   = wrapper.querySelector( '.fieldsbox-media-preview' );
-			var removeBtn = wrapper.querySelector( '.fieldsbox-media-remove' );
+			var preview   = wrapper.querySelector( '.aenimfields-media-preview' );
+			var removeBtn = wrapper.querySelector( '.aenimfields-media-remove' );
 
 			if ( preview ) {
 
@@ -124,7 +124,7 @@
 					preview.innerHTML = '<img src="' + size.url + '" alt="">';
 				} else {
 					preview.innerHTML =
-						'<a href="' + attachment.url + '" target="_blank" rel="noopener noreferrer" class="fieldsbox-media-filename">' +
+						'<a href="' + attachment.url + '" target="_blank" rel="noopener noreferrer" class="aenimfields-media-filename">' +
 						attachment.filename +
 						'</a>';
 				}
@@ -149,8 +149,8 @@
 
 			input.value = '';
 
-			var preview   = wrapper.querySelector( '.fieldsbox-media-preview' );
-			var removeBtn = wrapper.querySelector( '.fieldsbox-media-remove' );
+			var preview   = wrapper.querySelector( '.aenimfields-media-preview' );
+			var removeBtn = wrapper.querySelector( '.aenimfields-media-remove' );
 
 			if ( preview ) {
 				preview.innerHTML = '';
@@ -173,7 +173,7 @@
 		 */
 		appendGalleryItems: function ( wrapper, input, selection ) {
 
-			var list = wrapper.querySelector( '.fieldsbox-media-gallery-preview' );
+			var list = wrapper.querySelector( '.aenimfields-media-gallery-preview' );
 			var ids  = input.value ? input.value.split( ',' ) : [];
 
 			selection.forEach( function ( attachment ) {
@@ -191,7 +191,7 @@
 				var size = ( attachment.sizes && ( attachment.sizes.thumbnail || attachment.sizes.full ) ) || { url: attachment.url };
 
 				var li = document.createElement( 'li' );
-				li.setAttribute( 'data-fieldsbox-media-id', attachment.id );
+				li.setAttribute( 'data-aenimfields-media-id', attachment.id );
 
 				var img = document.createElement( 'img' );
 				img.src = size.url;
@@ -199,7 +199,7 @@
 
 				var removeBtn = document.createElement( 'button' );
 				removeBtn.type = 'button';
-				removeBtn.className = 'fieldsbox-media-gallery-remove-item';
+				removeBtn.className = 'aenimfields-media-gallery-remove-item';
 				removeBtn.setAttribute( 'aria-label', 'Remove image' );
 				removeBtn.innerHTML = '&times;';
 				li.appendChild( removeBtn );
@@ -227,7 +227,7 @@
 				e.preventDefault();
 
 				var li = button.closest( 'li' );
-				var id = li ? li.getAttribute( 'data-fieldsbox-media-id' ) : null;
+				var id = li ? li.getAttribute( 'data-aenimfields-media-id' ) : null;
 
 				if ( id ) {
 					var ids = ( input.value ? input.value.split( ',' ) : [] ).filter( function ( existing ) {
@@ -245,7 +245,7 @@
 		},
 
 		/**
-		 * Fire a native change event so other code (e.g. FieldsBox.Dependency)
+		 * Fire a native change event so other code (e.g. AenimFields.Dependency)
 		 * reacts to the field's new value.
 		 *
 		 * @param {HTMLElement} input
@@ -255,8 +255,8 @@
 		},
 	};
 
-	window.FieldsBox = window.FieldsBox || {};
-	window.FieldsBox.Media = Media;
+	window.AenimFields = window.AenimFields || {};
+	window.AenimFields.Media = Media;
 
 	document.addEventListener( 'DOMContentLoaded', Media.init );
 } )( window, document );

@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Helpers;
+use AenimTech\AenimFields\Core\Helpers;
 
 $extra = array(
 	'type' => 'number',

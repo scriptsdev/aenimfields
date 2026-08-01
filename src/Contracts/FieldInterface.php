@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Contracts;
+namespace AenimTech\AenimFields\Contracts;
 
 /**
  * Interface FieldInterface
  *
- * Defines the contract for all FieldsBox field types.
+ * Defines the contract for all AenimFields field types.
  *
  * Every field must:
  * - Accept field configuration.

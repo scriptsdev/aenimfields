@@ -2,32 +2,32 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Core;
+namespace AenimTech\AenimFields\Core;
 
-use ScriptsDev\FieldsBox\Fields\Checkbox;
-use ScriptsDev\FieldsBox\Fields\Color;
-use ScriptsDev\FieldsBox\Fields\Date;
-use ScriptsDev\FieldsBox\Fields\DateTime;
-use ScriptsDev\FieldsBox\Fields\Email;
-use ScriptsDev\FieldsBox\Fields\File;
-use ScriptsDev\FieldsBox\Fields\Gallery;
-use ScriptsDev\FieldsBox\Fields\Group;
-use ScriptsDev\FieldsBox\Fields\Heading;
-use ScriptsDev\FieldsBox\Fields\Hidden;
-use ScriptsDev\FieldsBox\Fields\Image;
-use ScriptsDev\FieldsBox\Fields\Map;
-use ScriptsDev\FieldsBox\Fields\MultiSelect;
-use ScriptsDev\FieldsBox\Fields\Number;
-use ScriptsDev\FieldsBox\Fields\Password;
-use ScriptsDev\FieldsBox\Fields\Radio;
-use ScriptsDev\FieldsBox\Fields\Repeater;
-use ScriptsDev\FieldsBox\Fields\Select;
-use ScriptsDev\FieldsBox\Fields\Separator;
-use ScriptsDev\FieldsBox\Fields\Text;
-use ScriptsDev\FieldsBox\Fields\Textarea;
-use ScriptsDev\FieldsBox\Fields\Toggle;
-use ScriptsDev\FieldsBox\Fields\Url;
-use ScriptsDev\FieldsBox\Fields\Wysiwyg;
+use AenimTech\AenimFields\Fields\Checkbox;
+use AenimTech\AenimFields\Fields\Color;
+use AenimTech\AenimFields\Fields\Date;
+use AenimTech\AenimFields\Fields\DateTime;
+use AenimTech\AenimFields\Fields\Email;
+use AenimTech\AenimFields\Fields\File;
+use AenimTech\AenimFields\Fields\Gallery;
+use AenimTech\AenimFields\Fields\Group;
+use AenimTech\AenimFields\Fields\Heading;
+use AenimTech\AenimFields\Fields\Hidden;
+use AenimTech\AenimFields\Fields\Image;
+use AenimTech\AenimFields\Fields\Map;
+use AenimTech\AenimFields\Fields\MultiSelect;
+use AenimTech\AenimFields\Fields\Number;
+use AenimTech\AenimFields\Fields\Password;
+use AenimTech\AenimFields\Fields\Radio;
+use AenimTech\AenimFields\Fields\Repeater;
+use AenimTech\AenimFields\Fields\Select;
+use AenimTech\AenimFields\Fields\Separator;
+use AenimTech\AenimFields\Fields\Text;
+use AenimTech\AenimFields\Fields\Textarea;
+use AenimTech\AenimFields\Fields\Toggle;
+use AenimTech\AenimFields\Fields\Url;
+use AenimTech\AenimFields\Fields\Wysiwyg;
 
 /**
  * Application class.
@@ -70,11 +70,11 @@ class Application {
 	}
 
 	/**
-	 * Define the FIELDSBOX_* constants if they are not already defined.
+	 * Define the AENIMFIELDS_* constants if they are not already defined.
 	 *
-	 * FieldsBox is a Composer library only — it has no plugin entry point
+	 * AenimFields is a Composer library only — it has no plugin entry point
 	 * of its own, so nothing else defines these. Derived from this file's
-	 * own location, which works whether FieldsBox is bundled inside a
+	 * own location, which works whether AenimFields is bundled inside a
 	 * plugin's or a theme's `vendor/` directory.
 	 *
 	 * @since 1.0.0
@@ -83,19 +83,19 @@ class Application {
 	 */
 	protected static function define_constants(): void {
 
-		if ( ! defined( 'FIELDSBOX_DIR' ) ) {
-			define( 'FIELDSBOX_DIR', dirname( __DIR__, 2 ) );
+		if ( ! defined( 'AENIMFIELDS_DIR' ) ) {
+			define( 'AENIMFIELDS_DIR', dirname( __DIR__, 2 ) );
 		}
 
-		if ( ! defined( 'FIELDSBOX_URL' ) ) {
+		if ( ! defined( 'AENIMFIELDS_URL' ) ) {
 			define(
-				'FIELDSBOX_URL',
-				trailingslashit( content_url( str_replace( WP_CONTENT_DIR, '', FIELDSBOX_DIR ) ) )
+				'AENIMFIELDS_URL',
+				trailingslashit( content_url( str_replace( WP_CONTENT_DIR, '', AENIMFIELDS_DIR ) ) )
 			);
 		}
 
-		if ( ! defined( 'FIELDSBOX_VERSION' ) ) {
-			define( 'FIELDSBOX_VERSION', '1.0.0' );
+		if ( ! defined( 'AENIMFIELDS_VERSION' ) ) {
+			define( 'AENIMFIELDS_VERSION', '1.0.0' );
 		}
 	}
 

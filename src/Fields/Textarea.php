@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
-use ScriptsDev\FieldsBox\Sanitization\TextareaSanitizer;
+use AenimTech\AenimFields\Sanitization\TextareaSanitizer;
 
 /**
  * Textarea field.

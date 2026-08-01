@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Helpers;
+use AenimTech\AenimFields\Core\Helpers;
 
 $options = (array) $field->get_arg( 'options' );
 
@@ -22,7 +22,7 @@ foreach ( $options as $key => $label ) :
 
 	?>
 
-	<label class="fieldsbox-radio">
+	<label class="aenimfields-radio">
 
 		<input <?php echo Helpers::attributes( $attributes ); ?>>
 

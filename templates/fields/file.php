@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Helpers;
+use AenimTech\AenimFields\Core\Helpers;
 
 $attachment_id = absint( $field->get_value() );
 $file_url      = $attachment_id ? wp_get_attachment_url( $attachment_id ) : '';
@@ -18,27 +18,27 @@ $attributes = Helpers::input_attributes(
 ?>
 
 <div
-	class="fieldsbox-media-field fieldsbox-media-field-file"
-	data-fieldsbox-media="file"
-	data-fieldsbox-media-title="<?php echo esc_attr( $field->get_arg( 'title_text', __( 'Select File', 'fieldsbox' ) ) ); ?>"
+	class="aenimfields-media-field aenimfields-media-field-file"
+	data-aenimfields-media="file"
+	data-aenimfields-media-title="<?php echo esc_attr( $field->get_arg( 'title_text', __( 'Select File', 'aenimfields' ) ) ); ?>"
 >
 
 	<input <?php echo Helpers::attributes( $attributes ); ?>>
 
-	<p class="fieldsbox-media-preview" <?php echo $file_name ? '' : 'hidden'; ?>>
+	<p class="aenimfields-media-preview" <?php echo $file_name ? '' : 'hidden'; ?>>
 		<?php if ( $file_name ) : ?>
-			<a href="<?php echo esc_url( $file_url ); ?>" target="_blank" rel="noopener noreferrer" class="fieldsbox-media-filename">
+			<a href="<?php echo esc_url( $file_url ); ?>" target="_blank" rel="noopener noreferrer" class="aenimfields-media-filename">
 				<?php echo esc_html( $file_name ); ?>
 			</a>
 		<?php endif; ?>
 	</p>
 
-	<p class="fieldsbox-media-actions">
-		<button type="button" class="button fieldsbox-media-select">
-			<?php echo esc_html( $field->get_arg( 'select_text', __( 'Select File', 'fieldsbox' ) ) ); ?>
+	<p class="aenimfields-media-actions">
+		<button type="button" class="button aenimfields-media-select">
+			<?php echo esc_html( $field->get_arg( 'select_text', __( 'Select File', 'aenimfields' ) ) ); ?>
 		</button>
-		<button type="button" class="button fieldsbox-media-remove" <?php echo $file_name ? '' : 'hidden'; ?>>
-			<?php esc_html_e( 'Remove', 'fieldsbox' ); ?>
+		<button type="button" class="button aenimfields-media-remove" <?php echo $file_name ? '' : 'hidden'; ?>>
+			<?php esc_html_e( 'Remove', 'aenimfields' ); ?>
 		</button>
 	</p>
 

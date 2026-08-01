@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Validation\Rules;
+namespace AenimTech\AenimFields\Validation\Rules;
 
 /**
  * Max rule.
@@ -39,7 +39,7 @@ class Max {
 
 		if ( is_array( $value ) ) {
 			if ( count( $value ) > $max ) {
-				return sprintf( __( 'The "%1$s" field must have %2$s item(s) at most.', 'fieldsbox' ), $label, $parameter );
+				return sprintf( __( 'The "%1$s" field must have %2$s item(s) at most.', 'aenimfields' ), $label, $parameter );
 			}
 
 			return true;
@@ -50,14 +50,14 @@ class Max {
 		// a zip code), and should be measured by length, not magnitude.
 		if ( is_int( $value ) || is_float( $value ) ) {
 			if ( (float) $value > $max ) {
-				return sprintf( __( 'The "%1$s" field must not be greater than %2$s.', 'fieldsbox' ), $label, $parameter );
+				return sprintf( __( 'The "%1$s" field must not be greater than %2$s.', 'aenimfields' ), $label, $parameter );
 			}
 
 			return true;
 		}
 
 		if ( mb_strlen( (string) $value ) > $max ) {
-			return sprintf( __( 'The "%1$s" field must not be greater than %2$s characters.', 'fieldsbox' ), $label, $parameter );
+			return sprintf( __( 'The "%1$s" field must not be greater than %2$s characters.', 'aenimfields' ), $label, $parameter );
 		}
 
 		return true;

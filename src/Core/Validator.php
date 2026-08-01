@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Core;
+namespace AenimTech\AenimFields\Core;
 
-use ScriptsDev\FieldsBox\Contracts\FieldInterface;
-use ScriptsDev\FieldsBox\Validation\Rules\Email;
-use ScriptsDev\FieldsBox\Validation\Rules\Max;
-use ScriptsDev\FieldsBox\Validation\Rules\Min;
-use ScriptsDev\FieldsBox\Validation\Rules\Numeric;
-use ScriptsDev\FieldsBox\Validation\Rules\Regex;
-use ScriptsDev\FieldsBox\Validation\Rules\Required;
-use ScriptsDev\FieldsBox\Validation\Rules\Url;
-use ScriptsDev\FieldsBox\Validation\ValidationResult;
+use AenimTech\AenimFields\Contracts\FieldInterface;
+use AenimTech\AenimFields\Validation\Rules\Email;
+use AenimTech\AenimFields\Validation\Rules\Max;
+use AenimTech\AenimFields\Validation\Rules\Min;
+use AenimTech\AenimFields\Validation\Rules\Numeric;
+use AenimTech\AenimFields\Validation\Rules\Regex;
+use AenimTech\AenimFields\Validation\Rules\Required;
+use AenimTech\AenimFields\Validation\Rules\Url;
+use AenimTech\AenimFields\Validation\ValidationResult;
 
 /**
  * Validator class.

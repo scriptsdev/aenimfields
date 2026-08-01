@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
-use ScriptsDev\FieldsBox\Sanitization\BooleanSanitizer;
-use ScriptsDev\FieldsBox\Sanitization\SelectSanitizer;
+use AenimTech\AenimFields\Sanitization\BooleanSanitizer;
+use AenimTech\AenimFields\Sanitization\SelectSanitizer;
 
 /**
  * Checkbox field.

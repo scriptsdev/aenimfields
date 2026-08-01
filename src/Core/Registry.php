@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Core;
+namespace AenimTech\AenimFields\Core;
 
 use InvalidArgumentException;
 
@@ -69,7 +69,7 @@ class Registry {
 		if ( ! self::has( $type ) ) {
 			throw new InvalidArgumentException(
 				sprintf(
-					__( 'Field type "%s" is not registered.', 'fieldsbox' ),
+					__( 'Field type "%s" is not registered.', 'aenimfields' ),
 					$type
 				)
 			);

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Core;
+namespace AenimTech\AenimFields\Core;
 
-use ScriptsDev\FieldsBox\Contracts\FieldInterface;
+use AenimTech\AenimFields\Contracts\FieldInterface;
 
 /**
  * Sanitizer class.

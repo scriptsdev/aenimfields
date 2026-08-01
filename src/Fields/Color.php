@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
 /**
  * Color field.
@@ -45,7 +45,7 @@ class Color extends BaseField {
 		}
 
 		if ( '' !== (string) $value && ! sanitize_hex_color( (string) $value ) ) {
-			return __( 'Please select a valid color.', 'fieldsbox' );
+			return __( 'Please select a valid color.', 'aenimfields' );
 		}
 
 		return true;

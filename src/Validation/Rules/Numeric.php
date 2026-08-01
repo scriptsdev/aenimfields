@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Validation\Rules;
+namespace AenimTech\AenimFields\Validation\Rules;
 
 /**
  * Numeric rule.
@@ -29,7 +29,7 @@ class Numeric {
 		}
 
 		if ( ! is_numeric( $value ) ) {
-			return sprintf( __( 'The "%s" field must be a number.', 'fieldsbox' ), $label );
+			return sprintf( __( 'The "%s" field must be a number.', 'aenimfields' ), $label );
 		}
 
 		return true;

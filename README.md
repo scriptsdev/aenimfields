@@ -1,8 +1,8 @@
-# FieldsBox
+# AenimFields
 
 A lightweight PHP field framework for WordPress admin and frontend forms — render fields from plain array definitions, then sanitize and validate submissions with a small, consistent API.
 
-FieldsBox is a **Composer library only**. It has no plugin entry point of its own and cannot be activated as a WordPress plugin — install it as a dependency of a plugin or theme.
+AenimFields is a **Composer library only**. It has no plugin entry point of its own and cannot be activated as a WordPress plugin — install it as a dependency of a plugin or theme.
 
 ## Requirements
 
@@ -13,16 +13,16 @@ FieldsBox is a **Composer library only**. It has no plugin entry point of its ow
 ## Installation
 
 ```bash
-composer require scriptsdev/fieldsbox
+composer require aenimtech/aenimfields
 ```
 
 Then, from your plugin or theme, construct the application wherever you render fields or process a submission:
 
 ```php
-$app = new \ScriptsDev\FieldsBox\Core\Application();
+$app = new \AenimTech\AenimFields\Core\Application();
 ```
 
-Constructing `Application` is cheap and safe to call more than once per request (e.g. once from your main setup and again inside a metabox callback) — field registration, asset registration, and the `FIELDSBOX_*` constants are all idempotent.
+Constructing `Application` is cheap and safe to call more than once per request (e.g. once from your main setup and again inside a metabox callback) — field registration, asset registration, and the `AENIMFIELDS_*` constants are all idempotent.
 
 ## Rendering fields
 
@@ -55,10 +55,10 @@ See [`examples/`](examples/) for complete, working patterns: an admin metabox, a
 
 ### Fluent builder (`Field::make()`)
 
-`ScriptsDev\FieldsBox\Core\Field` is a Carbon Fields-style fluent alternative to the array API above — same engine underneath, just chained method calls instead of an args array:
+`AenimTech\AenimFields\Core\Field` is a Carbon Fields-style fluent alternative to the array API above — same engine underneath, just chained method calls instead of an args array:
 
 ```php
-use ScriptsDev\FieldsBox\Core\Field;
+use AenimTech\AenimFields\Core\Field;
 
 echo Field::make( 'text', 'site_tagline', __( 'Site Tagline', 'your-textdomain' ) )
     ->set_required()
@@ -190,8 +190,8 @@ Two providers, chosen with `provider`:
 The key is a site-wide credential, not a per-field value — set it once from your plugin's own bootstrap, wherever your plugin stores its own settings:
 
 ```php
-$app = new \ScriptsDev\FieldsBox\Core\Application();
-\ScriptsDev\FieldsBox\Core\Assets::set_google_maps_api_key( 'AIza...' );
+$app = new \AenimTech\AenimFields\Core\Application();
+\AenimTech\AenimFields\Core\Assets::set_google_maps_api_key( 'AIza...' );
 ```
 
 If a `map` field with `provider => 'google'` renders before a key has been set, it shows an inline notice instead of a broken map. Because the key is used in a client-side `<script src="...">` URL, it's inherently visible in the page source — that's normal for the Google Maps JS API. Restrict it in the Google Cloud Console (HTTP referrer restriction, limited to the Maps JavaScript API / Places API / Geocoding API) rather than relying on it staying secret.
@@ -258,9 +258,9 @@ Every field accepts `type`, `name`, `label`, `label_description` (a sub-line ren
 ## Sanitizing and validating a submission
 
 ```php
-use ScriptsDev\FieldsBox\Core\FieldFactory;
-use ScriptsDev\FieldsBox\Core\Sanitizer;
-use ScriptsDev\FieldsBox\Core\Validator;
+use AenimTech\AenimFields\Core\FieldFactory;
+use AenimTech\AenimFields\Core\Sanitizer;
+use AenimTech\AenimFields\Core\Validator;
 
 $factory = new FieldFactory();
 $field   = $factory->make( [
@@ -296,7 +296,7 @@ Show or hide a field based on another field's current value:
 ],
 ```
 
-This is handled client-side by `assets/js/dependency.js`, exposed as `window.FieldsBox.Dependency`. The script is only enqueued on pages that actually render a field — it does not load unconditionally.
+This is handled client-side by `assets/js/dependency.js`, exposed as `window.AenimFields.Dependency`. The script is only enqueued on pages that actually render a field — it does not load unconditionally.
 
 ## License
 

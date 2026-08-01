@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
 /**
  * Email field.
@@ -42,7 +42,7 @@ class Email extends BaseField {
 		}
 
 		if ( '' !== $value && ! is_email( $value ) ) {
-			return __( 'Please enter a valid email address.', 'fieldsbox' );
+			return __( 'Please enter a valid email address.', 'aenimfields' );
 		}
 
 		return true;

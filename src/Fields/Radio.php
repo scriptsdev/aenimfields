@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
-use ScriptsDev\FieldsBox\Sanitization\SelectSanitizer;
+use AenimTech\AenimFields\Sanitization\SelectSanitizer;
 
 /**
  * Radio field.
@@ -48,7 +48,7 @@ class Radio extends BaseField {
 		if ( ! empty( $options ) && '' !== (string) $value ) {
 
 			if ( ! array_key_exists( (string) $value, $options ) ) {
-				return __( 'Please select a valid option.', 'fieldsbox' );
+				return __( 'Please select a valid option.', 'aenimfields' );
 			}
 		}
 

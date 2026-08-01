@@ -2,12 +2,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use ScriptsDev\FieldsBox\Core\Application;
+use AenimTech\AenimFields\Core\Application;
 
 $app = new Application();
 
 ?>
 
-<div class="fieldsbox-group">
+<div class="aenimfields-group">
 	<?php echo $app->render( $field->build_field_args() ); ?>
 </div>

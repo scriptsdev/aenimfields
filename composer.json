@@ -1,17 +1,17 @@
 {
-  "name": "scriptsdev/fieldsbox",
+  "name": "aenimtech/aenimfields",
   "description": "A lightweight PHP field framework for WordPress admin and frontend forms.",
   "type": "library",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
-      "name": "ScriptsDev",
+      "name": "AenimTech",
       "email": "scriptsdevsolutions@gmail.com"
     }
   ],
   "autoload": {
     "psr-4": {
-      "ScriptsDev\\FieldsBox\\": "src/"
+      "AenimTech\\AenimFields\\": "src/"
     }
   },
   "require": {

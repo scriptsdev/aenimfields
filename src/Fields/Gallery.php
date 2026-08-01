@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
 /**
  * Gallery field.
@@ -75,7 +75,7 @@ class Gallery extends BaseField {
 		foreach ( $value as $id ) {
 			if ( ! wp_attachment_is_image( absint( $id ) ) ) {
 				return sprintf(
-					__( 'The "%s" field must only contain valid images.', 'fieldsbox' ),
+					__( 'The "%s" field must only contain valid images.', 'aenimfields' ),
 					$this->get_arg( 'label', $this->get_name() )
 				);
 			}

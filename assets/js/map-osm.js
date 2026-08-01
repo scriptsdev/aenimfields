@@ -1,16 +1,16 @@
 /**
- * FieldsBox — map field, free provider (Leaflet + OpenStreetMap).
+ * AenimFields — map field, free provider (Leaflet + OpenStreetMap).
  *
  * Initializes a Leaflet map with a draggable marker on every
- * `[data-fieldsbox-map="osm"]` wrapper, wires it to the field's
- * `.fieldsbox-map-lat` / `-lng` / `-zoom` inputs, and — if an
- * `.fieldsbox-map-address` input is present — a debounced live search
+ * `[data-aenimfields-map="osm"]` wrapper, wires it to the field's
+ * `.aenimfields-map-lat` / `-lng` / `-zoom` inputs, and — if an
+ * `.aenimfields-map-address` input is present — a debounced live search
  * against Nominatim (OpenStreetMap's free geocoding API; no key
  * required, but rate-limited, so heavy production traffic should
  * self-host Nominatim or switch to a paid geocoder instead).
  *
- * Exposed as `window.FieldsBox.MapOsm` so other code — e.g. a repeater
- * adding a new row — can call `FieldsBox.MapOsm.init()` to pick up
+ * Exposed as `window.AenimFields.MapOsm` so other code — e.g. a repeater
+ * adding a new row — can call `AenimFields.MapOsm.init()` to pick up
  * newly-added fields.
  */
 ( function ( window, document ) {
@@ -30,7 +30,7 @@
 			}
 
 			document
-				.querySelectorAll( '[data-fieldsbox-map="osm"]:not([data-fieldsbox-map-ready])' )
+				.querySelectorAll( '[data-aenimfields-map="osm"]:not([data-aenimfields-map-ready])' )
 				.forEach( MapOsm.setup );
 		},
 
@@ -39,29 +39,29 @@
 		 */
 		setup: function ( wrapper ) {
 
-			wrapper.setAttribute( 'data-fieldsbox-map-ready', '' );
+			wrapper.setAttribute( 'data-aenimfields-map-ready', '' );
 
-			var canvas       = wrapper.querySelector( '.fieldsbox-map-canvas' );
-			var latInput     = wrapper.querySelector( '.fieldsbox-map-lat' );
-			var lngInput     = wrapper.querySelector( '.fieldsbox-map-lng' );
-			var zoomInput    = wrapper.querySelector( '.fieldsbox-map-zoom' );
-			var addressInput = wrapper.querySelector( '.fieldsbox-map-address' );
+			var canvas       = wrapper.querySelector( '.aenimfields-map-canvas' );
+			var latInput     = wrapper.querySelector( '.aenimfields-map-lat' );
+			var lngInput     = wrapper.querySelector( '.aenimfields-map-lng' );
+			var zoomInput    = wrapper.querySelector( '.aenimfields-map-zoom' );
+			var addressInput = wrapper.querySelector( '.aenimfields-map-address' );
 
 			if ( ! canvas || ! latInput || ! lngInput ) {
 				return;
 			}
 
-			var lat         = parseFloat( latInput.value || wrapper.getAttribute( 'data-fieldsbox-map-default-lat' ) ) || 0;
-			var lng         = parseFloat( lngInput.value || wrapper.getAttribute( 'data-fieldsbox-map-default-lng' ) ) || 0;
-			var zoom        = parseInt( ( zoomInput && zoomInput.value ) || wrapper.getAttribute( 'data-fieldsbox-map-zoom' ), 10 ) || 14;
-			var draggable   = 'false' !== wrapper.getAttribute( 'data-fieldsbox-map-draggable' );
+			var lat         = parseFloat( latInput.value || wrapper.getAttribute( 'data-aenimfields-map-default-lat' ) ) || 0;
+			var lng         = parseFloat( lngInput.value || wrapper.getAttribute( 'data-aenimfields-map-default-lng' ) ) || 0;
+			var zoom        = parseInt( ( zoomInput && zoomInput.value ) || wrapper.getAttribute( 'data-aenimfields-map-zoom' ), 10 ) || 14;
+			var draggable   = 'false' !== wrapper.getAttribute( 'data-aenimfields-map-draggable' );
 			var hasLocation = !! ( latInput.value && lngInput.value );
 
 			var map = window.L.map( canvas, {
 				center: [ lat, lng ],
 				zoom: zoom,
-				minZoom: parseInt( wrapper.getAttribute( 'data-fieldsbox-map-min-zoom' ), 10 ) || 2,
-				maxZoom: parseInt( wrapper.getAttribute( 'data-fieldsbox-map-max-zoom' ), 10 ) || 20,
+				minZoom: parseInt( wrapper.getAttribute( 'data-aenimfields-map-min-zoom' ), 10 ) || 2,
+				maxZoom: parseInt( wrapper.getAttribute( 'data-aenimfields-map-max-zoom' ), 10 ) || 20,
 			} );
 
 			window.L.tileLayer( 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -142,7 +142,7 @@
 			var timer = null;
 			var list  = document.createElement( 'ul' );
 
-			list.className = 'fieldsbox-map-suggestions';
+			list.className = 'aenimfields-map-suggestions';
 			list.hidden    = true;
 
 			input.insertAdjacentElement( 'afterend', list );
@@ -228,8 +228,8 @@
 		},
 	};
 
-	window.FieldsBox = window.FieldsBox || {};
-	window.FieldsBox.MapOsm = MapOsm;
+	window.AenimFields = window.AenimFields || {};
+	window.AenimFields.MapOsm = MapOsm;
 
 	document.addEventListener( 'DOMContentLoaded', MapOsm.init );
 } )( window, document );

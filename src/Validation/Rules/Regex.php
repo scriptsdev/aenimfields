@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Validation\Rules;
+namespace AenimTech\AenimFields\Validation\Rules;
 
 /**
  * Regex rule.
@@ -29,7 +29,7 @@ class Regex {
 		}
 
 		if ( ! preg_match( $parameter, (string) $value ) ) {
-			return sprintf( __( 'The "%s" field format is invalid.', 'fieldsbox' ), $label );
+			return sprintf( __( 'The "%s" field format is invalid.', 'aenimfields' ), $label );
 		}
 
 		return true;

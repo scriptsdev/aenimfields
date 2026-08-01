@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
-use ScriptsDev\FieldsBox\Sanitization\SelectSanitizer;
+use AenimTech\AenimFields\Sanitization\SelectSanitizer;
 
 /**
  * Select field.
@@ -46,7 +46,7 @@ class Select extends BaseField {
 		$options = (array) $this->get_arg( 'options' );
 
 		if ( '' !== (string) $value && ! array_key_exists( (string) $value, $options ) ) {
-			return __( 'Please select a valid option.', 'fieldsbox' );
+			return __( 'Please select a valid option.', 'aenimfields' );
 		}
 
 		return true;

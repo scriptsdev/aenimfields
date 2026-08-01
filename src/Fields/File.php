@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
 /**
  * File field.
@@ -71,7 +71,7 @@ class File extends BaseField {
 
 		if ( 'attachment' !== get_post_type( absint( $value ) ) ) {
 			return sprintf(
-				__( 'The "%s" field must reference a valid file.', 'fieldsbox' ),
+				__( 'The "%s" field must reference a valid file.', 'aenimfields' ),
 				$this->get_arg( 'label', $this->get_name() )
 			);
 		}

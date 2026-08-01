@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Validation\Rules;
+namespace AenimTech\AenimFields\Validation\Rules;
 
 /**
  * Min rule.
@@ -39,7 +39,7 @@ class Min {
 
 		if ( is_array( $value ) ) {
 			if ( count( $value ) < $min ) {
-				return sprintf( __( 'The "%1$s" field must have at least %2$s item(s).', 'fieldsbox' ), $label, $parameter );
+				return sprintf( __( 'The "%1$s" field must have at least %2$s item(s).', 'aenimfields' ), $label, $parameter );
 			}
 
 			return true;
@@ -50,14 +50,14 @@ class Min {
 		// a zip code), and should be measured by length, not magnitude.
 		if ( is_int( $value ) || is_float( $value ) ) {
 			if ( (float) $value < $min ) {
-				return sprintf( __( 'The "%1$s" field must be at least %2$s.', 'fieldsbox' ), $label, $parameter );
+				return sprintf( __( 'The "%1$s" field must be at least %2$s.', 'aenimfields' ), $label, $parameter );
 			}
 
 			return true;
 		}
 
 		if ( mb_strlen( (string) $value ) < $min ) {
-			return sprintf( __( 'The "%1$s" field must be at least %2$s characters.', 'fieldsbox' ), $label, $parameter );
+			return sprintf( __( 'The "%1$s" field must be at least %2$s characters.', 'aenimfields' ), $label, $parameter );
 		}
 
 		return true;

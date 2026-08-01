@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ScriptsDev\FieldsBox\Fields;
+namespace AenimTech\AenimFields\Fields;
 
 /**
  * Map field.
@@ -40,7 +40,7 @@ class Map extends BaseField {
 				'show_address'       => true,
 				'marker_draggable'   => true,
 				'map_type'           => 'roadmap',
-				'search_placeholder' => __( 'Search address…', 'fieldsbox' ),
+				'search_placeholder' => __( 'Search address…', 'aenimfields' ),
 				'default'            => array(
 					'address' => '',
 					'lat'     => '',
@@ -138,7 +138,7 @@ class Map extends BaseField {
 			&& ( '' === ( $value['lat'] ?? '' ) || '' === ( $value['lng'] ?? '' ) )
 		) {
 			return sprintf(
-				__( 'The "%s" field requires a location to be picked on the map.', 'fieldsbox' ),
+				__( 'The "%s" field requires a location to be picked on the map.', 'aenimfields' ),
 				$this->get_arg( 'label', $this->get_name() )
 			);
 		}
