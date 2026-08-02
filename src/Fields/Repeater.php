@@ -23,6 +23,12 @@ use AenimTech\AenimFields\Sanitization\RepeaterSanitizer;
  * the same row by its plain (unqualified) name — it is rewritten to
  * that row's fully-qualified field name automatically when rendered.
  *
+ * Each row renders as a collapsible header (drag handle, a live title
+ * mirroring one sub-field's value, remove button, collapse toggle)
+ * above the row's own fields. The `title_field` arg names which
+ * sub-field drives that title — defaults to the first declared
+ * sub-field if not set.
+ *
  * @since 1.0.0
  */
 class Repeater extends BaseField implements ContainerFieldInterface {
@@ -241,5 +247,92 @@ class Repeater extends BaseField implements ContainerFieldInterface {
 		}
 
 		return $row_fields;
+	}
+
+	/**
+	 * Name of the sub-field whose value drives each row's header title.
+	 *
+	 * Uses the explicit `title_field` arg if set, otherwise falls back
+	 * to the first declared sub-field.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string Empty string if there are no sub-fields.
+	 */
+	public function get_title_field(): string {
+
+		$title_field = (string) $this->get_arg( 'title_field', '' );
+
+		if ( '' !== $title_field ) {
+			return $title_field;
+		}
+
+		$fields = $this->get_fields();
+		$first  = reset( $fields );
+
+		return is_array( $first ) ? (string) ( $first['name'] ?? '' ) : '';
+	}
+
+	/**
+	 * HTML id of the row body, used to pair the header's `aria-controls`
+	 * with the collapsible body it toggles.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int|string $index Row index, or the JS template placeholder.
+	 *
+	 * @return string
+	 */
+	public function body_id( $index ): string {
+		return $this->get_id() . '_' . $index . '_body';
+	}
+
+	/**
+	 * HTML id of the input that drives a row's live title, matching the
+	 * id `build_row_field_args()` assigns to that sub-field.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int|string $index Row index, or the JS template placeholder.
+	 *
+	 * @return string Empty string if this repeater has no title field.
+	 */
+	public function title_target_id( $index ): string {
+
+		$title_field = $this->get_title_field();
+
+		if ( '' === $title_field ) {
+			return '';
+		}
+
+		return $this->get_id() . '_' . $index . '_' . $title_field;
+	}
+
+	/**
+	 * Row header title text: the title field's current value, or a
+	 * numbered fallback ("Row 3") if it's empty or unset.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array      $row_value  Stored values for this row, keyed by
+	 *                                sub-field name.
+	 * @param int|string $row_number 1-based row number for the fallback
+	 *                                text, or a placeholder token for
+	 *                                the JS row template.
+	 *
+	 * @return string
+	 */
+	public function row_title( array $row_value, $row_number ): string {
+
+		$title_field = $this->get_title_field();
+		$value       = '' !== $title_field ? ( $row_value[ $title_field ] ?? '' ) : '';
+		$value       = is_scalar( $value ) ? trim( (string) $value ) : '';
+
+		if ( '' !== $value ) {
+			return $value;
+		}
+
+		/* translators: %s: 1-based row number. */
+		return sprintf( __( 'Row %s', 'aenimfields' ), $row_number );
 	}
 }

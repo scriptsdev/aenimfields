@@ -231,7 +231,33 @@ $result = Validator::validate( $field, $clean );                       // "Row 2
 
 A sub-field's `depends_on.field` can reference a sibling sub-field **in the same row** by its plain name (e.g. `'field' => 'show_photo'`) — it's automatically rewritten to that row's qualified name at render time, so conditional fields work inside a repeater the same way they do anywhere else.
 
-`min_rows`/`max_rows` (both optional) are enforced both in the browser (disabling Add/Remove buttons) and in `validate()`. Rows can be added/removed but not yet reordered by drag — same scope decision as `gallery`. Nesting a repeater inside another repeater is untested and not currently supported.
+`min_rows`/`max_rows` (both optional) are enforced both in the browser (disabling Add/Remove buttons) and in `validate()`. Nesting a repeater inside another repeater is untested and not currently supported.
+
+Each row renders as a collapsible card: a header (drag handle, a title, a remove button, a collapse toggle) above the row's own fields. This package ships the markup and the interaction (collapse/expand, remove) — it ships **no CSS** for it (the collapsed body is hidden with the plain `hidden` attribute, so collapsing works with zero stylesheet); a consuming plugin/theme is expected to style it. Hooks to style against:
+
+- `.aenimfields-repeater-row` — one row/card; gets `.aenimfields-repeater-row--collapsed` while collapsed
+- `.aenimfields-repeater-row-header` — the whole clickable toggle area (`role="button"`, `aria-expanded`)
+- `.aenimfields-repeater-drag-handle` — a decorative grip icon; **not currently wired up to actual drag-to-reorder**, it's markup only
+- `.aenimfields-repeater-row-title` — the live row title (see `title_field` below)
+- `.aenimfields-repeater-row-actions`, `.aenimfields-repeater-remove-row`, `.aenimfields-repeater-toggle-icon` — right-aligned remove button and collapse chevron, each an inline `<svg class="aenimfields-repeater-icon aenimfields-repeater-icon-{drag,remove,toggle}">` using `currentColor`, so `color` on the wrapping element sets the icon color
+- `.aenimfields-repeater-row-body` — the collapsible container for the row's fields; carries the native `hidden` attribute when collapsed
+
+`title_field` names which sub-field's value drives the header title (defaults to the first declared sub-field). It updates live as the user types — no page reload needed:
+
+```php
+[
+    'type'        => 'repeater',
+    'name'        => 'team_members',
+    'label'       => __( 'Team Members', 'your-textdomain' ),
+    'title_field' => 'name', // header shows this sub-field's value
+    'fields'      => [
+        [ 'type' => 'text', 'name' => 'name', 'label' => __( 'Full Name', 'your-textdomain' ) ],
+        [ 'type' => 'text', 'name' => 'role', 'label' => __( 'Job Role', 'your-textdomain' ) ],
+    ],
+],
+```
+
+An empty title field falls back to "Row 1", "Row 2", etc.
 
 ### Group field
 

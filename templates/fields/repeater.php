@@ -12,7 +12,7 @@ $min_rows = (int) $field->get_arg( 'min_rows', 0 );
 $max_rows = (int) $field->get_arg( 'max_rows', 0 );
 
 $wrapper_attrs = array(
-	'class'                               => 'aenimfields-repeater',
+	'class'                                 => 'aenimfields-repeater',
 	'data-aenimfields-repeater'             => true,
 	'data-aenimfields-repeater-next-index'  => count( $rows ),
 );
@@ -25,6 +25,84 @@ if ( $max_rows > 0 ) {
 	$wrapper_attrs['data-aenimfields-repeater-max'] = $max_rows;
 }
 
+/**
+ * Render one row: a collapsible header (drag handle, live title, remove
+ * button, collapse toggle) above the row's own fields.
+ *
+ * @param int|string $index      Row index, or the JS template placeholder.
+ * @param array      $row_value  Stored values for this row.
+ * @param int|string $row_number 1-based row number, or a placeholder
+ *                                token for the JS template.
+ */
+$render_row = static function ( $index, array $row_value, $row_number ) use ( $field, $app ) {
+
+	$body_id      = $field->body_id( $index );
+	$title_target = $field->title_target_id( $index );
+	$row_title    = $field->row_title( $row_value, $row_number );
+
+	$row_attrs = array(
+		'class'                                    => 'aenimfields-repeater-row',
+		'data-aenimfields-repeater-index'          => $index,
+		'data-aenimfields-repeater-title-target'   => $title_target,
+		'data-aenimfields-repeater-title-fallback' => $row_title,
+	);
+
+	$header_attrs = array(
+		'class'          => 'aenimfields-repeater-row-header',
+		'role'           => 'button',
+		'tabindex'       => '0',
+		'aria-expanded'  => 'true',
+		'aria-controls'  => $body_id,
+	);
+
+	?>
+
+	<div <?php echo Helpers::attributes( $row_attrs ); ?>>
+
+		<div <?php echo Helpers::attributes( $header_attrs ); ?>>
+
+			<span class="aenimfields-repeater-drag-handle" aria-hidden="true">
+				<svg class="aenimfields-repeater-icon aenimfields-repeater-icon-drag" viewBox="0 0 20 20" fill="currentColor" focusable="false">
+					<circle cx="6" cy="4" r="1.5"></circle>
+					<circle cx="14" cy="4" r="1.5"></circle>
+					<circle cx="6" cy="10" r="1.5"></circle>
+					<circle cx="14" cy="10" r="1.5"></circle>
+					<circle cx="6" cy="16" r="1.5"></circle>
+					<circle cx="14" cy="16" r="1.5"></circle>
+				</svg>
+			</span>
+
+			<span class="aenimfields-repeater-row-title"><?php echo esc_html( $row_title ); ?></span>
+
+			<span class="aenimfields-repeater-row-actions">
+
+				<button type="button" class="aenimfields-repeater-remove-row" aria-label="<?php esc_attr_e( 'Remove row', 'aenimfields' ); ?>">
+					<svg class="aenimfields-repeater-icon aenimfields-repeater-icon-remove" viewBox="0 0 20 20" fill="currentColor" focusable="false">
+						<path d="M8 2a1 1 0 0 0-1 1v1H4a1 1 0 1 0 0 2h12a1 1 0 1 0 0-2h-3V3a1 1 0 0 0-1-1H8zM5 7l.8 9.6A2 2 0 0 0 7.8 18h4.4a2 2 0 0 0 2-1.4L15 7H5z"></path>
+					</svg>
+				</button>
+
+				<span class="aenimfields-repeater-toggle-icon" aria-hidden="true">
+					<svg class="aenimfields-repeater-icon aenimfields-repeater-icon-toggle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false">
+						<path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg>
+				</span>
+
+			</span>
+
+		</div>
+
+		<div class="aenimfields-repeater-row-body" id="<?php echo esc_attr( $body_id ); ?>">
+			<div class="aenimfields-repeater-row-fields">
+				<?php echo $app->render( $field->build_row_field_args( $index, $row_value ) ); ?>
+			</div>
+		</div>
+
+	</div>
+
+	<?php
+};
+
 ?>
 
 <div <?php echo Helpers::attributes( $wrapper_attrs ); ?>>
@@ -32,19 +110,7 @@ if ( $max_rows > 0 ) {
 	<div class="aenimfields-repeater-rows">
 
 		<?php foreach ( $rows as $index => $row ) : ?>
-
-			<div class="aenimfields-repeater-row" data-aenimfields-repeater-index="<?php echo esc_attr( $index ); ?>">
-
-				<div class="aenimfields-repeater-row-fields">
-					<?php echo $app->render( $field->build_row_field_args( $index, (array) $row ) ); ?>
-				</div>
-
-				<button type="button" class="button aenimfields-repeater-remove-row">
-					<?php esc_html_e( 'Remove', 'aenimfields' ); ?>
-				</button>
-
-			</div>
-
+			<?php $render_row( $index, (array) $row, $index + 1 ); ?>
 		<?php endforeach; ?>
 
 	</div>
@@ -54,17 +120,7 @@ if ( $max_rows > 0 ) {
 	</button>
 
 	<template class="aenimfields-repeater-template">
-		<div class="aenimfields-repeater-row" data-aenimfields-repeater-index="__INDEX__">
-
-			<div class="aenimfields-repeater-row-fields">
-				<?php echo $app->render( $field->build_row_field_args( '__INDEX__', array() ) ); ?>
-			</div>
-
-			<button type="button" class="button aenimfields-repeater-remove-row">
-				<?php esc_html_e( 'Remove', 'aenimfields' ); ?>
-			</button>
-
-		</div>
+		<?php $render_row( '__INDEX__', array(), '__ROW_NUMBER__' ); ?>
 	</template>
 
 </div>
