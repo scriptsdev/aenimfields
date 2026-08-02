@@ -212,6 +212,11 @@ class Assets {
 				wp_enqueue_script( 'aenimfields-media' );
 			},
 			'repeater'   => static function (): void {
+				// Dashicons is registered by WP core itself and always
+				// available in wp-admin; explicitly enqueuing it here
+				// covers frontend use (e.g. the frontend-form example),
+				// where core only auto-loads it inside wp-admin.
+				wp_enqueue_style( 'dashicons' );
 				wp_enqueue_script( 'aenimfields-repeater' );
 			},
 			'map_osm'    => static function (): void {

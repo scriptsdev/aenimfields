@@ -62,14 +62,7 @@ $render_row = static function ( $index, array $row_value, $row_number ) use ( $f
 		<div <?php echo Helpers::attributes( $header_attrs ); ?>>
 
 			<span class="aenimfields-repeater-drag-handle" aria-hidden="true">
-				<svg class="aenimfields-repeater-icon aenimfields-repeater-icon-drag" viewBox="0 0 20 20" fill="currentColor" focusable="false">
-					<circle cx="6" cy="4" r="1.5"></circle>
-					<circle cx="14" cy="4" r="1.5"></circle>
-					<circle cx="6" cy="10" r="1.5"></circle>
-					<circle cx="14" cy="10" r="1.5"></circle>
-					<circle cx="6" cy="16" r="1.5"></circle>
-					<circle cx="14" cy="16" r="1.5"></circle>
-				</svg>
+				<span class="dashicons dashicons-move aenimfields-repeater-icon aenimfields-repeater-icon-drag"></span>
 			</span>
 
 			<span class="aenimfields-repeater-row-title"><?php echo esc_html( $row_title ); ?></span>
@@ -77,15 +70,11 @@ $render_row = static function ( $index, array $row_value, $row_number ) use ( $f
 			<span class="aenimfields-repeater-row-actions">
 
 				<button type="button" class="aenimfields-repeater-remove-row" aria-label="<?php esc_attr_e( 'Remove row', 'aenimfields' ); ?>">
-					<svg class="aenimfields-repeater-icon aenimfields-repeater-icon-remove" viewBox="0 0 20 20" fill="currentColor" focusable="false">
-						<path d="M8 2a1 1 0 0 0-1 1v1H4a1 1 0 1 0 0 2h12a1 1 0 1 0 0-2h-3V3a1 1 0 0 0-1-1H8zM5 7l.8 9.6A2 2 0 0 0 7.8 18h4.4a2 2 0 0 0 2-1.4L15 7H5z"></path>
-					</svg>
+					<span class="dashicons dashicons-trash aenimfields-repeater-icon aenimfields-repeater-icon-remove"></span>
 				</button>
 
 				<span class="aenimfields-repeater-toggle-icon" aria-hidden="true">
-					<svg class="aenimfields-repeater-icon aenimfields-repeater-icon-toggle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false">
-						<path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"></path>
-					</svg>
+					<span class="dashicons dashicons-arrow-down-alt2 aenimfields-repeater-icon aenimfields-repeater-icon-toggle"></span>
 				</span>
 
 			</span>
