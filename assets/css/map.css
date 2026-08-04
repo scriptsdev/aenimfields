@@ -1,59 +1,60 @@
 .aenimfields-map {
-	position: relative;
+  position: relative;
 }
 
 .aenimfields-map-address {
-	width: 100%;
-	box-sizing: border-box;
-	margin-bottom: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
 }
 
 .aenimfields-map-canvas {
-	width: 100%;
-	background: #eee;
-	border: 1px solid #ccd0d4;
-	margin-bottom: 8px;
+  width: 100%;
+  background: #eee;
+  border: 1px solid #ccd0d4;
+  margin-bottom: 8px;
 }
 
 .aenimfields-map-coordinates {
-	display: flex;
-	gap: 12px;
+  display: flex;
+  gap: 12px;
 }
 
 .aenimfields-map-coordinates label {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  width: 50%;
 }
 
 .aenimfields-map-coordinates input {
-	width: 140px;
+  width: 140px;
 }
 
 .aenimfields-map-suggestions {
-	position: absolute;
-	z-index: 10;
-	max-width: 400px;
-	max-height: 200px;
-	margin: -4px 0 8px;
-	padding: 0;
-	overflow-y: auto;
-	list-style: none;
-	background: #fff;
-	border: 1px solid #ccd0d4;
+  position: absolute;
+  z-index: 10;
+  max-width: 400px;
+  max-height: 200px;
+  margin: -4px 0 8px;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #ccd0d4;
 }
 
 .aenimfields-map-suggestions li {
-	padding: 6px 10px;
-	cursor: pointer;
+  padding: 6px 10px;
+  cursor: pointer;
 }
 
 .aenimfields-map-suggestions li:hover {
-	background: #f0f0f1;
+  background: #f0f0f1;
 }
 
 .aenimfields-map-notice {
-	color: #b32d2e;
-	font-style: italic;
+  color: #b32d2e;
+  font-style: italic;
 }
