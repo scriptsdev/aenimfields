@@ -23,7 +23,6 @@ class Renderer {
 	 * @return string
 	 */
 	public function render( FieldInterface $field ): string {
-		Assets::enqueue( 'framework' );
 		Assets::enqueue();
 
 		foreach ( $field->assets() as $key ) {
