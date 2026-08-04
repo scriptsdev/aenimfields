@@ -102,6 +102,13 @@ class Assets {
 
 		self::$registered = true;
 
+		wp_register_style(
+			'aenimfields-framework',
+			AENIMFIELDS_URL . 'assets/css/framework.css',
+			array(),
+			AENIMFIELDS_VERSION
+		);
+
 		wp_register_script(
 			'aenimfields-dependency',
 			AENIMFIELDS_URL . 'assets/js/dependency.js',
@@ -199,6 +206,9 @@ class Assets {
 	 */
 	protected static function manifest(): array {
 		return array(
+			'framework'  => static function (): void {
+				wp_enqueue_style( 'aenimfields-framework' );
+			},
 			'dependency' => static function (): void {
 				wp_enqueue_script( 'aenimfields-dependency' );
 			},
